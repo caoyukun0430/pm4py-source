@@ -402,7 +402,6 @@ def apply(log, values, parameters=None):
             filtered_log.append(new_trace)
     return filtered_log
 
-
 def get_attribute_values(log, attribute_key, parameters=None):
     """
     Get the attribute values of the log for the specified attribute along with their count
@@ -499,9 +498,7 @@ def get_trace_attribute_values(log, attribute_key, parameters=None):
             if attribute not in attributes:
                 attributes[attribute] = 0
             attributes[attribute] = attributes[attribute] + 1
-
     return attributes
-
 
 def filter_log_by_attributes_threshold(log, attributes, variants, vc, threshold, attribute_key=xes.DEFAULT_NAME_KEY):
     """

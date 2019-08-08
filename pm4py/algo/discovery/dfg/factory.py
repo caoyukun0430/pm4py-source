@@ -60,6 +60,7 @@ def apply(log, parameters=None, variant=DFG_NATIVE):
                                                                          pmutil.constants.PARAMETER_CONSTANT_TIMESTAMP_KEY],
                                                                      case_id_glue=parameters[
                                                                          pmutil.constants.PARAMETER_CONSTANT_CASEID_KEY])
+
         if 'native' in variant or 'frequency' in variant:
             return dfg_frequency
         else:
