@@ -3,9 +3,11 @@ import pandas as pd
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from pm4py.algo.filtering.log.variants import variants_filter
 from pm4py.statistics.traces.log import case_statistics
+
 from IPython.display import display
 from pm4py.algo.discovery.inductive import factory as inductive_miner
-from pm4py.visualization.process_tree import factory as pt_vis_factory
+from pm4py.algo.simulation.tree_generator.versions import basic
+
 from pm4py.algo.filtering.log.attributes import attributes_filter
 from pm4py.util import constants
 from pm4py.algo.discovery.dfg import factory as dfg_factory
@@ -91,4 +93,11 @@ print(dfg)
     '''
 
 if __name__ == "__main__":
-    protree()
+    log =xes_import_factory.apply(os.path.join("tests", "input_data", "running-example.xes"))
+    #tree = inductive_miner.apply_tree(log)
+    #print(tree)
+    #tree = basic.apply()
+
+
+
+

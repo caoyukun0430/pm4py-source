@@ -18,7 +18,7 @@ def inner_prod_calc(df):
     return innerprod, sqrt_1, sqrt_2
 
 
-def dist_calc(var_list_1, var_list_2, log1, log2, freq_thres, alpha, parameters=None):
+def dist_calc(var_list_1, var_list_2, log1, log2, freq_thres, num, alpha, parameters=None):
     '''
     this function compare the activity similarity between two sublogs via the two lists of variants.
     :param var_list_1: lists of variants in sublog 1
@@ -41,16 +41,18 @@ def dist_calc(var_list_1, var_list_2, log1, log2, freq_thres, alpha, parameters=
         min_len = len(var_list_2)
         max_var = var_list_1
         min_var = var_list_2
-        var_count_max = filter_subsets.sublog2df(log1, freq_thres)['count']
-        var_count_min = filter_subsets.sublog2df(log2, freq_thres)['count']
+        var_count_max = filter_subsets.sublog2df(log1, freq_thres, num)['count']
+        var_count_min = filter_subsets.sublog2df(log2, freq_thres, num)['count']
     else:
         max_len = len(var_list_2)
         min_len = len(var_list_1)
         max_var = var_list_2
         min_var = var_list_1
-        var_count_max = filter_subsets.sublog2df(log2, freq_thres)['count']
-        var_count_min = filter_subsets.sublog2df(log1, freq_thres)['count']
+        var_count_max = filter_subsets.sublog2df(log2, freq_thres, num)['count']
+        var_count_min = filter_subsets.sublog2df(log1, freq_thres, num)['count']
 
+    print("list1:", len(max_var))
+    print("list2:", len(min_var))
     # act
     max_per_var_act = np.zeros(max_len)
     max_freq_act = np.zeros(max_len)
@@ -68,22 +70,22 @@ def dist_calc(var_list_1, var_list_2, log1, log2, freq_thres, alpha, parameters=
             dist_vec_act = np.zeros(min_len)
             dist_vec_suc = np.zeros(min_len)
             df_1_act = act_dist_calc.occu_var_act(max_var[i])
-            df_1_suc = suc_dist_calc.occu_var_suc(max_var[i])
+            df_1_suc = suc_dist_calc.occu_var_suc(max_var[i], parameters={"binarize": True})
             for j in range(min_len):
                 df_2_act = act_dist_calc.occu_var_act(min_var[j])
-                df_2_suc = suc_dist_calc.occu_var_suc(min_var[j])
+                df_2_suc = suc_dist_calc.occu_var_suc(min_var[j], parameters={"binarize": True})
 
                 df_act = pd.merge(df_1_act, df_2_act, how='outer', on='var').fillna(0)
                 df_suc = pd.merge(df_1_suc, df_2_suc, how='outer', on='direct_suc').fillna(0)
                 # cosine similarity is used to calculate trace similarity
                 # pist defintion is distance, so it is subtracted by 1 already
-                dist_vec_act[j] = pdist(np.array([df_act['freq_x'].values, df_act['freq_y'].values]), 'cosine')[0]
-                dist_vec_suc[j] = pdist(np.array([df_suc['freq_x'].values, df_suc['freq_y'].values]), 'cosine')[0]
+                dist_vec_act[j] = (pdist(np.array([df_act['freq_x'].values, df_act['freq_y'].values]), 'cosine')[0])
+                dist_vec_suc[j] = (pdist(np.array([df_suc['freq_x'].values, df_suc['freq_y'].values]), 'cosine')[0])
 
                 if (single):
                     #dist_vec_act[j] = innerprod_act / (sqrt_1_act * sqrt_2_act)
                     #dist_vec_suc[j] = innerprod_suc / (sqrt_1_suc * sqrt_2_suc)
-                    if (abs(dist_vec_act[j]) <= 1e-6) and (abs(dist_vec_suc[j]) <= 1e-6):  # ensure both are 1
+                    if (abs(dist_vec_act[j]) <= 1e-8) and (abs(dist_vec_suc[j]) <= 1e-6):  # ensure both are 1
                         max_freq_act[i] = var_count_max.iloc[i] * var_count_min.iloc[j]
                         max_freq_suc[i] = max_freq_act[i]
                         max_per_var_act[i] = dist_vec_act[j] * max_freq_act[i]
@@ -91,8 +93,8 @@ def dist_calc(var_list_1, var_list_2, log1, log2, freq_thres, alpha, parameters=
 
                         break
                     elif j == (min_len - 1):
-                        max_loc_col_act = np.argmax(dist_vec_act)  # location of max value
-                        max_loc_col_suc = np.argmax(dist_vec_suc)  # location of max value
+                        max_loc_col_act = np.argmin(dist_vec_act)  # location of max value
+                        max_loc_col_suc = np.argmin(dist_vec_suc)  # location of max value
                         max_freq_act[i] = var_count_max.iloc[i] * var_count_min.iloc[max_loc_col_act]
                         max_freq_suc[i] = var_count_max.iloc[i] * var_count_min.iloc[max_loc_col_suc]
                         max_per_var_act[i] = dist_vec_act[max_loc_col_act] * max_freq_act[i]
@@ -140,7 +142,7 @@ if __name__ == "__main__":
                                                                  parameters={
                                                                      constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
                                                                      "positive": True})
-    threshold = 3
+    threshold = 5
 
     str_var_list_5000 = filter_subsets.sublog2varlist(tracefilter_log_5000, threshold)
     str_var_list_7000 = filter_subsets.sublog2varlist(tracefilter_log_7000, threshold)

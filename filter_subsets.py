@@ -71,8 +71,7 @@ def apply_trace_attributes(log, list_of_values, parameters=None):
             filtered_log.append(new_trace)
     return filtered_log
 
-
-def sublog2varlist(log, freq_thres):
+def sublog2varlist(log, freq_thres, num):
     '''
     extract lists of variants from selected sublogs together with frequency threshold to filter out infrequent variants
     :param log: sublog containing the selected case attribute value
@@ -81,38 +80,48 @@ def sublog2varlist(log, freq_thres):
     '''
     variants_count = case_statistics.get_variant_statistics(log)
     variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
-    df_var_list = []
-
     filtered_var_list = []
+    filtered_var_list_1 = []
+    filtered_var_list_2 = []
     for i in range(len(variants_count)):
         if variants_count[i]['count'] >= freq_thres:
-            filtered_var_list.append(variants_count[i]['variant'])  # variant string
-    df = pd.DataFrame(df_var_list)
+            filtered_var_list_1.append(variants_count[i]['variant'])  # variant string
+        elif i< num:
+            filtered_var_list_2.append(variants_count[i]['variant'])
+
+    # union set ensure the ordered union will be satisfied
+    filtered_var_list = filtered_var_list_1+filtered_var_list_2
+    #print(filtered_var_list)
     str_var_list = []
     for str in filtered_var_list:
         str_var_list.extend([str.split(',')])
     return str_var_list
 
-
-def sublog2varlist_num(log, num):
+def sublog_percent(log, percent):
     '''
-    extract lists of variants from selected sublogs together with frequency threshold to filter out infrequent variants
-    :param log: sublog containing the selected case attribute value
-    :param freq_thres: (int) frequency threshold to filter out infrequent variants
-    :return: lists of variant strings
+    change variant dictionary got from sublog into dataframe, so that we can extract the frequency of each variant
+    :param log: same as sublog2varlist()
+    :param freq_thres: same as sublog2varlist()
+    :return: dataframe of variants with their counts together with the correspond var_list(until the percent )
     '''
     variants_count = case_statistics.get_variant_statistics(log)
     variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
-    df_var_list = []
-
-    filtered_var_list = []
-    for i in range(np.minimum(len(variants_count), num)):
-        filtered_var_list.append(variants_count[i]['variant'])  # variant string
-    df = pd.DataFrame(df_var_list)
+    df = pd.DataFrame.from_dict(variants_count)
+    #calculate the cumunative sum
+    csum = np.array(df['count']).cumsum()
+    csum = csum/csum[-1]
+    #print(csum)
+    num_list = csum[csum<percent]
+    #print(num_list)
+    # stop until the percent is satisfied
+    df_w_count = df.iloc[0:len(num_list), :]
+    # get correspond var_list
+    filtered_var_list = df_w_count['variant'].values.tolist()
     str_var_list = []
     for str in filtered_var_list:
         str_var_list.extend([str.split(',')])
-    return str_var_list
+    return df_w_count, str_var_list
+
 
 def sublog2df_num(log, num):
     '''
@@ -127,7 +136,8 @@ def sublog2df_num(log, num):
     df_w_count = df.iloc[0:num,:]
     return df_w_count
 
-def sublog2df(log, freq_thres):
+
+def sublog2df(log, freq_thres, num):
     '''
     change variant dictionary got from sublog into dataframe, so that we can extract the frequency of each variant
     :param log: same as sublog2varlist()
@@ -137,7 +147,11 @@ def sublog2df(log, freq_thres):
     variants_count = case_statistics.get_variant_statistics(log)
     variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
     df = pd.DataFrame.from_dict(variants_count)
-    df_w_count = df[df['count'] >= freq_thres]
+    df_w_count_1 = df[df['count'] >= freq_thres]
+    df_w_count_2 = df.iloc[0:num,:]
+    # take union of two dataframes
+    df_w_count = pd.merge(df_w_count_1, df_w_count_2, how='outer', on=['variant','count'])
+    #display(df_w_count['variant'])
     return df_w_count
 
 
@@ -234,41 +248,101 @@ if __name__ == "__main__":
     log = xes_importer.apply("D:\\Sisc\\19SS\\thesis\\Dataset\\BPI_Challenge_2012.xes")
     # print(log)
     # extract all case attributes
-    att = attributes_filter.get_all_trace_attributes_from_log(log)
-    print(att)
+    #att = attributes_filter.get_all_trace_attributes_from_log(log)
+    #print(att)
     # extract all attribute values of the chosen case attribute
-    att_val = attributes_filter.get_trace_attribute_values(log, attribute_key="AMOUNT_REQ")
+    #att_val = attributes_filter.get_trace_attribute_values(log, attribute_key="AMOUNT_REQ")
     # print(att_val)  # return dictionary value
 
     # give the attribute values needed to be filtered out
-    list_of_vals = ['5000', '7000']
+
+    list_of_vals = ['15000','25000','8000']
+
     tracefilter_log = apply_trace_attributes(log, list_of_vals,
                                              parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
                                                          "positive": True})
-    tracefilter_log_5000 = apply_trace_attributes(tracefilter_log, ['5000'],
-                                                  parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
-                                                              "positive": True})
-    tracefilter_log_7000 = apply_trace_attributes(tracefilter_log, ['7000'],
+
+    tracefilter_log_15000 = apply_trace_attributes(tracefilter_log, ['15000'],
+                                                   parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                               "positive": True})
+    tracefilter_log_8000 = apply_trace_attributes(tracefilter_log, ['8000'],
                                                   parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
                                                               "positive": True})
 
-    str_var_list_5000 = sublog2varlist(tracefilter_log_5000, 5)
-    str_var_list_50002 = sublog2varlist_num(tracefilter_log_5000, 5)
-    str_var_list_7000 = sublog2varlist(tracefilter_log_7000, 5)
+    tracefilter_log_25000 = apply_trace_attributes(tracefilter_log, ['25000'],
+                                                  parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                              "positive": True})
+
+
+    '''
+    tracefilter_log_30000 = apply_trace_attributes(tracefilter_log, ['30000'],
+                                                  parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                              "positive": True})
+    tracefilter_log_10000 = apply_trace_attributes(tracefilter_log, ['10000'],
+                                                   parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                               "positive": True})
+    
+    tracefilter_log_7500 = apply_trace_attributes(tracefilter_log, ['7500'],
+                                                   parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                               "positive": True})
+    tracefilter_log_15000 = apply_trace_attributes(tracefilter_log, ['15000'],
+                                                  parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                              "positive": True})
+
+    tracefilter_log_22000 = apply_trace_attributes(tracefilter_log, ['22000'],
+                                                  parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                              "positive": True})
+    tracefilter_log_45000 = apply_trace_attributes(tracefilter_log, ['45000'],
+                                                   parameters={constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+                                                               "positive": True})'''
+
+    #print(tracefilter_log_7000)
+    #print(tracefilter_log_30000)
+
+
+    number=4
+    freq=1
+    str_var_list_15000 = sublog2varlist(tracefilter_log_15000, freq,number)
+    str_var_list_8000 = sublog2varlist(tracefilter_log_8000, freq, number)
+    #print(str_var_list_15000)
+    print(len(str_var_list_15000))
+    print(len(str_var_list_8000))
+    '''
+    str_var_list_7500 = sublog2varlist(tracefilter_log_7500, freq,number)
+    print(str_var_list_7500)
+    #str_var_list_50000 = sublog2varlist(tracefilter_log_50000, freq,4)
+    #print(len(str_var_list_50000))'''
+
+    #str_var_list_30000 = sublog2varlist(tracefilter_log_30000, freq, number)
+    #print(len(str_var_list_30000))
+    '''
+    str_var_list_10000 = sublog2varlist(tracefilter_log_10000, freq, number)
+    str_var_list_7500 = sublog2varlist(tracefilter_log_7500, freq, number)
+    str_var_list_15000 = sublog2varlist(tracefilter_log_15000, freq, number)
+    '''
+    #print(str_var_list_7000)
+    #print(str_var_list_30000)
+    #print(str_var_list_10000)
+
     # print(len(str_var_list_5000))
     # print(len(str_var_list_7000))
-    print(len(str_var_list_5000))
-    print(len(str_var_list_50002))
+    #print(len(str_var_list_5000))
+    #print(len(str_var_list_50002))
     #df = act_dist_calc.occu_var_act(str_var_list_5000[0])
     # print(np.array([df['freq'], df['freq']]))
     # print((1- pdist(np.array([df['freq'], df['freq']]), 'cosine'))[0])
 
     # print(case_statistics.get_cases_description(tracefilter_log_7000))
 
-    var_count_max = sublog2df(tracefilter_log_5000, 3)
-    var_count_min = sublog2df(tracefilter_log_7000, 3)
+    #var_count_max = sublog2df(tracefilter_log_5000, 5)
+    '''
+    (a,b) = sublog_percent(tracefilter_log_10000, 0.4)
+    print(len(a))
+    print(b)
+    (a, b) = sublog_percent(tracefilter_log_15000, 0.33)
+    print(len(a))
+    '''
     # print(len(str_var_list_7000))
-    # print(var_count_max)
     # print(act_dist_calc.occu_var_ele(str_var_list_5000[0]))
 
     # combi= functools.reduce(operator.concat, combi)# fastest way to flatten lists
@@ -279,12 +353,60 @@ if __name__ == "__main__":
     # test spped and correctness
     start = time.time()
     # act_dis = act_dist_calc.act_dist(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000, 5)
-    dist_mat2 = act_dist_calc.act_sim(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000,
-                                      5, parameters={"single": True})
-    print(dist_mat2)
+    dist_mat = act_dist_calc.act_sim(str_var_list_15000, str_var_list_8000, tracefilter_log_15000, tracefilter_log_8000,
+                                      freq, number, parameters={"single": False})
+    print("1:",dist_mat)
+    '''                                
+    #dist_mat7 = act_dist_calc.act_sim_percent(tracefilter_log_15000, tracefilter_log_25000, 0.58, 0.58)
+    # print("7:", dist_mat7)
+    #dist_mat8 = act_dist_calc.act_sim_percent(tracefilter_log_15000, tracefilter_log_25000, 1, 1)
+    #print("8:", dist_mat8)
+    dist_mat9 = act_dist_calc.act_sim_percent(tracefilter_log_15000, tracefilter_log_8000, 0.58, 0.58)
+    dist_mat10 = act_dist_calc.act_sim_percent(tracefilter_log_15000, tracefilter_log_8000, 1, 1)
+    print("9:", dist_mat9)
+    print("10:", dist_mat10)
+    dist_mat11 = act_dist_calc.act_sim_percent(tracefilter_log_25000, tracefilter_log_8000, 0.58, 0.58)
+    print("11:", dist_mat11)
+    dist_mat12 = act_dist_calc.act_sim_percent(tracefilter_log_25000, tracefilter_log_8000, 1, 1)
+    # dist_mat2 = suc_dist_calc.suc_sim(str_var_list_7500, str_var_list_15000, tracefilter_log_7500,
+    #                                  tracefilter_log_15000,
+    #                                  freq, number, parameters={"single": True})
     # print(dist_mat==np.transpose(dist_mat2))
+
+
+
+    print("12:", dist_mat12)
     end = time.time()
     print(end - start)
+
+    start = time.time()
+     #act_dis = act_dist_calc.act_dist(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000, 5)
+    #dist_mat = act_dist_calc.act_sim_dual(str_var_list_30000, str_var_list_50000, tracefilter_log_30000, tracefilter_log_50000,
+    #                                  freq, number, parameters={"single": True})
+    #print("1:",dist_mat)
+    #dist_mat1 = suc_dist_calc.suc_sim_percent(tracefilter_log_15000,tracefilter_log_25000, 0.58, 0.58)
+    #dist_mat2 = suc_dist_calc.suc_sim_percent(tracefilter_log_15000, tracefilter_log_25000, 1, 1)
+    #print("1:", dist_mat1)
+    #print("2:", dist_mat2)
+    dist_mat3 = suc_dist_calc.suc_sim_percent(tracefilter_log_15000, tracefilter_log_8000, 0.58, 0.58)
+    print("3:", dist_mat3)
+    dist_mat4 = suc_dist_calc.suc_sim_percent(tracefilter_log_15000, tracefilter_log_8000, 1, 1)
+
+    print("4:", dist_mat4)
+    dist_mat5 = suc_dist_calc.suc_sim_percent(tracefilter_log_25000, tracefilter_log_8000, 0.58, 0.58)
+    print("5:", dist_mat5)
+    dist_mat6 = suc_dist_calc.suc_sim_percent(tracefilter_log_25000, tracefilter_log_8000, 1, 1)
+    #dist_mat2 = suc_dist_calc.suc_sim(str_var_list_7500, str_var_list_15000, tracefilter_log_7500,
+    #                                  tracefilter_log_15000,
+    #                                  freq, number, parameters={"single": True})
+    # print(dist_mat==np.transpose(dist_mat2))
+
+
+
+    print("6:", dist_mat6)
+    end = time.time()
+    print(end - start)'''
+
 
     '''
     csv_exporter.export(tracefilter_log_1, "tracefilter_log_1.csv")

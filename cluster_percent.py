@@ -52,9 +52,8 @@ def log2sublog(log, str):
 if __name__ == "__main__":
     # inputs
     log = xes_importer.apply("D:\\Sisc\\19SS\\thesis\\Dataset\\BPI_Challenge_2012.xes")
-    list_of_vals = ['25000', '10000', '15000', '30000', '7000','8000']
-    num = 6
-    freq = 1
+    list_of_vals = ['15000','25000', '30000', '7000']
+    percent = 0.58
     alpha = 0.5
 
     tracefilter_log = filter_subsets.apply_trace_attributes(log, list_of_vals,
@@ -66,34 +65,33 @@ if __name__ == "__main__":
 
     for i in range(len(list_of_vals)):
         logsample = log2sublog(tracefilter_log, list_of_vals[i])
-        varsample = filter_subsets.sublog2varlist(logsample, freq, num)
-        print(varsample)
         loglist.append(logsample)
-        varlist.append(varsample)
     # print((loglist[0]))
     # print((varlist[0]))
     # print(len(varlist))
-    lists = varlist + loglist
-    size = int(len(lists) / 2)
+    lists = loglist
+    print(lists)
+    size = len(lists)
     print(size)
     dist_mat = np.zeros((size, size))
 
     for i in range(0, size - 1):
         for j in range(i + 1, size):
-            # sim_act = act_dist_calc.act_sim(lists[i], lists[j], lists[i + size],
-            #                             lists[j + size],
-            #                             freq, num, parameters={"single": True})
+            sim_act = act_dist_calc.act_sim_percent(lists[i], lists[j], percent,percent)
+            print([i,len(lists[i]),j,len(lists[j]),sim_act])
+            sim_suc = suc_dist_calc.suc_sim_percent(lists[i], lists[j], percent,percent)
+            print([i,len(lists[i]),j,len(lists[j]),sim_suc])
 
             # sim_suc = suc_dist_calc.suc_sim(lists[i], lists[j], lists[i+size],
             #                                lists[j+size],
             #                                freq, num, parameters={"single": True})
 
+            '''
             sim_act = sim_calc.dist_calc(lists[i], lists[j], lists[i + size],
                                          lists[j + size],
-                                         freq, num, 0.5, parameters={"single": False})
-            print([i,j,sim_act])
-            dist_mat[i][j] = sim_act
-            # dist_mat[i][j] = (sim_act * alpha + sim_suc * (1 - alpha))
+                                         freq, num, 0.5, parameters={"single": True})'''
+            #dist_mat[i][j] = sim_act
+            dist_mat[i][j] = (sim_act * alpha + sim_suc * (1 - alpha))
             dist_mat[j][i] = dist_mat[i][j]
 
     print(dist_mat)
@@ -108,5 +106,3 @@ if __name__ == "__main__":
     dn = fancy_dendrogram(Z)
     plt.savefig('cluster.svg')
     plt.show()
-
-    # print(list(enumerate(lists)))
