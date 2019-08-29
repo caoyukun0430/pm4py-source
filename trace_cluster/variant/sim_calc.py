@@ -1,13 +1,10 @@
 import pandas as pd
 import numpy as np
 import time
-import act_dist_calc
+from trace_cluster.variant import act_dist_calc, suc_dist_calc
 import filter_subsets
-import suc_dist_calc
 from pm4py.util import constants
 from scipy.spatial.distance import pdist
-from IPython.display import display
-from collections import Counter
 from pm4py.objects.log.importer.xes import factory as xes_importer
 
 
@@ -162,7 +159,7 @@ if __name__ == "__main__":
     start = time.time()
     # act_dis = act_dist_calc.act_dist(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000, 5)
     dist_act = act_dist_calc.act_sim(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000,
-                         threshold, parameters={"single": True})
+                                     threshold, parameters={"single": True})
     dist_suc = suc_dist_calc.suc_sim(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000,
                                      threshold, parameters={"single": True})
     # dist_mat2 = suc_dist_calc.suc_sim(str_var_list_5000, str_var_list_7000, tracefilter_log_5000, tracefilter_log_7000,

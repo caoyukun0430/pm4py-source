@@ -1,17 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
-from scipy.spatial.distance import pdist, squareform
-import pandas as pd
-import time
-import act_dist_calc
+from scipy.spatial.distance import squareform
+from trace_cluster.variant import act_dist_calc, suc_dist_calc
 import filter_subsets
-import suc_dist_calc
-import sim_calc
 from pm4py.util import constants
-from scipy.spatial.distance import pdist
-from IPython.display import display
-from collections import Counter
 from pm4py.objects.log.importer.xes import factory as xes_importer
 
 
@@ -77,9 +70,9 @@ if __name__ == "__main__":
 
     for i in range(0, size - 1):
         for j in range(i + 1, size):
-            sim_act = act_dist_calc.act_sim_percent(lists[i], lists[j], percent,percent)
+            sim_act = act_dist_calc.act_sim_percent(lists[i], lists[j], percent, percent)
             print([i,len(lists[i]),j,len(lists[j]),sim_act])
-            sim_suc = suc_dist_calc.suc_sim_percent(lists[i], lists[j], percent,percent)
+            sim_suc = suc_dist_calc.suc_sim_percent(lists[i], lists[j], percent, percent)
             print([i,len(lists[i]),j,len(lists[j]),sim_suc])
 
             # sim_suc = suc_dist_calc.suc_sim(lists[i], lists[j], lists[i+size],

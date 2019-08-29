@@ -1,22 +1,11 @@
 import pandas as pd
 import numpy as np
 import time
-import act_dist_calc
 import filter_subsets
-import sim_calc
-from IPython.display import display
 from scipy.spatial.distance import pdist
 from collections import Counter
 from pm4py.objects.log.importer.xes import factory as xes_importer
-from pm4py.algo.filtering.log.attributes import attributes_filter
-from pm4py.objects.log.log import EventLog, Trace, EventStream
-from pm4py.util.constants import PARAMETER_CONSTANT_ATTRIBUTE_KEY, PARAMETER_CONSTANT_ACTIVITY_KEY
 from pm4py.util import constants
-from pm4py.algo.filtering.log.variants import variants_filter
-from pm4py.statistics.traces.log import case_statistics
-from pm4py.algo.discovery.dfg import factory as dfg_factory
-from pm4py.visualization.dfg import factory as dfg_vis_factory
-from pm4py.algo.discovery.dfg.versions import native
 
 
 def occu_suc(dfg, filter_percent):
@@ -302,8 +291,8 @@ def suc_sim_percent(log1, log2, percent_1, percent_2):
         min_var = var_list_1
         var_count_max = dataframe_2['count']
         var_count_min = dataframe_1['count']
-    print("list1:",len(max_var))
-    print("list2:",len(min_var))
+    #print("list1:",len(max_var))
+    #print("list2:",len(min_var))
 
     # print(len(var_count_max))
     # print(len(var_count_min))
@@ -317,6 +306,7 @@ def suc_sim_percent(log1, log2, percent_1, percent_2):
 
     if var_list_1 == var_list_2:
         print("Please give different variant lists!")
+        dist = 0
     else:
         for i in range(max_len):
             dist_vec = np.zeros(min_len)
@@ -355,10 +345,10 @@ def suc_sim_percent(log1, log2, percent_1, percent_2):
 
         # print(max_freq)
         # single linkage
-    dist = (np.sum(max_per_var) + np.sum(min_per_var)) / (np.sum(max_freq) + np.sum(min_freq))
+        dist = (np.sum(max_per_var) + np.sum(min_per_var)) / (np.sum(max_freq) + np.sum(min_freq))
 
     # print(index_rec)
-    # print(1-dist_matrix)
+    #print(dist_matrix)
     # print(max_per_var)
     # print(max_freq)
 

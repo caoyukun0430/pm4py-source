@@ -1,17 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
-from scipy.spatial.distance import pdist, squareform
-import pandas as pd
-import time
-import act_dist_calc
+from scipy.spatial.distance import squareform
 import filter_subsets
-import suc_dist_calc
-import sim_calc
+from trace_cluster.variant import sim_calc
 from pm4py.util import constants
-from scipy.spatial.distance import pdist
-from IPython.display import display
-from collections import Counter
 from pm4py.objects.log.importer.xes import factory as xes_importer
 
 

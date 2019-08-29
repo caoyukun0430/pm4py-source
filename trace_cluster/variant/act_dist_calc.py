@@ -420,11 +420,11 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
         var_count_max = dataframe_2['count']
         var_count_min = dataframe_1['count']
 
-    print("list1:", max_len)
-    print("list2:", min_len)
+    #print("list1:", max_len)
+    #print("list2:", min_len)
 
-    # print(len(var_count_max))
-    # print(len(var_count_min))
+    #print((var_count_max))
+    #print((var_count_min))
     dist_matrix = np.zeros((max_len, min_len))
     max_per_var = np.zeros(max_len)
     max_freq = np.zeros(max_len)
@@ -435,6 +435,7 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
 
     if var_list_1 == var_list_2:
         print("Please give different variant lists!")
+        dist = 0
     else:
         for i in range(max_len):
             dist_vec = np.zeros(min_len)
@@ -442,22 +443,25 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
             for j in range(min_len):
                 df_2 = occu_var_act(min_var[j])
                 df = pd.merge(df_1, df_2, how='outer', on='var').fillna(0)
+                #print(df)
                 # cosine similarity is used to calculate trace similarity
                 dist_vec[j] = (pdist(np.array([df['freq_x'].values, df['freq_y'].values]), 'cosine')[0])
                 # print(innerprod)
                 # dist_vec[j] = innerprod / (sqrt_1 * sqrt_2)
                 dist_matrix[i][j] = dist_vec[j]
+                #print(dist_vec[j])
                 # dist_matrix[i][j] = innerprod / (sqrt_1 * sqrt_2)
                 if j == (min_len - 1):
                     # max_loc_col = np.argmax(dist_matrix[i, :])  # location of max value
                     max_loc_col = np.argmin(dist_vec)
                     if abs(dist_vec[max_loc_col]) <= 1e-8:
                         index_rec.discard(max_loc_col)
-                        # print("skip:",[i,max_loc_col])
+                        #print("skip:",[i,max_loc_col])
                         max_freq[i] = var_count_max.iloc[i] * var_count_min.iloc[max_loc_col] * 2
                         max_per_var[i] = dist_vec[max_loc_col] * max_freq[i] * 2
                     else:
                         max_freq[i] = var_count_max.iloc[i] * var_count_min.iloc[max_loc_col]
+                        #print("max", [i, max_loc_col])
                         max_per_var[i] = dist_vec[max_loc_col] * max_freq[i]
                         # print(type(dist_vec)) # location of max value
                         # print([i,max_loc_col])
@@ -466,6 +470,7 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
                         #    max_loc_col]
 
         if (len(index_rec) != 0):
+            #print(index_rec)
             for i in list(index_rec):
                 min_loc_row = np.argmin(dist_matrix[:, i])
                 min_freq[i] = var_count_max.iloc[min_loc_row] * var_count_min.iloc[i]
@@ -475,10 +480,12 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
 
         # print(max_freq)
         # single linkage
-    dist = (np.sum(max_per_var) + np.sum(min_per_var)) / (np.sum(max_freq) + np.sum(min_freq))
+        #print(max_freq, max_per_var)
+        #print(min_freq, min_per_var)
+        dist = (np.sum(max_per_var) + np.sum(min_per_var)) / (np.sum(max_freq) + np.sum(min_freq))
 
     # print(index_rec)
-    # print(1-dist_matrix)
+    #print(dist_matrix)
     # print(max_per_var)
     # print(max_freq)
 
