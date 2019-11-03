@@ -7,9 +7,11 @@ from pm4py.algo.filtering.log.attributes import attributes_filter
 from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.util import constants
 import pandas as pd
-import filter_subsets
+from trace_cluster import filter_subsets
+from trace_cluster.pt_gene import pt_gen
 from trace_cluster.variant import act_dist_calc
 import cluster
+from trace_cluster.merge_log import merge_log
 
 
 def dfg_dist_calc_act(log1, log2):
@@ -18,10 +20,10 @@ def dfg_dist_calc_act(log1, log2):
     df1_act = act_dist_calc.occu_var_act(act1)
     df2_act = act_dist_calc.occu_var_act(act2)
     df_act = pd.merge(df1_act, df2_act, how='outer', on='var').fillna(0)
-    #print(df_act)
+    # print(df_act)
     dist_act = pdist(np.array([df_act['freq_x'].values, df_act['freq_y'].values]), 'cosine')[0]
-    #print([dist_act, dist_dfg])
-    #dist = dist_act * alpha + dist_dfg * (1 - alpha)
+    # print([dist_act, dist_dfg])
+    # dist = dist_act * alpha + dist_dfg * (1 - alpha)
     return dist_act
 
 
@@ -31,32 +33,33 @@ def dfg_dist_calc_suc(log1, log2):
     df1_dfg = act_dist_calc.occu_var_act(dfg1)
     df2_dfg = act_dist_calc.occu_var_act(dfg2)
     df_dfg = pd.merge(df1_dfg, df2_dfg, how='outer', on='var').fillna(0)
-    #print(df_dfg)
+    # print(df_dfg)
     dist_dfg = pdist(np.array([df_dfg['freq_x'].values, df_dfg['freq_y'].values]), 'cosine')[0]
     return dist_dfg
 
 
 def dfg_dist_calc(log1, log2):
     act1 = attributes_filter.get_attribute_values(log1, "concept:name")
-    print(act1)
+    # print("act1", act1)
     act2 = attributes_filter.get_attribute_values(log2, "concept:name")
+    # print("act2", act2)
     dfg1 = dfg_factory.apply(log1)
     dfg2 = dfg_factory.apply(log2)
     df1_act = act_dist_calc.occu_var_act(act1)
-    print(act1)
+    # print("dfg1", dfg1)
     df2_act = act_dist_calc.occu_var_act(act2)
     df1_dfg = act_dist_calc.occu_var_act(dfg1)
     df2_dfg = act_dist_calc.occu_var_act(dfg2)
     df_act = pd.merge(df1_act, df2_act, how='outer', on='var').fillna(0)
-    print(df_act)
-    #print(df_act)
+    # print("df_act", df_act)
+    # print(df_act)
     df_dfg = pd.merge(df1_dfg, df2_dfg, how='outer', on='var').fillna(0)
-    #print(df_act)
-    #print(df_dfg)
+    # print(df_act)
+    # print("df_dfg", df_dfg)
     dist_act = pdist(np.array([df_act['freq_x'].values, df_act['freq_y'].values]), 'cosine')[0]
     dist_dfg = pdist(np.array([df_dfg['freq_x'].values, df_dfg['freq_y'].values]), 'cosine')[0]
-    print([dist_act, dist_dfg])
-    #dist = dist_act * alpha + dist_dfg * (1 - alpha)
+    # print([dist_act, dist_dfg])
+    # dist = dist_act * alpha + dist_dfg * (1 - alpha)
     return dist_act, dist_dfg
 
 
@@ -70,80 +73,108 @@ def dfg_dist_calc_minkowski(log1, log2, alpha):
     df1_dfg = act_dist_calc.occu_var_act(dfg1)
     df2_dfg = act_dist_calc.occu_var_act(dfg2)
     df_act = pd.merge(df1_act, df2_act, how='outer', on='var').fillna(0)
-    #print(df_act)
+    # print(df_act)
     df_dfg = pd.merge(df1_dfg, df2_dfg, how='outer', on='var').fillna(0)
-    #print(df_dfg)
+    # print(df_dfg)
     dist_act = pdist(np.array([df_act['freq_x'].values / np.sum(df_act['freq_x'].values),
-                               df_act['freq_y'].values / np.sum(df_act['freq_y'].values)]), 'minkowski',p=2.)[0]
+                               df_act['freq_y'].values / np.sum(df_act['freq_y'].values)]), 'minkowski', p=2.)[0]
     dist_dfg = pdist(np.array([df_dfg['freq_x'].values / np.sum(df_dfg['freq_x'].values),
-                               df_dfg['freq_y'].values / np.sum(df_dfg['freq_y'].values)]), 'minkowski',p=2.)[0]
+                               df_dfg['freq_y'].values / np.sum(df_dfg['freq_y'].values)]), 'minkowski', p=2.)[0]
     print([dist_act, dist_dfg])
     dist = dist_act * alpha + dist_dfg * (1 - alpha)
     return dist
 
 
 if __name__ == "__main__":
-    '''
-    log_1 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_1_1.xes")
-    log_2 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_2_1.xes")
-    log_3 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_3_1.xes")
-    log_4 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_4_1.xes")
-    '''
+
+    # log_1 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_1_1.xes")
+    # log_2 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_2_1.xes")
+    # log_3 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_3_1.xes")
+    # log_4 = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs\\log_1_4_1.xes")
+
+    # log = xes_importer.apply(
+    #     "C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\merge_log\\mergedlog_2.xes")
 
 
-    percent = 1
-    alpha = 0.5
-    #loglist = pt_gen.openAllXes("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 2)
+    # list_of_vals_keys = list(list_of_vals_dict.keys())
+    # for i in range(len(list_of_vals_keys)):
+    #     list_of_vals.append(list_of_vals_keys[i])
+    #
+    # for i in range(len(list_of_vals)):
+    #     logsample = merge_log.log2sublog(log, list_of_vals[i])
+    #     list_log.append(logsample)
+    #
+    # act1 = attributes_filter.get_attribute_values(log, "concept:name")
+    # actset = act_dist_calc.occu_var_act(act1)
+    # print(actset)
+    # # act2 = attributes_filter.get_attribute_values(log_2, "concept:name")
+    # # act3 = attributes_filter.get_attribute_values(log_3, "concept:name")
+    # # df1_act = act_dist_calc.occu_var_act(act1)
+    # # df2_act = act_dist_calc.occu_var_act(act2)
+    # # df3_act = act_dist_calc.occu_var_act(act3)
+    # # df_act = pd.merge(df1_act['var'], df2_act, how='outer', on='var').fillna(0)
+    # # print(df_act)
+    # # df_act = pd.merge(df_act, df3_act, how='outer', on='var').fillna(0)
+    # # print(df_act)
+    # dist1 = act_dist_calc.act_sim_percent_avg(list_log[0], list_log[1], 1, 1)
+    # print(dist1)
+    # dist2 = act_dist_calc.act_sim_percent_avg_actset(list_log[0], list_log[1], 1, 1, actset)
+    # print(dist2)
 
-
-
-
-    #real data
-    log = xes_importer.apply("D:\\Sisc\\19SS\\thesis\\Dataset\\BPI_Challenge_2012.xes")
-    list_of_vals = ['25000', '15000', '7000', '10000','12000']
-
-    tracefilter_log = filter_subsets.apply_trace_attributes(log, list_of_vals,
-                                                            parameters={
-                                                                constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
-                                                                "positive": True})
-    loglist = []
-
-    for i in range(len(list_of_vals)):
-        logsample = cluster.log2sublog(tracefilter_log, list_of_vals[i])
-        loglist.append(logsample)
-
-
-    lists = loglist
-    size = len(lists)
-    print(size)
-    dist_mat = np.zeros((size, size))
-    #dist = dfg_dist_calc_minkowski(lists[4], lists[5], alpha)
-    #print(dist)
-
-
-
-    for i in range(0, size - 1):
-        for j in range(i + 1, size):
-            (dist_act, dist_dfg) = dfg_dist_calc(lists[i], lists[j])
-            dist_mat[i][j] = dist_act * alpha + dist_dfg * (1 - alpha)
-            dist_mat[j][i] = dist_mat[i][j]
-
-    print(dist_mat)
-
-    y = squareform(dist_mat)
-    print(y)
-    Z = linkage(y, method='average')
-    print(Z)
-    print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
-    fig = plt.figure(figsize=(10, 8))
-    # dn = fancy_dendrogram(Z, max_d=0.35)
-    dn = dendrogram(Z)
-    #dn = dendrogram(Z,labels=np.array(list_of_vals))
-    plt.title('Hierarchical Clustering Dendrogram')
-    plt.xlabel('Loan Amount')
-    plt.ylabel('Distance')
-    plt.savefig('cluster.svg')
-    plt.show()
+    # percent = 1
+    # alpha = 0.5
+    # loglist = pt_gen.openAllXes("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 1)
+    #
+    #
+    #
+    #
+    # #real data
+    # # log = xes_importer.apply("D:\\Sisc\\19SS\\thesis\\Dataset\\BPI_Challenge_2012.xes")
+    # # list_of_vals = ['25000', '15000', '7000', '10000','12000']
+    # #
+    # # tracefilter_log = filter_subsets.apply_trace_attributes(log, list_of_vals,
+    # #                                                         parameters={
+    # #                                                             constants.PARAMETER_CONSTANT_ATTRIBUTE_KEY: "AMOUNT_REQ",
+    # #                                                             "positive": True})
+    # # loglist = []
+    # #
+    # # for i in range(len(list_of_vals)):
+    # #     logsample = cluster.log2sublog(tracefilter_log, list_of_vals[i])
+    # #     loglist.append(logsample)
+    #
+    #
+    # lists = loglist
+    # size = len(lists)
+    # print(size)
+    # dist_mat = np.zeros((size, size))
+    # print("loglist0",loglist[0])
+    # #dist = dfg_dist_calc_minkowski(lists[4], lists[5], alpha)
+    # #print(dist)
+    #
+    #
+    #
+    # for i in range(0, size - 1):
+    #     for j in range(i + 1, size):
+    #         (dist_act, dist_dfg) = dfg_dist_calc(lists[i], lists[j])
+    #         dist_mat[i][j] = dist_act * alpha + dist_dfg * (1 - alpha)
+    #         dist_mat[j][i] = dist_mat[i][j]
+    #
+    # print(dist_mat)
+    #
+    # y = squareform(dist_mat)
+    # print(y)
+    # Z = linkage(y, method='average')
+    # print(Z)
+    # print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
+    # fig = plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # dn = dendrogram(Z)
+    # #dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Case Index')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster.svg')
+    # plt.show()
 
     '''
     activities = attributes_filter.get_attribute_values(log_3, "concept:name")
