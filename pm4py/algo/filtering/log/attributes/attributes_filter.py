@@ -497,7 +497,14 @@ def get_trace_attribute_values(log, attribute_key, parameters=None):
             attribute = trace.attributes[attribute_key]
             if attribute not in attributes:
                 attributes[attribute] = 0
-            attributes[attribute] = attributes[attribute] + 1
+            attributes[attribute] = attributes[attribute] + len(trace)
+        # if want to return all the events containing the trace attribute value, use this
+        # for event in trace:
+        #     if attribute_key in trace.attributes:
+        #         attribute = trace.attributes[attribute_key]
+        #         if attribute not in attributes:
+        #             attributes[attribute] = 0
+        #         attributes[attribute] = attributes[attribute] + 1
     return attributes
 
 def filter_log_by_attributes_threshold(log, attributes, variants, vc, threshold, attribute_key=xes.DEFAULT_NAME_KEY):

@@ -6,9 +6,12 @@ from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.algo.filtering.log.attributes import attributes_filter
 from pm4py.objects.log.log import EventLog, Trace
 from pm4py.util.constants import PARAMETER_CONSTANT_ATTRIBUTE_KEY
+from pm4py.objects.log.util.xes import DEFAULT_NAME_KEY
 from pm4py.algo.filtering.log.variants import variants_filter
 from pm4py.statistics.traces.log import case_statistics
-
+from pm4py.visualization.graphs import factory as graphs_factory
+from pm4py.visualization.common.utils import get_base64_from_file
+import base64
 
 def apply_trace_attributes(log, list_of_values, parameters=None):
     """
@@ -100,8 +103,11 @@ def sublog_percent(log, upper_percent, parameters=None):
         "lower_percent"] if "lower_percent" in parameters else 0
 
     variants_count = case_statistics.get_variant_statistics(log)
+    # print("variants_count", variants_count)
     variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
+    # print("variants_count",variants_count)
     df = pd.DataFrame.from_dict(variants_count)
+    # print("df",df)
     # calculate the cumunative sum
     csum = np.array(df['count']).cumsum()
     csum = csum / csum[-1]
@@ -365,8 +371,28 @@ def get_trace_attribute(log):
     '''
 
 if __name__ == "__main__":
-    log = xes_importer.import_log(os.path.join("tests", "input_data", "roadtraffic100traces.xes"))
-    x, y = attributes_filter.get_kde_date_attribute(log)
+
+    # log = xes_importer.import_log(os.path.join("..","tests", "input_data", "roadtraffic100traces.xes"))
+    # #print(case_statistics.get_variant_statistics(log))
+    #
+    #
+    #
+    # x, y = attributes_filter.get_kde_date_attribute(log)
+    #
+    # gviz = graphs_factory.apply_plot(x, y, variant="dates", parameters={"format": "svg"})
+    # # return file path and name C:\Users\yukun\AppData\Local\Temp\tmpx1nnio2e.svg
+    # gviz = 'C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\cluster.svg'
+    # gviz_base64 = base64.b64encode(str(gviz).encode('utf-8'))
+    # print((gviz))
+    # print(gviz_base64.decode('utf-8'))
+    # print(get_base64_from_file(gviz).decode('utf-8'))
+
+    log = xes_importer.apply("C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\merge_log\\mergedlog_2.xes")
+    sublog_percent(log,1)
+
+
+
+    '''
     ret = []
 
     dx=[]
@@ -377,7 +403,7 @@ if __name__ == "__main__":
     for i in range(len(ret)):
         dx.append(ret[i][0])
     print(dx)
-    print((ret))
+    print((ret))'''
 
 
     '''
