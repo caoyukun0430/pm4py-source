@@ -1,6 +1,9 @@
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
+from scipy.spatial.distance import squareform
 import numpy as np
 from trace_cluster.pt_gene import pt_gen
-import filter_subsets
+from trace_cluster import filter_subsets
 import Levenshtein
 
 
@@ -48,14 +51,14 @@ def leven_dist(log1, log2, percent_1, percent_2):
         for i in range(max_len):
             dist_vec = np.zeros(min_len)
             str1 = ''.join(max_var[i])
-            print(str1)
+            # print(str1)
             for j in range(min_len):
                 str2 = ''.join(min_var[j])
-                print(str2)
+                # print(str2)
                 max_len = np.max([len(str1), len(str2)])
                 # levenstein distance between variants
                 dist_vec[j] = (Levenshtein.distance(str1, str2)) / max_len
-                print([i, j, dist_vec[j]])
+                # print([i, j, dist_vec[j]])
                 dist_matrix[i][j] = dist_vec[j]
                 if j == (min_len - 1):
                     # max_loc_col = np.argmax(dist_matrix[i, :])  # location of max value
@@ -101,6 +104,7 @@ def leven_dist_avg(log1, log2, percent_1, percent_2):
     '''
 
     this function compare the levenstein distance between two sublogs via the two lists of variants.
+    avg doesn't have: if var_list_1 == var_list_2:print("Please give different variant lists!")
     '''
 
     (dataframe_1, var_list_1) = filter_subsets.sublog_percent(log1, percent_1)
@@ -136,15 +140,16 @@ def leven_dist_avg(log1, log2, percent_1, percent_2):
 
     for i in range(max_len):
         dist_vec = np.zeros(min_len)
+        # join all strings into one
         str1 = ''.join(max_var[i])
-        print(str1)
+        # print(str1)
         for j in range(min_len):
             str2 = ''.join(min_var[j])
-            print(str2)
+            # print(str2)
             max_len = np.max([len(str1), len(str2)])
             # levenstein distance between variants
             dist_vec[j] = (Levenshtein.distance(str1, str2)) / max_len
-            print([i, j, dist_vec[j]])
+            # print([i, j, dist_vec[j]])
             col_sum[i] += dist_vec[j] * var_count_max.iloc[i] * var_count_min.iloc[j]
             dist_matrix[i][j] = dist_vec[j]
 
@@ -153,15 +158,15 @@ def leven_dist_avg(log1, log2, percent_1, percent_2):
     # print(max_freq, max_per_var)
     # print(min_freq, min_per_var)
     vmax_vec = (var_count_max.values).reshape(-1, 1)
-    print(vmax_vec)
+    # print(vmax_vec)
     vmin_vec = (var_count_min.values).reshape(1, -1)
-    print(vmin_vec)
+    # print(vmin_vec)
     vec_sum = np.sum(np.dot(vmax_vec, vmin_vec))
     # dist = np.sum(dist_matrix) / vec_sum
     dist = np.sum(col_sum) / vec_sum
 
     # print(index_rec)
-    print(dist_matrix)
+    #print(dist_matrix)
     # print(max_per_var)
     # print(max_freq)
 
@@ -174,16 +179,16 @@ if __name__ == "__main__":
     loglist = pt_gen.openAllXes("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 2)
 
 
-    dist = leven_dist_avg(loglist[0],loglist[1],1,1)
+    #dist = leven_dist_avg(loglist[0],loglist[1],1,1)
 
-    print(dist)
+    #print(dist)
     #dist = leven_dist_avg(loglist[2], loglist[3], 1, 1)
 
     #print(dist)
 
 
 
-    '''
+
     lists = loglist
     size = len(lists)
     print(size)
@@ -192,8 +197,8 @@ if __name__ == "__main__":
 
     for i in range(0, size - 1):
         for j in range(i + 1, size):
-            dist_mat[i][j] = leven_dist_avg(lists[i], lists[j],percent,percent)
-            print([i,j,dist_mat[i][j]])
+            dist_mat[i][j] = leven_dist(lists[i], lists[j],percent,percent)
+            #print([i,j,dist_mat[i][j]])
             dist_mat[j][i] = dist_mat[i][j]
 
     print(dist_mat)
@@ -207,9 +212,9 @@ if __name__ == "__main__":
     # dn = fancy_dendrogram(Z, max_d=0.35)
     dn = dendrogram(Z)
     # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    plt.title('Hierarchical Clustering Dendrogram')
+    #plt.title('Hierarchical Clustering Dendrogram')
     plt.xlabel('Sample Index')
     plt.ylabel('Distance')
     plt.savefig('cluster.svg')
-    plt.show()'''
+    plt.show()
 
