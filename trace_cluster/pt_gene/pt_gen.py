@@ -3,7 +3,7 @@ import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
 from scipy.spatial.distance import squareform
 from pm4py.objects.log.importer.xes import factory as xes_importer
-import filter_subsets
+from trace_cluster import filter_subsets
 from trace_cluster.variant import act_dist_calc, suc_dist_calc
 import time
 
