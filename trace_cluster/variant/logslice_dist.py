@@ -7,7 +7,7 @@ from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.util import constants
 from pm4py.algo.discovery.dfg.versions import native
 import pandas as pd
-import filter_subsets
+from trace_cluster import filter_subsets
 from trace_cluster.variant import act_dist_calc
 import cluster
 import time

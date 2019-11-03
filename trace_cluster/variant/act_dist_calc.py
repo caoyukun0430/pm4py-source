@@ -1,10 +1,10 @@
-import filter_subsets
+from trace_cluster import filter_subsets
 import pandas as pd
 import numpy as np
-from IPython.display import display
 from collections import Counter
 from scipy.spatial.distance import pdist
-
+from pm4py.objects.log.importer.xes import factory as xes_importer
+from pm4py.algo.filtering.log.attributes import attributes_filter
 
 def occu_var_act(var_list):
     '''
@@ -483,6 +483,146 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
         #print(max_freq, max_per_var)
         #print(min_freq, min_per_var)
         dist = (np.sum(max_per_var) + np.sum(min_per_var)) / (np.sum(max_freq) + np.sum(min_freq))
+
+    # print(index_rec)
+    #print(dist_matrix)
+    # print(max_per_var)
+    # print(max_freq)
+
+    return dist
+
+
+def act_sim_percent_avg(log1, log2, percent_1, percent_2):
+    '''
+
+    this function compare the activity similarity between two sublogs via the two lists of variants.
+    :param var_list_1: lists of variants in sublog 1
+    :param var_list_2: lists of variants in sublog 2
+    :param freq_thres: same as sublog2df()
+    :param log1: input sublog1 of sublog2df(), which must correspond to var_list_1
+    :param log2: input sublog2 of sublog2df(), which must correspond to var_list_2
+    :return: the distance matrix between 2 sublogs in which each element is the distance between two variants.
+    '''
+
+    (dataframe_1, var_list_1) = filter_subsets.sublog_percent(log1, percent_1)
+    (dataframe_2, var_list_2) = filter_subsets.sublog_percent(log2, percent_2)
+
+    if len(var_list_1) >= len(var_list_2):
+        max_len = len(var_list_1)
+        min_len = len(var_list_2)
+        max_var = var_list_1
+        min_var = var_list_2
+        var_count_max = dataframe_1['count']
+        var_count_min = dataframe_2['count']
+    else:
+        max_len = len(var_list_2)
+        min_len = len(var_list_1)
+        max_var = var_list_2
+        min_var = var_list_1
+        var_count_max = dataframe_2['count']
+        var_count_min = dataframe_1['count']
+
+    #print("list1:", max_len)
+    #print("list2:", min_len)
+
+    # print(dataframe_1)
+    # print(dataframe_2)
+    dist_matrix = np.zeros((max_len, min_len))
+    col_sum = np.zeros(max_len)
+
+    for i in range(max_len):
+        dist_vec = np.zeros(min_len)
+        df_1 = occu_var_act(max_var[i])
+        for j in range(min_len):
+            df_2 = occu_var_act(min_var[j])
+            df = pd.merge(df_1, df_2, how='outer', on='var').fillna(0)
+            #print([i,j,df])
+            # cosine similarity is used to calculate trace similarity
+            dist_vec[j] = (pdist(np.array([df['freq_x'].values, df['freq_y'].values]), 'cosine')[0])
+            # print([i, j, df, dist_vec[j]])
+            col_sum[i] += dist_vec[j] * var_count_max.iloc[i] * var_count_min.iloc[j]
+            dist_matrix[i][j] = dist_vec[j]
+
+
+    vmax_vec = (var_count_max.values).reshape(-1, 1)
+    #print(vmax_vec)
+    vmin_vec = (var_count_min.values).reshape(1, -1)
+    #print(vmin_vec)
+    vec_sum = np.sum(np.dot(vmax_vec, vmin_vec))
+    # dist = np.sum(dist_matrix) / vec_sum
+    dist = np.sum(col_sum) / vec_sum
+
+    #print(dist_matrix)
+
+    # print(index_rec)
+    #print(dist_matrix)
+    # print(max_per_var)
+    # print(max_freq)
+
+    return dist
+
+def act_sim_percent_avg_actset(log1, log2, percent_1, percent_2,actset):
+    '''
+
+    this function compare the activity similarity between two sublogs via the two lists of variants.
+    :param var_list_1: lists of variants in sublog 1
+    :param var_list_2: lists of variants in sublog 2
+    :param freq_thres: same as sublog2df()
+    :param log1: input sublog1 of sublog2df(), which must correspond to var_list_1
+    :param log2: input sublog2 of sublog2df(), which must correspond to var_list_2
+    :return: the distance matrix between 2 sublogs in which each element is the distance between two variants.
+    '''
+
+    (dataframe_1, var_list_1) = filter_subsets.sublog_percent(log1, percent_1)
+    (dataframe_2, var_list_2) = filter_subsets.sublog_percent(log2, percent_2)
+
+    if len(var_list_1) >= len(var_list_2):
+        max_len = len(var_list_1)
+        min_len = len(var_list_2)
+        max_var = var_list_1
+        min_var = var_list_2
+        var_count_max = dataframe_1['count']
+        var_count_min = dataframe_2['count']
+    else:
+        max_len = len(var_list_2)
+        min_len = len(var_list_1)
+        max_var = var_list_2
+        min_var = var_list_1
+        var_count_max = dataframe_2['count']
+        var_count_min = dataframe_1['count']
+
+    #print("list1:", max_len)
+    #print("list2:", min_len)
+
+    #print((var_count_max))
+    #print((var_count_min))
+    dist_matrix = np.zeros((max_len, min_len))
+    col_sum = np.zeros(max_len)
+
+    for i in range(max_len):
+        dist_vec = np.zeros(min_len)
+        df_1 = occu_var_act(max_var[i])
+        df_1 = pd.merge(actset['var'], df_1, how='outer', on='var').fillna(0)
+        print("df1",df_1)
+        for j in range(min_len):
+            df_2 = occu_var_act(min_var[j])
+            df = pd.merge(df_1, df_2, how='outer', on='var').fillna(0)
+            print([i,j,df])
+            # cosine similarity is used to calculate trace similarity
+            dist_vec[j] = (pdist(np.array([df['freq_x'].values, df['freq_y'].values]), 'cosine')[0])
+            col_sum[i] += dist_vec[j] * var_count_max.iloc[i] * var_count_min.iloc[j]
+            dist_matrix[i][j] = dist_vec[j]
+
+
+    vmax_vec = (var_count_max.values).reshape(-1, 1)
+    #print(vmax_vec)
+    vmin_vec = (var_count_min.values).reshape(1, -1)
+    #print(vmin_vec)
+    vec_sum = np.sum(np.dot(vmax_vec, vmin_vec))
+    # dist = np.sum(dist_matrix) / vec_sum
+    dist = np.sum(col_sum) / vec_sum
+
+    #print(dist_matrix)
 
     # print(index_rec)
     #print(dist_matrix)

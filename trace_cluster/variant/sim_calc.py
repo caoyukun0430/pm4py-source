@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import time
 from trace_cluster.variant import act_dist_calc, suc_dist_calc
-import filter_subsets
+from trace_cluster import filter_subsets
 from pm4py.util import constants
 from scipy.spatial.distance import pdist
 from pm4py.objects.log.importer.xes import factory as xes_importer

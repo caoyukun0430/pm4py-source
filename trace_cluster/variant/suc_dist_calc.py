@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
-import filter_subsets
+from trace_cluster import filter_subsets
 from scipy.spatial.distance import pdist
 from collections import Counter
 from pm4py.objects.log.importer.xes import factory as xes_importer
@@ -353,6 +353,76 @@ def suc_sim_percent(log1, log2, percent_1, percent_2):
     # print(max_freq)
 
     return dist
+
+
+def suc_sim_percent_avg(log1, log2, percent_1, percent_2):
+    '''
+
+    this function compare the activity similarity between two sublogs via the two lists of variants.
+    :param var_list_1: lists of variants in sublog 1
+    :param var_list_2: lists of variants in sublog 2
+    :param freq_thres: same as sublog2df()
+    :param log1: input sublog1 of sublog2df(), which must correspond to var_list_1
+    :param log2: input sublog2 of sublog2df(), which must correspond to var_list_2
+    :return: the distance matrix between 2 sublogs in which each element is the distance between two variants.
+    '''
+
+    (dataframe_1, var_list_1) = filter_subsets.sublog_percent(log1, percent_1)
+    (dataframe_2, var_list_2) = filter_subsets.sublog_percent(log2, percent_2)
+
+    if len(var_list_1) >= len(var_list_2):
+        max_len = len(var_list_1)
+        min_len = len(var_list_2)
+        max_var = var_list_1
+        min_var = var_list_2
+        var_count_max = dataframe_1['count']
+        var_count_min = dataframe_2['count']
+    else:
+        max_len = len(var_list_2)
+        min_len = len(var_list_1)
+        max_var = var_list_2
+        min_var = var_list_1
+        var_count_max = dataframe_2['count']
+        var_count_min = dataframe_1['count']
+    #print("list1:",len(max_var))
+    #print("list2:",len(min_var))
+
+    # print(len(var_count_max))
+    # print(len(var_count_min))
+    dist_matrix = np.zeros((max_len, min_len))
+    col_sum = np.zeros(max_len)
+
+    for i in range(max_len):
+        dist_vec = np.zeros(min_len)
+        df_1 = occu_var_suc(max_var[i], parameters={"binarize": False})
+        for j in range(min_len):
+            df_2 = occu_var_suc(min_var[j], parameters={"binarize": False})
+            df = pd.merge(df_1, df_2, how='outer', on='direct_suc').fillna(0)
+            # cosine similarity is used to calculate trace similarity
+            dist_vec[j] = (pdist(np.array([df['freq_x'].values, df['freq_y'].values]), 'cosine')[0])
+            # print([i, j, df, dist_vec[j]])
+            dist_matrix[i][j] = dist_vec[j]
+            col_sum[i] += dist_vec[j] * var_count_max.iloc[i] * var_count_min.iloc[j]
+            # dist_matrix[i][j] = innerprod / (sqrt_1 * sqrt_2)
+
+
+    # print(max_freq)
+    # single linkage
+    vmax_vec = (var_count_max.values).reshape(-1, 1)
+    #print(vmax_vec)
+    vmin_vec = (var_count_min.values).reshape(1, -1)
+    #print(vmin_vec)
+    vec_sum = np.sum(np.dot(vmax_vec, vmin_vec))
+    # dist = np.sum(dist_matrix) / vec_sum
+    dist = np.sum(col_sum) / vec_sum
+
+    # print(index_rec)
+    #print(dist_matrix)
+    # print(max_per_var)
+    # print(max_freq)
+
+    return dist
+
 
 
 if __name__ == "__main__":
