@@ -5,6 +5,7 @@ import scipy.spatial
 import scipy.cluster
 import numpy as np
 import json
+import sys
 import time
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
@@ -175,7 +176,7 @@ def get_dendrogram_svg(log, parameters=None):
     # plt.show()
 
 
-def clusteredlog(Z, maxclust, list_of_vals, log, TYPE):
+def clusteredlog(Z, maxclust, list_of_vals, log,METHOD, ATTR_NAME):
     clu_index = fcluster(Z, maxclust, criterion='maxclust')
     clu_index = dict(zip(list_of_vals, clu_index))
     clu_list_log = []
@@ -184,17 +185,28 @@ def clusteredlog(Z, maxclust, list_of_vals, log, TYPE):
         temp = [key for key, value in clu_index.items() if value == i + 1]
         print([i, temp])
         clu_list.append(temp)
-        logtemp = logslice(log, temp, TYPE)
+        logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
-        filename = 'log' + '_' + str(maxclust) + '_' + str(i) + '_' + TYPE + '.xes'
+        filename = 'log' + '_' + str(maxclust) + '_' + str(i) + '_' + METHOD +ATTR_NAME + '.xes'
         xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
 
 if __name__ == "__main__":
 
-    log = xes_importer.apply(
-        "D:\\Sisc\\19SS\\thesis\\Dataset\\document_logs\\Control summary.xes")
+
+    if ((type(sys.argv[1]) ==str) and (type(sys.argv[2]) ==str) and (type(sys.argv[3]) ==str)):
+        print("Allowed to run!")
+    else:
+        print("ERROR!!")
+
+
+    LOG_PATH = str(sys.argv[1])
+    ATTR_NAME = str(sys.argv[2])
+    METHOD = str(sys.argv[3])
+
+
+    log = xes_importer.apply(LOG_PATH)
 
     # sublog = xes_importer.apply(
     #     "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\sublog_598.xes")
@@ -203,12 +215,12 @@ if __name__ == "__main__":
 
     percent = 1
     alpha = 0.5
-    attr_name = 'amount_applied0'
-    TYPE = 'DMM' + attr_name
+    # ATTR_NAME = 'amount_applied0'
+    TYPE = METHOD + ATTR_NAME
 
     list_of_vals = []
     list_log = []
-    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, attr_name)
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
 
     list_of_vals_keys = list(list_of_vals_dict.keys())
     for i in range(len(list_of_vals_keys)):
@@ -216,32 +228,34 @@ if __name__ == "__main__":
 
     print(list_of_vals)
     for i in range(len(list_of_vals)):
-        logsample = log2sublog(log, list_of_vals[i], attr_name)
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
         list_log.append(logsample)
     # print(list_log)
 
     # DFG test
     start = time.time()
-    y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
-    # y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
+    if METHOD == 'dfg':
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+    elif METHOD == 'DMM':
+        y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
     print(y)
     Z = linkage(y, method='average')
     print(Z)
 
     dn = dendrogram(Z, labels=np.array(list_of_vals))
     # plt.title('Hierarchical Clustering Dendrogram')
-    plt.xlabel(attr_name)
+    plt.xlabel(ATTR_NAME)
     plt.ylabel('Distance')
     plt.savefig('cluster_wupdate' + '_' + TYPE + '.svg')
     plt.show()
 
-    # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, TYPE)
-    # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,TYPE)
+    # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
+    # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,METHOD, ATTR_NAME)
     #
-    # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,TYPE)
-    # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,TYPE)
-    # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,TYPE)
-    # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,TYPE)
+    # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals,METHOD, ATTR_NAME)
 
     plot_clu = 7
     plot_fit = dict()
@@ -263,7 +277,7 @@ if __name__ == "__main__":
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
         else:
-            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, attr_name)
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log,METHOD, ATTR_NAME)
             clu_list_dict[str(i)] = clu_list
             length_li = []
             fit_li = []
@@ -390,6 +404,23 @@ if __name__ == "__main__":
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
     plt.savefig('f1_boxplot' + '_' + TYPE + '.svg')
+    plt.show()
+
+    #rescale to 0-1
+    fig4 = plt.figure()
+    plot_box["2"] = plot_box["1"]
+
+    data = pd.DataFrame(plot_box)
+    print(data)
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    data.boxplot(sym='o')
+
+    plt.ylim(np.min(0, 1))
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='x')
+    plt.savefig('f1_boxplot_sca' + '_' + TYPE + '.svg')
     plt.show()
 
     end = time.time()
@@ -577,7 +608,7 @@ if __name__ == "__main__":
         list_of_vals.append(list_of_vals_keys[i])
 
     print(list_of_vals)
-    
+
 
     for i in range(len(list_of_vals)):
         logsample = log2sublog(mergedlog, list_of_vals[i])
@@ -601,7 +632,7 @@ if __name__ == "__main__":
     print(d3Dendro["children"][0])
     d3Dendro=d3Dendro["children"][0]
     d3Dendro["name"] = 'root'
-    
+
     json.dump(d3Dendro, open("d3-dendrogram.json", "w"), sort_keys=True)
 
     plt.figure(figsize=(10, 8))
