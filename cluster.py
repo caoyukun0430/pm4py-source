@@ -2,7 +2,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
 from scipy.spatial.distance import squareform
-import filter_subsets
+from trace_cluster import filter_subsets
+
+# from trace_cluster.filter_subsets import apply_trace_attributes
+# from trace_cluster.filter_subsets import sublog2varlist
+
+# import trace_cluster.filter_subsets
+# trace_cluster.filter_subset.apply_trace_attributes()
+#
+# from trace_cluster.filter_subsets import apply_trace_attributes
+# apply_trace_attributes()
+
 from trace_cluster.variant import sim_calc
 from pm4py.util import constants
 from pm4py.objects.log.importer.xes import factory as xes_importer
