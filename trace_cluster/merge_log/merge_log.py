@@ -235,9 +235,14 @@ if __name__ == "__main__":
     # DFG test
     start = time.time()
     if METHOD == 'dfg':
+        print("dfg is using!")
         y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
     elif METHOD == 'DMM':
+        print("DMM is using!")
         y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
+    elif METHOD =='avg':
+        print("avg is using!")
+        y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
     print(y)
     Z = linkage(y, method='average')
     print(Z)
