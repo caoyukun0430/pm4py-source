@@ -26,7 +26,7 @@ VERSION_DIJKSTRA_HEU_A_STAR = 'dijkstra_heu_a_star'
 VERSION_DIJKSTRA_NO_HEURISTICS = 'dijkstra_no_heuristics'
 
 
-DEFAULT_VARIANT = VERSION_STATE_EQUATION_A_STAR
+DEFAULT_VARIANT = VERSION_DIJKSTRA_NO_HEURISTICS
 
 VERSIONS = {VERSION_STATE_EQUATION_A_STAR: versions.state_equation_a_star.apply, VERSION_DIJKSTRA_HEU_A_STAR: versions.dijkstra_heu_a_star.apply, VERSION_DIJKSTRA_NO_HEURISTICS: versions.dijkstra_no_heuristics.apply}
 VERSIONS_COST = {VERSION_STATE_EQUATION_A_STAR: versions.state_equation_a_star.get_best_worst_cost, VERSION_DIJKSTRA_HEU_A_STAR: versions.dijkstra_heu_a_star.get_best_worst_cost, VERSION_DIJKSTRA_NO_HEURISTICS: versions.dijkstra_no_heuristics.get_best_worst_cost}
