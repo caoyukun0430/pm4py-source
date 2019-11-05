@@ -8,6 +8,7 @@ from pm4py.objects.log.util.xes import DEFAULT_TIMESTAMP_KEY
 from pm4py.util.constants import PARAMETER_CONSTANT_ACTIVITY_KEY
 from pm4py.util.constants import PARAMETER_CONSTANT_ATTRIBUTE_KEY
 from pm4py.util.constants import PARAMETER_CONSTANT_CASEID_KEY
+from pm4py.util.constants import PARAM_MOST_COMMON_VARIANT
 
 
 def apply_numeric_events(df, int1, int2, parameters=None):
@@ -72,7 +73,19 @@ def apply_numeric(df, int1, int2, parameters=None):
     case_id_glue = parameters[
         PARAMETER_CONSTANT_CASEID_KEY] if PARAMETER_CONSTANT_CASEID_KEY in parameters else CASE_CONCEPT_NAME
     positive = parameters["positive"] if "positive" in parameters else True
+    # stream_filter_key is helpful to filter on cases containing an event with an attribute
+    # in the specified value set, but such events shall have an activity in particular.
+    stream_filter_key1 = parameters["stream_filter_key1"] if "stream_filter_key1" in parameters else None
+    stream_filter_value1 = parameters["stream_filter_value1"] if "stream_filter_value1" in parameters else None
+    stream_filter_key2 = parameters["stream_filter_key2"] if "stream_filter_key2" in parameters else None
+    stream_filter_value2 = parameters["stream_filter_value2"] if "stream_filter_value2" in parameters else None
+
     filtered_df_by_ev = df[(df[attribute_key] >= int1) & (df[attribute_key] <= int2)]
+    if stream_filter_key1 is not None:
+        filtered_df_by_ev = filtered_df_by_ev[filtered_df_by_ev[stream_filter_key1] == stream_filter_value1]
+    if stream_filter_key2 is not None:
+        filtered_df_by_ev = filtered_df_by_ev[filtered_df_by_ev[stream_filter_key2] == stream_filter_value2]
+
     i1 = df.set_index(case_id_glue).index
     i2 = filtered_df_by_ev.set_index(case_id_glue).index
     if positive:
@@ -165,16 +178,25 @@ def apply_auto_filter(df, parameters=None):
     """
     if parameters is None:
         parameters = {}
+
+    most_common_variant = parameters[PARAM_MOST_COMMON_VARIANT] if PARAM_MOST_COMMON_VARIANT in parameters else None
+
+    if most_common_variant is None:
+        most_common_variant = []
+
     activity_key = parameters[
         PARAMETER_CONSTANT_ACTIVITY_KEY] if PARAMETER_CONSTANT_ACTIVITY_KEY in parameters else DEFAULT_NAME_KEY
     decreasing_factor = parameters[
         "decreasingFactor"] if "decreasingFactor" in parameters else DECREASING_FACTOR
 
-    activities = get_attribute_values(df, activity_key)
-    alist = attributes_common.get_sorted_attributes_list(activities)
-    thresh = attributes_common.get_attributes_threshold(alist, decreasing_factor)
+    if len(df) > 0:
+        activities = get_attribute_values(df, activity_key)
+        alist = attributes_common.get_sorted_attributes_list(activities)
+        thresh = attributes_common.get_attributes_threshold(alist, decreasing_factor)
 
-    return filter_df_keeping_activ_exc_thresh(df, thresh, activity_key=activity_key, act_count0=activities)
+        return filter_df_keeping_activ_exc_thresh(df, thresh, activity_key=activity_key, act_count0=activities,
+                                                  most_common_variant=most_common_variant)
+    return df
 
 
 def get_attribute_values(df, attribute_key, parameters=None):
@@ -237,7 +259,8 @@ def filter_df_on_attribute_values(df, values, case_id_glue="case:concept:name", 
     return df[~i1.isin(i2)]
 
 
-def filter_df_keeping_activ_exc_thresh(df, thresh, act_count0=None, activity_key="concept:name"):
+def filter_df_keeping_activ_exc_thresh(df, thresh, act_count0=None, activity_key="concept:name",
+                                       most_common_variant=None):
     """
     Filter a dataframe keeping activities exceeding the threshold
 
@@ -257,9 +280,12 @@ def filter_df_keeping_activ_exc_thresh(df, thresh, act_count0=None, activity_key
     df
         Filtered dataframe
     """
+    if most_common_variant is None:
+        most_common_variant = []
+
     if act_count0 is None:
         act_count0 = get_attribute_values(df, activity_key)
-    act_count = [k for k, v in act_count0.items() if v >= thresh]
+    act_count = [k for k, v in act_count0.items() if v >= thresh or k in most_common_variant]
     if len(act_count) < len(act_count0):
         df = df[df[activity_key].isin(act_count)]
     return df
@@ -320,7 +346,15 @@ def get_kde_numeric_attribute(df, attribute, parameters=None):
     y
         Y-axis values to represent
     """
-    values = list(df.dropna(subset=[attribute])[attribute])
+    if parameters is None:
+        parameters = {}
+
+    max_no_of_points_to_sample = parameters[
+        "max_no_of_points_to_sample"] if "max_no_of_points_to_sample" in parameters else 100000
+    red_df = df.dropna(subset=[attribute])
+    if len(red_df) > max_no_of_points_to_sample:
+        red_df = red_df.sample(n=max_no_of_points_to_sample)
+    values = list(red_df[attribute])
 
     return attributes_common.get_kde_numeric_attribute(values, parameters=parameters)
 
@@ -372,8 +406,15 @@ def get_kde_date_attribute(df, attribute=DEFAULT_TIMESTAMP_KEY, parameters=None)
     y
         Y-axis values to represent
     """
-    date_values = list(df.dropna(subset=[attribute])[attribute])
-
+    if parameters is None:
+        parameters = {}
+    
+    max_no_of_points_to_sample = parameters[
+        "max_no_of_points_to_sample"] if "max_no_of_points_to_sample" in parameters else 100000
+    red_df = df.dropna(subset=[attribute])
+    if len(red_df) > max_no_of_points_to_sample:
+        red_df = red_df.sample(n=max_no_of_points_to_sample)
+    date_values = list(red_df[attribute])
     return attributes_common.get_kde_date_attribute(date_values, parameters=parameters)
 
 

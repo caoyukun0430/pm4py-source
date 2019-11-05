@@ -6,7 +6,7 @@ from pm4py.objects.petri.petrinet import Marking
 
 FORMAT = "format"
 DEBUG = "debug"
-RANKDIR_LR = "set_rankdir_lr"
+RANKDIR = "set_rankdir"
 
 
 def apply(net, initial_marking, final_marking, decorations=None, parameters=None):
@@ -36,20 +36,20 @@ def apply(net, initial_marking, final_marking, decorations=None, parameters=None
         parameters = {}
     image_format = "png"
     debug = False
-    set_rankdir_lr = False
+    set_rankdir = None
     if FORMAT in parameters:
         image_format = parameters["format"]
     if DEBUG in parameters:
         debug = parameters["debug"]
-    if RANKDIR_LR in parameters:
-        set_rankdir_lr = parameters[RANKDIR_LR]
+    if RANKDIR in parameters:
+        set_rankdir = parameters[RANKDIR]
     return graphviz_visualization(net, image_format=image_format, initial_marking=initial_marking,
                                   final_marking=final_marking, decorations=decorations, debug=debug,
-                                  set_rankdir_lr=set_rankdir_lr)
+                                  set_rankdir=set_rankdir)
 
 
 def graphviz_visualization(net, image_format="png", initial_marking=None, final_marking=None, decorations=None,
-                           debug=False, set_rankdir_lr=False):
+                           debug=False, set_rankdir=None):
     """
     Provides visualization for the petrinet
 
@@ -67,7 +67,7 @@ def graphviz_visualization(net, image_format="png", initial_marking=None, final_
         Decorations of the Petri net (says how element must be presented)
     debug
         Enables debug mode
-    set_rankdir_lr
+    set_rankdir
         Sets the rankdir to LR (horizontal layout)
 
     Returns
@@ -84,7 +84,9 @@ def graphviz_visualization(net, image_format="png", initial_marking=None, final_
 
     filename = tempfile.NamedTemporaryFile(suffix='.gv')
     viz = Digraph(net.name, filename=filename.name, engine='dot', graph_attr={'bgcolor':'transparent'})
-    if set_rankdir_lr:
+    if set_rankdir:
+        viz.graph_attr['rankdir'] = set_rankdir
+    else:
         viz.graph_attr['rankdir'] = 'LR'
 
     # transitions
@@ -92,36 +94,36 @@ def graphviz_visualization(net, image_format="png", initial_marking=None, final_
     for t in net.transitions:
         if t.label is not None:
             if t in decorations and "label" in decorations[t] and "color" in decorations[t]:
-                viz.node(str(hash(t.name)), decorations[t]["label"], style='filled', fillcolor=decorations[t]["color"],
+                viz.node(str(id(t)), decorations[t]["label"], style='filled', fillcolor=decorations[t]["color"],
                          border='1')
             else:
-                viz.node(str(hash(t.name)), str(t.label))
+                viz.node(str(id(t)), str(t.label))
         else:
             if debug:
-                viz.node(str(hash(t.name)), str(t.name))
+                viz.node(str(id(t)), str(t.name))
             else:
-                viz.node(str(hash(t.name)), "", style='filled', fillcolor="black")
+                viz.node(str(id(t)), "", style='filled', fillcolor="black")
 
     # places
     viz.attr('node', shape='circle', fixedsize='true', width='0.75')
     for p in net.places:
         if p in initial_marking:
-            viz.node(str(hash(p.name)), str(initial_marking[p]), style='filled', fillcolor="green")
+            viz.node(str(id(p)), str(initial_marking[p]), style='filled', fillcolor="green")
         elif p in final_marking:
-            viz.node(str(hash(p.name)), "", style='filled', fillcolor="orange")
+            viz.node(str(id(p)), "", style='filled', fillcolor="orange")
         else:
             if debug:
-                viz.node(str(hash(p.name)), str(p.name))
+                viz.node(str(id(p)), str(p.name))
             else:
-                viz.node(str(hash(p.name)), "")
+                viz.node(str(id(p)), "")
 
     # arcs
     for a in net.arcs:
         if a in decorations:
-            viz.edge(str(hash(a.source.name)), str(hash(a.target.name)), label=decorations[a]["label"],
+            viz.edge(str(id(a.source)), str(id(a.target)), label=decorations[a]["label"],
                      penwidth=decorations[a]["penwidth"])
         else:
-            viz.edge(str(hash(a.source.name)), str(hash(a.target.name)))
+            viz.edge(str(id(a.source)), str(id(a.target)))
     viz.attr(overlap='false')
     viz.attr(fontsize='11')
 

@@ -1,8 +1,11 @@
 from copy import copy, deepcopy
+import time
+import random
 
 import networkx as nx
 
 from pm4py.objects import petri
+from pm4py.objects.log.log import Trace, Event
 from pm4py.objects.log.util import xes as xes_util
 from pm4py.objects.petri.check_soundness import check_petri_wfnet_and_soundness
 from pm4py.objects.petri.networkx_graph import create_networkx_directed_graph
@@ -14,11 +17,13 @@ def pre_set(elem):
         pre.add(a.source)
     return pre
 
+
 def post_set(elem):
     post = set()
     for a in elem.out_arcs:
         post.add(a.target)
     return post
+
 
 def remove_transition(net, trans):
     """
@@ -49,6 +54,30 @@ def remove_transition(net, trans):
             net.arcs.remove(arc)
         net.transitions.remove(trans)
     return net
+
+
+def add_place(net, name=None):
+    name = name if name is not None else 'p_' + str(len(net.places)) + '_' + str(time.time()) + str(random.randint(0, 10000))
+    p = petri.petrinet.PetriNet.Place(name=name)
+    net.places.add(p)
+    return p
+
+
+def add_transition(net, name=None, label=None):
+    name = name if name is not None else 't_' + str(len(net.transitions)) + '_' + str(time.time()) + str(random.randint(0, 10000))
+    t = petri.petrinet.PetriNet.Transition(name=name, label=label)
+    net.transitions.add(t)
+    return t
+
+
+def merge(trgt=None, nets=None):
+    trgt = trgt if trgt is not None else petri.petrinet.PetriNet()
+    nets = nets if nets is not None else list()
+    for net in nets:
+        trgt.transitions.update(net.transitions)
+        trgt.places.update(net.places)
+        trgt.arcs.update(net.arcs)
+    return trgt
 
 
 def remove_place(net, place):
@@ -137,7 +166,7 @@ def construct_trace_net(trace, trace_name_key=xes_util.DEFAULT_NAME_KEY, activit
 def construct_trace_net_cost_aware(trace, costs, trace_name_key=xes_util.DEFAULT_NAME_KEY,
                                    activity_key=xes_util.DEFAULT_NAME_KEY):
     """
-    Creates a trace net, i.e. a trace in Petri net form.
+    Creates a trace net, i.e. a trace in Petri net form mapping specific costs to transitions.
 
     Parameters
     ----------
@@ -148,7 +177,8 @@ def construct_trace_net_cost_aware(trace, costs, trace_name_key=xes_util.DEFAULT
 
     Returns
     -------
-    tuple: :class:`tuple` of the net, initial marking and the final marking
+    tuple: :class:`tuple` of the net, initial marking, final marking and map of costs
+
 
     """
     net = petri.petrinet.PetriNet(
@@ -167,10 +197,12 @@ def construct_trace_net_cost_aware(trace, costs, trace_name_key=xes_util.DEFAULT
     return net, petri.petrinet.Marking({place_map[0]: 1}), petri.petrinet.Marking({place_map[len(trace)]: 1}), cost_map
 
 
-def variants(net, initial_marking, final_marking):
+def acyclic_net_variants(net, initial_marking, final_marking):
     """
-    Given an acyclic workflow net, initial and final marking extracts a set of variants (list of event)
+    Given an acyclic accepting Petri net, initial and final marking extracts a set of variants (in form of traces)
     replayable on the net.
+    Warning: this function is based on a marking exploration. If the accepting Petri net contains loops, the method
+    will not work properly as it stops the search if a specific marking has already been encountered.
 
     Parameters
     ----------
@@ -180,23 +212,22 @@ def variants(net, initial_marking, final_marking):
 
     Returns
     -------
-    variants: :class:`list` List of variants replayable in the net.
+    variants: :class:`list` List of variants - in the form of Trace objects - obtainable executing the net
 
     """
-    active = [(initial_marking, [])]
+    active = [(initial_marking, Trace())]
     visited = []
-    this_variants = []
-    for i in range(10000000):
-        if not active:
-            break
+    variants = []
+    while active:
         curr_couple = active.pop(0)
         en_tr = petri.semantics.enabled_transitions(net, curr_couple[0])
         for t in en_tr:
-            next_activitylist = list(curr_couple[1])
-            next_activitylist.append(repr(t))
+            next_activitylist = deepcopy(curr_couple[1])
+            if t.label is not None:
+                next_activitylist.append(Event({'concept:name': repr(t)}))
             next_couple = (petri.semantics.execute(t, net, curr_couple[0]), next_activitylist)
             if hash(next_couple[0]) == hash(final_marking):
-                this_variants.append(next_couple[1])
+                variants.append(next_couple[1])
             else:
                 # If the next marking hash is not in visited, if the next marking+partial trace itself is
                 # not already in active and if the next marking+partial trace is different from the
@@ -206,7 +237,7 @@ def variants(net, initial_marking, final_marking):
                         hash(curr_couple[0]) != hash(next_couple[0]) or curr_couple[1] != next_couple[1]):
                     active.append(next_couple)
         visited.append(hash(curr_couple[0]))
-    return this_variants
+    return variants
 
 
 def get_transition_by_name(net, transition_name):
@@ -254,6 +285,74 @@ def get_cycles_petri_net_places(net):
             if el in inv_dictionary and type(inv_dictionary[el]) is petri.petrinet.PetriNet.Place:
                 cycles_places[-1].append(inv_dictionary[el])
     return cycles_places
+
+
+def get_cycles_petri_net_transitions(net):
+    """
+    Get the cycles of a Petri net (returning only list of transitions belonging to the cycle)
+
+    Parameters
+    -------------
+    net
+        Petri net
+
+    Returns
+    -------------
+    cycles
+        Cycles (transitions) of the Petri net
+    """
+    graph, inv_dictionary = create_networkx_directed_graph(net)
+    cycles = nx.simple_cycles(graph)
+    cycles_trans = []
+    for cycle in cycles:
+        cycles_trans.append([])
+        for el in cycle:
+            if el in inv_dictionary and type(inv_dictionary[el]) is petri.petrinet.PetriNet.Transition:
+                cycles_trans[-1].append(inv_dictionary[el])
+    return cycles_trans
+
+
+def decorate_places_preset_trans(net):
+    """
+    Decorate places with information useful for the replay
+
+    Parameters
+    -------------
+    net
+        Petri net
+    """
+    for place in net.places:
+        place.ass_trans = set()
+
+    for trans in net.transitions:
+        for place in trans.sub_marking:
+            place.ass_trans.add(trans)
+
+
+def decorate_transitions_prepostset(net):
+    """
+    Decorate transitions with sub and addition markings
+
+    Parameters
+    -------------
+    net
+        Petri net
+    """
+    from pm4py.objects.petri.petrinet import Marking
+    for trans in net.transitions:
+        sub_marking = Marking()
+        add_marking = Marking()
+
+        for arc in trans.in_arcs:
+            sub_marking[arc.source] = arc.weight
+            add_marking[arc.source] = -arc.weight
+        for arc in trans.out_arcs:
+            if arc.target in add_marking:
+                add_marking[arc.target] = arc.weight + add_marking[arc.target]
+            else:
+                add_marking[arc.target] = arc.weight
+        trans.sub_marking = sub_marking
+        trans.add_marking = add_marking
 
 
 def get_strongly_connected_subnets(net):

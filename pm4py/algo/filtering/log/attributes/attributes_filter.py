@@ -240,17 +240,30 @@ def apply_numeric(log, int1, int2, parameters=None):
         PARAMETER_CONSTANT_ATTRIBUTE_KEY] if PARAMETER_CONSTANT_ATTRIBUTE_KEY in parameters else DEFAULT_NAME_KEY
     case_key = parameters[
         PARAMETER_CONSTANT_CASEID_KEY] if PARAMETER_CONSTANT_CASEID_KEY in parameters else xes.DEFAULT_TRACEID_KEY
+    # stream_filter_key is helpful to filter on cases containing an event with an attribute
+    # in the specified value set, but such events shall have an activity in particular.
+    stream_filter_key1 = parameters["stream_filter_key1"] if "stream_filter_key1" in parameters else None
+    stream_filter_value1 = parameters["stream_filter_value1"] if "stream_filter_value1" in parameters else None
+    stream_filter_key2 = parameters["stream_filter_key2"] if "stream_filter_key2" in parameters else None
+    stream_filter_value2 = parameters["stream_filter_value2"] if "stream_filter_value2" in parameters else None
 
     positive = parameters["positive"] if "positive" in parameters else True
 
     stream = log_conv_fact.apply(log, variant=log_conv_fact.TO_EVENT_STREAM)
+    if stream_filter_key1 is not None:
+        stream = EventStream(
+            list(filter(lambda x: stream_filter_key1 in x and x[stream_filter_key1] == stream_filter_value1, stream)))
+    if stream_filter_key2 is not None:
+        stream = EventStream(
+            list(filter(lambda x: stream_filter_key2 in x and x[stream_filter_key2] == stream_filter_value2, stream)))
+
     if positive:
         stream = EventStream(list(filter(lambda x: attribute_key in x and int1 <= x[attribute_key] <= int2, stream)))
     else:
         stream = EventStream(
             list(filter(lambda x: attribute_key in x and (x[attribute_key] < int1 or x[attribute_key] > int2), stream)))
 
-    all_cases_ids = set(x["case:"+case_key] for x in stream)
+    all_cases_ids = set(x["case:" + case_key] for x in stream)
 
     filtered_log = EventLog()
 
@@ -422,7 +435,6 @@ def get_attribute_values(log, attribute_key, parameters=None):
     """
     if parameters is None:
         parameters = {}
-    str(parameters)
 
     attributes = {}
 
@@ -460,11 +472,13 @@ def filter_log_on_max_no_activities(log, max_no_activities=25, parameters=None):
     activity_key = parameters[
         PARAMETER_CONSTANT_ACTIVITY_KEY] if PARAMETER_CONSTANT_ACTIVITY_KEY in parameters else DEFAULT_NAME_KEY
     parameters[PARAMETER_CONSTANT_ATTRIBUTE_KEY] = activity_key
-    activities = sorted([(x, y) for x, y in get_attribute_values(log, activity_key).items()], key=lambda x: x[1],
-                        reverse=True)
-    activities = activities[:min(len(activities), max_no_activities)]
+    all_activities = sorted([(x, y) for x, y in get_attribute_values(log, activity_key).items()], key=lambda x: x[1],
+                            reverse=True)
+    activities = all_activities[:min(len(all_activities), max_no_activities)]
     activities = [x[0] for x in activities]
-    log = apply_events(log, activities, parameters=parameters)
+
+    if len(activities) < len(all_activities):
+        log = apply_events(log, activities, parameters=parameters)
     return log
 
 
@@ -488,7 +502,6 @@ def get_trace_attribute_values(log, attribute_key, parameters=None):
     """
     if parameters is None:
         parameters = {}
-    str(parameters)
 
     attributes = {}
 
@@ -579,14 +592,16 @@ def apply_auto_filter(log, variants=None, parameters=None):
 
     parameters_variants = {PARAMETER_CONSTANT_ATTRIBUTE_KEY: attribute_key,
                            PARAMETER_CONSTANT_ACTIVITY_KEY: attribute_key}
-    if variants is None:
-        variants = variants_filter.get_variants(log, parameters=parameters_variants)
-    vc = variants_filter.get_variants_sorted_by_count(variants)
-    attributes_values = get_attribute_values(log, attribute_key, parameters=parameters_variants)
-    alist = attributes_common.get_sorted_attributes_list(attributes_values)
-    thresh = attributes_common.get_attributes_threshold(alist, decreasing_factor)
-    filtered_log = filter_log_by_attributes_threshold(log, attributes_values, variants, vc, thresh, attribute_key)
-    return filtered_log
+    if len(log) > 0:
+        if variants is None:
+            variants = variants_filter.get_variants(log, parameters=parameters_variants)
+        vc = variants_filter.get_variants_sorted_by_count(variants)
+        attributes_values = get_attribute_values(log, attribute_key, parameters=parameters_variants)
+        alist = attributes_common.get_sorted_attributes_list(attributes_values)
+        thresh = attributes_common.get_attributes_threshold(alist, decreasing_factor)
+        filtered_log = filter_log_by_attributes_threshold(log, attributes_values, variants, vc, thresh, attribute_key)
+        return filtered_log
+    return log
 
 
 def get_kde_numeric_attribute(log, attribute, parameters=None):
