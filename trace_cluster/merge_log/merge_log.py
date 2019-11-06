@@ -7,6 +7,7 @@ import numpy as np
 import json
 import sys
 import time
+from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -191,6 +192,16 @@ def clusteredlog(Z, maxclust, list_of_vals, log,METHOD, ATTR_NAME):
         xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
+def get_fit_prec_hpc(log):
+    net, im, fm = inductive_miner.apply(log)
+    wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
+
+    fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+
+    precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+
+    return fitness,precision
+
 
 if __name__ == "__main__":
 
@@ -232,7 +243,7 @@ if __name__ == "__main__":
     for i in range(len(list_of_vals)):
         logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
         list_log.append(logsample)
-    print(list_log)
+    # print(list_log)
 
     # DFG test
     start = time.time()
@@ -248,13 +259,14 @@ if __name__ == "__main__":
     print(y)
     Z = linkage(y, method='average')
     print(Z)
+    end = time.time()
 
     dn = dendrogram(Z, labels=np.array(list_of_vals))
     # plt.title('Hierarchical Clustering Dendrogram')
     plt.xlabel(ATTR_NAME)
     plt.ylabel('Distance')
     plt.savefig('cluster_wupdate' + '_' + TYPE + '.svg')
-    plt.show()
+    # plt.show()
 
     # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
     # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,METHOD, ATTR_NAME)
@@ -264,404 +276,408 @@ if __name__ == "__main__":
     # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals,METHOD, ATTR_NAME)
     # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals,METHOD, ATTR_NAME)
 
-    plot_clu = 7
-    for i in range(2, plot_clu + 1):
-        clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-        length_li = []
-        for j in range(0, i):
-            length = len(clu_list_log[j])
-            length_li.append(length)
-        print(length_li)
-
     # plot_clu = 7
-    # plot_fit = dict()
-    # plot_prec = dict()
-    # plot_F1 = dict()
-    # plot_box = dict()
-    # clu_list_dict = dict()
-    # for i in range(1, plot_clu + 1):
-    #     if i == 1:
-    #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-    #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #                                        inductive_final_marking, variant="alignments")['averageFitness']
-    #
-    #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #                                             inductive_final_marking)
-    #         F1 = 2 * fitness * precision / (fitness + precision)
-    #         plot_fit[str(i)] = fitness
-    #         plot_prec[str(i)] = precision
-    #         plot_F1[str(i)] = F1
-    #         plot_box[str(i)] = pd.Series(F1)
-    #     else:
-    #         clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log,METHOD, ATTR_NAME)
-    #         clu_list_dict[str(i)] = clu_list
-    #         length_li = []
-    #         fit_li = []
-    #         prec_li = []
-    #         F1_li = []
-    #         for j in range(0, i):
-    #             length = len(clu_list_log[j])
-    #             inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-    #                 clu_list_log[j])
-    #             fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #                                            inductive_final_marking, variant="alignments")['averageFitness']
-    #             precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #                                                 inductive_final_marking)
-    #             F1 = 2 * fitness * precision / (fitness + precision)
-    #             # individual info for each sublog
-    #             length_li.append(length)
-    #             fit_li.append(fitness)
-    #             prec_li.append(precision)
-    #             F1_li.append(F1)
-    #         print(length_li)
-    #         print("fit", fit_li)
-    #         print("prec", prec_li)
-    #         plot_fit[str(i)] = np.average(fit_li, weights=length_li)
-    #         plot_prec[str(i)] = np.average(prec_li, weights=length_li)
-    #         plot_F1[str(i)] = np.average(F1_li, weights=length_li)
-    #         plot_box[str(i)] = pd.Series(F1_li)
-    #
-    # # print(plot_fit)
-    # # print(plot_prec)
-    # # print(plot_F1)
-    # # print(plot_box)
-    # # print(clu_list_dict)
-    #
-    # x_axis = range(1, plot_clu + 1)
-    #
-    # # plot fit&prec
-    # fig = plt.figure()
-    #
-    # ax1 = fig.add_subplot(111)
-    # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')  # 画图
-    # # ax1.set_ylim(0,1.02)
-    # ax1.set_ylabel('Fitness')
-    # ax1.set_xlabel('Num. of Cluster')
-    # ax1.set_xticks(x_axis)
-    # ax1.yaxis.label.set_color('r')
-    # for tl in ax1.get_yticklabels():
-    #     tl.set_color('r')
-    # ax2 = ax1.twinx()
-    #
-    # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-    #          label='Precision')  # 画图
-    # # ax2.set_ylim(0,1.02)
-    # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
-    # ax2.set_ylabel('Precision')
-    # ax2.yaxis.label.set_color('b')
-    # for tl in ax2.get_yticklabels():
-    #     tl.set_color('b')
-    # # plt.grid(axis='x')
-    # fig.savefig('fitprec' + '_' + TYPE + '.svg')
-    # fig.show()
-    #
-    # # plot F1
-    # fig2 = plt.figure()
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
-    # # plt.ylim(0,1)
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # # plt.grid(axis='x')
-    # plt.savefig('f1' + '_' + TYPE + '.svg')
-    # plt.show()
-    #
-    # # rescale to 0-1
-    # # plot fit&prec
-    # fig = plt.figure()
-    #
-    # ax1 = fig.add_subplot(111)
-    # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')  # 画图
-    # ax1.set_ylim(0, 1.04)
-    # ax1.set_ylabel('Fitness')
-    # ax1.set_xlabel('Num. of Cluster')
-    # ax1.set_xticks(x_axis)
-    # ax1.yaxis.label.set_color('r')
-    # for tl in ax1.get_yticklabels():
-    #     tl.set_color('r')
-    # ax2 = ax1.twinx()
-    #
-    # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-    #          label='Precision')  # 画图
-    # ax2.set_ylim(0, 1.04)
-    # # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
-    # ax2.set_ylabel('Precision')
-    # ax2.yaxis.label.set_color('b')
-    # for tl in ax2.get_yticklabels():
-    #     tl.set_color('b')
-    # # plt.grid(axis='x')
-    # fig.savefig('fitprec_sca' + '_' + TYPE + '.svg')
-    # fig.show()
-    #
-    # # plot F1
-    # fig2 = plt.figure()
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.xticks(x_axis)
-    # # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
-    # plt.ylim(0, 1)
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # # plt.grid(axis='x')
-    # plt.savefig('f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-    #
-    # # plot boxplot
-    # fig3 = plt.figure()
-    # plot_box["2"] = plot_box["1"]
-    #
-    # data = pd.DataFrame(plot_box)
-    # print(data)
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.xticks(x_axis)
-    # data.boxplot(sym='o')
-    #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1)
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
+    # for i in range(2, plot_clu + 1):
+    #     clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+    #     length_li = []
+    #     for j in range(0, i):
+    #         length = len(clu_list_log[j])
+    #         length_li.append(length)
+    #     print(length_li)
+
+    plot_clu = 7
+    plot_fit = dict()
+    plot_prec = dict()
+    plot_F1 = dict()
+    plot_box = dict()
+    clu_list_dict = dict()
+    for i in range(1, plot_clu + 1):
+        if i == 1:
+            fitness,precision = get_fit_prec_hpc(log)
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
+            F1 = 2 * fitness * precision / (fitness + precision)
+            print("fit", fitness)
+            print("prec", precision)
+            plot_fit[str(i)] = fitness
+            plot_prec[str(i)] = precision
+            plot_F1[str(i)] = F1
+            plot_box[str(i)] = pd.Series(F1)
+        else:
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log,METHOD, ATTR_NAME)
+            clu_list_dict[str(i)] = clu_list
+            length_li = []
+            fit_li = []
+            prec_li = []
+            F1_li = []
+            for j in range(0, i):
+                length = len(clu_list_log[j])
+                # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                #     clu_list_log[j])
+                # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                #                                inductive_final_marking, variant="alignments")['averageFitness']
+                # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                #                                     inductive_final_marking)
+                fitness, precision = get_fit_prec_hpc(clu_list_log[j])
+                F1 = 2 * fitness * precision / (fitness + precision)
+                # individual info for each sublog
+                length_li.append(length)
+                fit_li.append(fitness)
+                prec_li.append(precision)
+                F1_li.append(F1)
+            print(length_li)
+            print("fit", fit_li)
+            print("prec", prec_li)
+            plot_fit[str(i)] = np.average(fit_li, weights=length_li)
+            plot_prec[str(i)] = np.average(prec_li, weights=length_li)
+            plot_F1[str(i)] = np.average(F1_li, weights=length_li)
+            plot_box[str(i)] = pd.Series(F1_li)
+
+    # print(plot_fit)
+    # print(plot_prec)
+    # print(plot_F1)
+    # print(plot_box)
+    # print(clu_list_dict)
+
+    x_axis = range(1, plot_clu + 1)
+
+    # plot fit&prec
+    fig = plt.figure()
+
+    ax1 = fig.add_subplot(111)
+    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')  # 画图
+    # ax1.set_ylim(0,1.02)
+    ax1.set_ylabel('Fitness')
+    ax1.set_xlabel('Num. of Cluster')
+    ax1.set_xticks(x_axis)
+    ax1.yaxis.label.set_color('r')
+    for tl in ax1.get_yticklabels():
+        tl.set_color('r')
+    ax2 = ax1.twinx()
+
+    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+             label='Precision')  # 画图
+    # ax2.set_ylim(0,1.02)
+    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    ax2.set_ylabel('Precision')
+    ax2.yaxis.label.set_color('b')
+    for tl in ax2.get_yticklabels():
+        tl.set_color('b')
     # plt.grid(axis='x')
-    # plt.savefig('f1_boxplot' + '_' + TYPE + '.svg')
-    # plt.show()
-    #
-    # #rescale to 0-1
-    # fig4 = plt.figure()
-    # plot_box["2"] = plot_box["1"]
-    #
-    # data = pd.DataFrame(plot_box)
-    # print(data)
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.xticks(x_axis)
-    # data.boxplot(sym='o')
-    #
-    # plt.ylim(np.min(0, 1))
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
+    fig.savefig('fitprec' + '_' + TYPE + '.svg')
+    # fig.show()
+
+    # plot F1
+    fig2 = plt.figure()
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
+    # plt.ylim(0,1)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    # plt.savefig('f1_boxplot_sca' + '_' + TYPE + '.svg')
+    plt.savefig('f1' + '_' + TYPE + '.svg')
     # plt.show()
-    #
-    # end = time.time()
-    # print("woupdate", end - start)
-    # # print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
-    # # plt.figure(figsize=(10, 8))
-    # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # dn = dendrogram(Z)
-    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Credit Score')
-    # # plt.ylabel('Distance')
-    # # plt.savefig('cluster_dfg_woupdate.svg')
-    # # plt.show()
-    # #
-    # # dist_mat = squareform(y)
-    # # Z = linkage_avg.linkage_dfg_update(list_log, dist_mat,alpha,percent)
-    # # print("Zupdate2", Z)
-    # # end = time.time()
-    # # print("wupdate", end - start)
-    # # plt.figure(figsize=(10, 8))
-    # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # dn = dendrogram(Z)
-    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Credit Score')
-    # # plt.ylabel('Distance')
-    # # plt.savefig('cluster_dfg_wupdate.svg')
-    # # plt.show()
-    #
-    # # list1 = fcluster(Z, 2, criterion='maxclust')
-    # # list2 = fcluster(Z, 3, criterion='maxclust')
-    # # list3 = fcluster(Z, 6, criterion='maxclust')
-    # # list1=dict(zip(list_of_vals, list1))
-    # # list2 = dict(zip(list_of_vals, list2))
-    # # list3 = dict(zip(list_of_vals, list3))
-    # # print([list1,list2,list3])
-    # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, 'dfg')
-    # # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,'dfg')
-    # #
-    # # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,'dfg')
-    # # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,'dfg')
-    # # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,'dfg')
-    # # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,'dfg')
-    #
-    # # for i in range(k):
-    # #     filename = 'log'+'_'+str(k)+'_'+str(i)+'.xes'
-    # #     xes_exporter.export_log(clu_list_log[i], filename)
-    #
-    # # log1 = logslice(log, [0])
-    # # print(len(log1))
-    # # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log1)
-    # # fitness_inductive = replay_factory.apply(log, inductive_petri, inductive_initial_marking, inductive_final_marking)
-    # # print("fitness_inductive=", fitness_inductive)
-    # #
-    # # gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking)
-    # # pn_vis_factory.save(gviz,"ind.png")
-    # #
-    # # precision_inductive = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    # #                                               inductive_final_marking)
-    # # print("precision_inductive=", precision_inductive)
-    # # precision_inductive = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    # #                                               inductive_final_marking)
-    # # print("precision_inductive=", precision_inductive)
-    #
-    # # plt.figure(figsize=(10, 8))
-    # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # dn = dendrogram(Z)
-    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Credit Score')
-    # # plt.ylabel('Distance')
-    # # plt.savefig('cluster_dfg.svg')
-    # # plt.show()
-    #
-    # # DMM test
-    # # y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
-    # # Z = linkage(y, method='average')
-    # # print(Z)
-    # # end = time.time()
-    # # print("DMMwoupdate",end - start)
-    # # plt.figure(figsize=(10, 8))
-    # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # dn = dendrogram(Z)
-    # # dn = dendrogram(Z, labels=np.array(list_of_vals))
-    # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Credit Score')
-    # # plt.ylabel('Distance')
-    # # plt.savefig('cluster_DMM_woupdate.svg')
-    # # plt.show()
-    #
-    # # dist_mat = squareform(y)
-    # # Z = linkage_avg.linkage_DMM_update(list_log, dist_mat, alpha, percent)
-    # # print("Zupdate2", Z)
-    # # end = time.time()
-    # # print("DMMwupdate",end - start)
-    # # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, 'DMM')
-    # # # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,'DMM')
-    # # #
-    # # # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,'DMM')
-    # # # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,'DMM')
-    # # # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,'DMM')
-    # # # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,'DMM')
-    # # plt.figure(figsize=(10, 8))
-    # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # dn = dendrogram(Z)
-    # # dn = dendrogram(Z, labels=np.array(list_of_vals))
-    # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Credit Score')
-    # # plt.ylabel('Distance')
-    # # plt.savefig('cluster_DMM_wupdate.svg')
-    # # plt.show()
-    #
-    # # avg test
-    # # start = time.time()
-    # # y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
-    # # Z = linkage(y, method='average')
-    # # # print(Z)
-    # # end = time.time()
-    # # print("avgwupdate", end - start)
-    # # # print("avgwoupdate",end - start)
-    # # # plt.figure(figsize=(10, 8))
-    # # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # # dn = dendrogram(Z)
-    # # # dn = dendrogram(Z, labels=np.array(list_of_vals))
-    # # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # # plt.xlabel('Credit Score')
-    # # # plt.ylabel('Distance')
-    # # # plt.savefig('cluster_avg_woupdate.svg')
-    # # # plt.show()
-    # #
-    # # start2 = time.time()
-    # # y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
-    # # dist_mat = squareform(y)
-    # # Z = linkage_avg.linkage_avg(list_log, dist_mat)
-    # # print("Zupdate2", Z)
-    # # end2 = time.time()
-    # # print("avgwpdate", end2 - start2)
-    # #
-    # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, 'avg')
-    # # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,'avg')
-    # #
-    # # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,'avg')
-    # # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,'avg')
-    # # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,'avg')
-    # # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,'avg')
-    #
-    # # plt.figure(figsize=(10, 8))
-    # # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # # # dn = dendrogram(Z)
-    # # dn = dendrogram(Z, labels=np.array(list_of_vals))
-    # # # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Credit Score')
-    # # plt.ylabel('Distance')
-    # # plt.savefig('cluster_avg_wupdate.svg')
-    # # plt.show()
-    #
-    # # dist_act = act_dist_calc.act_sim_percent_avg(list_log[4], list_log[8], percent, percent)
-    # # dist_suc = suc_dist_calc.suc_sim_percent_avg(list_log[4], list_log[8], percent, percent)
-    # # print([dist_act, dist_suc])
-    #
-    # # percent = 1
-    # # alpha = 0.5
-    # # (loglist, mergedlog) = merge_log("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 5)
-    # #
-    # # #get_dendrogram_svg(mergedlog,parameters={"cluster_avg":True})
-    # # #tr=(attributes_filter.get_trace_attribute_values(mergedlog,'concept:name'))
-    # # #print(len(tr))
-    # #
-    # # xes_exporter.export_log(mergedlog, "mergedlog_all.xes")
-    #
-    # # ta=(attributes_filter.get_all_trace_attributes_from_log(mergedlog))
-    # # ea=(attributes_filter.get_all_event_attributes_from_log(mergedlog))
-    # # print((ta))
-    # # print((ea))
-    # '''
-    # list_of_vals = []
-    # list_log = []
-    # list_of_vals_dict = attributes_filter.get_trace_attribute_values(mergedlog, 'index')
-    # print(list_of_vals_dict)
-    # #print(list_of_vals_dict.keys())
-    # list_of_vals_keys = list(list_of_vals_dict.keys())
-    # #list_of_vals_keys = ['1', '2', '4', '5', '7', '8']
-    # for i in range(len(list_of_vals_keys)):
-    #     list_of_vals.append(list_of_vals_keys[i])
-    #
-    # print(list_of_vals)
-    #
-    #
-    # for i in range(len(list_of_vals)):
-    #     logsample = log2sublog(mergedlog, list_of_vals[i])
-    #     list_log.append(logsample)
-    #     # print(filter_subsets.sublog_percent(logsample, 1))
-    #
-    # id2name = dict(zip(range(len(list_of_vals)), list_of_vals))
-    # print(id2name)
-    #
-    # y = fake_log_eval.eval_avg_leven(loglist, percent, alpha)
-    # Z = linkage(y, method='average')
-    # #print(Z)
-    # #print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
-    # T = to_tree(Z, rd=False)
-    # d3Dendro = dict(children=[], name="Root1")
-    # add_node(T, d3Dendro)
-    # print(d3Dendro["children"][0])
-    #
-    # tr = label_tree(d3Dendro["children"][0],id2name)
-    # #print(d3Dendro["name"])
-    # print(d3Dendro["children"][0])
-    # d3Dendro=d3Dendro["children"][0]
-    # d3Dendro["name"] = 'root'
-    #
-    # json.dump(d3Dendro, open("d3-dendrogram.json", "w"), sort_keys=True)
-    #
+
+    # rescale to 0-1
+    # plot fit&prec
+    fig = plt.figure()
+
+    ax1 = fig.add_subplot(111)
+    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')  # 画图
+    ax1.set_ylim(0, 1.04)
+    ax1.set_ylabel('Fitness')
+    ax1.set_xlabel('Num. of Cluster')
+    ax1.set_xticks(x_axis)
+    ax1.yaxis.label.set_color('r')
+    for tl in ax1.get_yticklabels():
+        tl.set_color('r')
+    ax2 = ax1.twinx()
+
+    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+             label='Precision')  # 画图
+    ax2.set_ylim(0, 1.04)
+    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
+    ax2.set_ylabel('Precision')
+    ax2.yaxis.label.set_color('b')
+    for tl in ax2.get_yticklabels():
+        tl.set_color('b')
+    # plt.grid(axis='x')
+    fig.savefig('fitprec_sca' + '_' + TYPE + '.svg')
+    # fig.show()
+
+    # plot F1
+    fig2 = plt.figure()
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    plt.ylim(0, 1)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    plt.savefig('f1_sca' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # plot boxplot
+    fig3 = plt.figure()
+    plot_box["2"] = plot_box["1"]
+
+    data = pd.DataFrame(plot_box)
+    print(data)
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    data.boxplot(sym='o')
+
+    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='x')
+    plt.savefig('f1_boxplot' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    #rescale to 0-1
+    fig4 = plt.figure()
+    plot_box["2"] = plot_box["1"]
+
+    data = pd.DataFrame(plot_box)
+    print(data)
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    data.boxplot(sym='o')
+
+    plt.ylim(np.min(0, 1))
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='x')
+    plt.savefig('f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # plt.show()
+
+
+    print("woupdate", end - start)
+    # print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
     # plt.figure(figsize=(10, 8))
     # # dn = fancy_dendrogram(Z, max_d=0.35)
-    # dn = dendrogram(Z,labels=list_of_vals)
-    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    # plt.title('Hierarchical Clustering Dendrogram')
-    # # plt.xlabel('Loan Amount')
+    # # dn = dendrogram(Z)
+    # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Credit Score')
     # plt.ylabel('Distance')
-    # plt.savefig('cluster.svg')
+    # plt.savefig('cluster_dfg_woupdate.svg')
     # plt.show()
-    # #fake_log_eval.eval_avg_variant(list_log, percent, alpha)
-    # # eval_DMM_variant(loglist, percent, alpha)'''
+    #
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_dfg_update(list_log, dist_mat,alpha,percent)
+    # print("Zupdate2", Z)
+    # end = time.time()
+    # print("wupdate", end - start)
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # # dn = dendrogram(Z)
+    # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Credit Score')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster_dfg_wupdate.svg')
+    # plt.show()
+
+    # list1 = fcluster(Z, 2, criterion='maxclust')
+    # list2 = fcluster(Z, 3, criterion='maxclust')
+    # list3 = fcluster(Z, 6, criterion='maxclust')
+    # list1=dict(zip(list_of_vals, list1))
+    # list2 = dict(zip(list_of_vals, list2))
+    # list3 = dict(zip(list_of_vals, list3))
+    # print([list1,list2,list3])
+    # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, 'dfg')
+    # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,'dfg')
+    #
+    # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,'dfg')
+    # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,'dfg')
+    # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,'dfg')
+    # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,'dfg')
+
+    # for i in range(k):
+    #     filename = 'log'+'_'+str(k)+'_'+str(i)+'.xes'
+    #     xes_exporter.export_log(clu_list_log[i], filename)
+
+    # log1 = logslice(log, [0])
+    # print(len(log1))
+    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log1)
+    # fitness_inductive = replay_factory.apply(log, inductive_petri, inductive_initial_marking, inductive_final_marking)
+    # print("fitness_inductive=", fitness_inductive)
+    #
+    # gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking)
+    # pn_vis_factory.save(gviz,"ind.png")
+    #
+    # precision_inductive = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+    #                                               inductive_final_marking)
+    # print("precision_inductive=", precision_inductive)
+    # precision_inductive = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+    #                                               inductive_final_marking)
+    # print("precision_inductive=", precision_inductive)
+
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # # dn = dendrogram(Z)
+    # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Credit Score')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster_dfg.svg')
+    # plt.show()
+
+    # DMM test
+    # y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
+    # Z = linkage(y, method='average')
+    # print(Z)
+    # end = time.time()
+    # print("DMMwoupdate",end - start)
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # # dn = dendrogram(Z)
+    # dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Credit Score')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster_DMM_woupdate.svg')
+    # plt.show()
+
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_DMM_update(list_log, dist_mat, alpha, percent)
+    # print("Zupdate2", Z)
+    # end = time.time()
+    # print("DMMwupdate",end - start)
+    # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, 'DMM')
+    # # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,'DMM')
+    # #
+    # # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,'DMM')
+    # # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,'DMM')
+    # # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,'DMM')
+    # # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,'DMM')
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # # dn = dendrogram(Z)
+    # dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Credit Score')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster_DMM_wupdate.svg')
+    # plt.show()
+
+    # avg test
+    # start = time.time()
+    # y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
+    # Z = linkage(y, method='average')
+    # # print(Z)
+    # end = time.time()
+    # print("avgwupdate", end - start)
+    # # print("avgwoupdate",end - start)
+    # # plt.figure(figsize=(10, 8))
+    # # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # # # dn = dendrogram(Z)
+    # # dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # # # plt.title('Hierarchical Clustering Dendrogram')
+    # # plt.xlabel('Credit Score')
+    # # plt.ylabel('Distance')
+    # # plt.savefig('cluster_avg_woupdate.svg')
+    # # plt.show()
+    #
+    # start2 = time.time()
+    # y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_avg(list_log, dist_mat)
+    # print("Zupdate2", Z)
+    # end2 = time.time()
+    # print("avgwpdate", end2 - start2)
+    #
+    # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log, 'avg')
+    # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,'avg')
+    #
+    # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals, log,'avg')
+    # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals, log,'avg')
+    # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals, log,'avg')
+    # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals, log,'avg')
+
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # # dn = dendrogram(Z)
+    # dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # # plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Credit Score')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster_avg_wupdate.svg')
+    # plt.show()
+
+    # dist_act = act_dist_calc.act_sim_percent_avg(list_log[4], list_log[8], percent, percent)
+    # dist_suc = suc_dist_calc.suc_sim_percent_avg(list_log[4], list_log[8], percent, percent)
+    # print([dist_act, dist_suc])
+
+    # percent = 1
+    # alpha = 0.5
+    # (loglist, mergedlog) = merge_log("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 5)
+    #
+    # #get_dendrogram_svg(mergedlog,parameters={"cluster_avg":True})
+    # #tr=(attributes_filter.get_trace_attribute_values(mergedlog,'concept:name'))
+    # #print(len(tr))
+    #
+    # xes_exporter.export_log(mergedlog, "mergedlog_all.xes")
+
+    # ta=(attributes_filter.get_all_trace_attributes_from_log(mergedlog))
+    # ea=(attributes_filter.get_all_event_attributes_from_log(mergedlog))
+    # print((ta))
+    # print((ea))
+    '''
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(mergedlog, 'index')
+    print(list_of_vals_dict)
+    #print(list_of_vals_dict.keys())
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    #list_of_vals_keys = ['1', '2', '4', '5', '7', '8']
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+
+
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(mergedlog, list_of_vals[i])
+        list_log.append(logsample)
+        # print(filter_subsets.sublog_percent(logsample, 1))
+
+    id2name = dict(zip(range(len(list_of_vals)), list_of_vals))
+    print(id2name)
+
+    y = fake_log_eval.eval_avg_leven(loglist, percent, alpha)
+    Z = linkage(y, method='average')
+    #print(Z)
+    #print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
+    T = to_tree(Z, rd=False)
+    d3Dendro = dict(children=[], name="Root1")
+    add_node(T, d3Dendro)
+    print(d3Dendro["children"][0])
+
+    tr = label_tree(d3Dendro["children"][0],id2name)
+    #print(d3Dendro["name"])
+    print(d3Dendro["children"][0])
+    d3Dendro=d3Dendro["children"][0]
+    d3Dendro["name"] = 'root'
+
+    json.dump(d3Dendro, open("d3-dendrogram.json", "w"), sort_keys=True)
+
+    plt.figure(figsize=(10, 8))
+    # dn = fancy_dendrogram(Z, max_d=0.35)
+    dn = dendrogram(Z,labels=list_of_vals)
+    # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Loan Amount')
+    plt.ylabel('Distance')
+    plt.savefig('cluster.svg')
+    plt.show()
+    #fake_log_eval.eval_avg_variant(list_log, percent, alpha)
+    # eval_DMM_variant(loglist, percent, alpha)'''
 
 
 
