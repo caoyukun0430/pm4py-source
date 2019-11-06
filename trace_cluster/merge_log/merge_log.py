@@ -232,7 +232,7 @@ if __name__ == "__main__":
     for i in range(len(list_of_vals)):
         logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
         list_log.append(logsample)
-    # print(list_log)
+    print(list_log)
 
     # DFG test
     start = time.time()
