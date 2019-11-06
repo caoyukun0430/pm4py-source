@@ -192,13 +192,13 @@ def clusteredlog(Z, maxclust, list_of_vals, log,METHOD, ATTR_NAME):
         xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
-def get_fit_prec_hpc(log):
+def get_fit_prec_hpc(log,ori_log):
     net, im, fm = inductive_miner.apply(log)
     wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 
-    fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+    fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, ori_log)
 
-    precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+    precision = wrapper.calculate_precision_with_tbr(net, im, fm, ori_log)
 
     return fitness,precision
 
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     clu_list_dict = dict()
     for i in range(1, plot_clu + 1):
         if i == 1:
-            fitness,precision = get_fit_prec_hpc(log)
+            fitness,precision = get_fit_prec_hpc(log,log)
             # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
             # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
             #                                inductive_final_marking, variant="alignments")['averageFitness']
@@ -322,7 +322,7 @@ if __name__ == "__main__":
                 #                                inductive_final_marking, variant="alignments")['averageFitness']
                 # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                 #                                     inductive_final_marking)
-                fitness, precision = get_fit_prec_hpc(clu_list_log[j])
+                fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
                 F1 = 2 * fitness * precision / (fitness + precision)
                 # individual info for each sublog
                 length_li.append(length)
@@ -448,7 +448,7 @@ if __name__ == "__main__":
     plt.xticks(x_axis)
     data.boxplot(sym='o')
 
-    plt.ylim(np.min(0, 1))
+    plt.ylim(0,1.04)
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
