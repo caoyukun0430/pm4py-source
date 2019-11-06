@@ -431,7 +431,7 @@ if __name__ == "__main__":
     plt.xticks(x_axis)
     data.boxplot(sym='o')
 
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1)
+    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
