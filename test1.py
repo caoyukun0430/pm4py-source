@@ -29,11 +29,10 @@ print("calculated model")
 wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 aa = time.time()
 # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
-fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log)
 bb = time.time()
 print(fitness)
-# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
-fitness = replay_factory.apply(log, net, im, fm)
+fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
 print(fitness)
 
 
