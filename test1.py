@@ -38,7 +38,7 @@ fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageF
 print("local",fitness)
 
 precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
-print(precision)
+print("cluster",precision)
 
 """
 wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
