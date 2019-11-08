@@ -18,18 +18,18 @@ def get_fit_prec_hpc(log):
     return fitness,precision
 
 log = xes_importer.apply("/home/yukun/dataset/filteredbpic2017.xes")
-suglog2 = xes_importer.apply("/home/yukun/pm4py-source/log_3_1_DMMCreditScore.xes")
+sublog2 = xes_importer.apply("/home/yukun/pm4py-source/log_3_1_DMMCreditScore.xes")
 #log = parquet_importer.import_minimal_log("bpic2017_application.parquet")
 print("imported")
-# net, im, fm = inductive_miner.apply(sublog2)
-net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
+net, im, fm = inductive_miner.apply(sublog2)
+# net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
 #gviz = pn_vis_factory.apply(net, im, fm)
 #pn_vis_factory.view(gviz)
 print("calculated model")
 wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 aa = time.time()
 # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
-fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log)
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log)['averageFitness']
 bb = time.time()
 print(fitness)
 fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
