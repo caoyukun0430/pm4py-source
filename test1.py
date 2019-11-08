@@ -1,3 +1,4 @@
+import pm4pycvxopt
 from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.objects.log.importer.parquet import factory as parquet_importer
