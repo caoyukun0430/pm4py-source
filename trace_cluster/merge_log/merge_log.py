@@ -219,9 +219,10 @@ if __name__ == "__main__":
     ATTR_NAME = str(sys.argv[2])
     METHOD = str(sys.argv[3])
 
-
-    # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC_2017.xes"
+    # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
     log = xes_importer.apply(LOG_PATH)
+    # METHOD = 'dfg'
+    # ATTR_NAME = 'RequestedAmount'
 
 
     # sublog = xes_importer.apply(
