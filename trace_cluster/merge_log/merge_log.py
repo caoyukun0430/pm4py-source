@@ -1,3 +1,4 @@
+import pm4pycvxopt
 import matplotlib.pyplot as plt
 from functools import reduce
 import pandas as pd
@@ -197,7 +198,7 @@ def get_fit_prec_hpc(log,ori_log):
     wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 
     # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, ori_log)
-    fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, ori_log)
+    fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, ori_log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
 
     precision = wrapper.calculate_precision_with_tbr(net, im, fm, ori_log)
 
