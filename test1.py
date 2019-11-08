@@ -1,3 +1,4 @@
+import pm4pycvxopt
 from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.objects.log.importer.parquet import factory as parquet_importer
@@ -29,7 +30,7 @@ print("calculated model")
 wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 aa = time.time()
 # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
-fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log)['averageFitness']
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
 bb = time.time()
 print(fitness)
 fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
