@@ -18,6 +18,7 @@ def get_fit_prec_hpc(log):
 
     return fitness,precision
 
+
 log = xes_importer.apply("/home/yukun/dataset/filteredbpic2017.xes")
 sublog2 = xes_importer.apply("/home/yukun/pm4py-source/log_3_1_DMMCreditScore.xes")
 #log = parquet_importer.import_minimal_log("bpic2017_application.parquet")
