@@ -35,7 +35,7 @@ fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters
 bb = time.time()
 print(fitness)
 fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
-print(fitness)
+print("local",fitness)
 
 
 # precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
