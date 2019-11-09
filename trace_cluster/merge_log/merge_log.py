@@ -303,13 +303,13 @@ if __name__ == "__main__":
     clu_list_dict = dict()
     for i in range(1, plot_clu + 1):
         if i == 1:
-            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                inductive_final_marking, variant="alignments")['averageFitness']
-            #
-            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                     inductive_final_marking)
-            fitness, precision = get_fit_prec_hpc(log, log)
+            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                           inductive_final_marking, variant="alignments")['averageFitness']
+
+            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                inductive_final_marking)
+            # fitness, precision = get_fit_prec_hpc(log, log)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -326,13 +326,13 @@ if __name__ == "__main__":
             F1_li = []
             for j in range(0, i):
                 length = len(clu_list_log[j])
-                # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                #     clu_list_log[j])
-                # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                #                                inductive_final_marking, variant="alignments")['averageFitness']
-                # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                #                                     inductive_final_marking)
-                fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                    clu_list_log[j])
+                fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                               inductive_final_marking, variant="alignments")['averageFitness']
+                precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                    inductive_final_marking)
+                # fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
                 F1 = 2 * fitness * precision / (fitness + precision)
                 # individual info for each sublog
                 length_li.append(length)
