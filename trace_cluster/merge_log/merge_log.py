@@ -191,7 +191,7 @@ def clusteredlog(Z, maxclust, list_of_vals, log, METHOD, ATTR_NAME):
         logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
         if (maxclust > 3):
-            filename = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/' + 'log' + '_' + str(
+            filename = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/' + 'log' + '_' + str(
                 maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
             xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
@@ -302,13 +302,13 @@ if __name__ == "__main__":
     clu_list_dict = dict()
     for i in range(1, plot_clu + 1):
         if i == 1:
-            # fitness,precision = get_fit_prec_hpc(log,log)
-            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                           inductive_final_marking, variant="alignments")['averageFitness']
-
-            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                                inductive_final_marking)
+            fitness,precision = get_fit_prec_hpc(log,log)
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -325,13 +325,13 @@ if __name__ == "__main__":
             F1_li = []
             for j in range(0, i):
                 length = len(clu_list_log[j])
-                inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    clu_list_log[j])
-                fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                               inductive_final_marking, variant="alignments")['averageFitness']
-                precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                                    inductive_final_marking)
-                # fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                #     clu_list_log[j])
+                # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                #                                inductive_final_marking, variant="alignments")['averageFitness']
+                # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                #                                     inductive_final_marking)
+                fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
                 F1 = 2 * fitness * precision / (fitness + precision)
                 # individual info for each sublog
                 length_li.append(length)
@@ -346,10 +346,10 @@ if __name__ == "__main__":
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
 
-    # print(plot_fit)
-    # print(plot_prec)
-    # print(plot_F1)
-    # print(plot_box)
+    print(plot_fit)
+    print(plot_prec)
+    print(plot_F1)
+    print(plot_box)
     # print(clu_list_dict)
 
     x_axis = range(1, plot_clu + 1)
