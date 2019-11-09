@@ -302,14 +302,14 @@ if __name__ == "__main__":
     clu_list_dict = dict()
     for i in range(1, plot_clu + 1):
         if i == 1:
-            fitness,precision = get_fit_prec_hpc(log,log)
             inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
             fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
                                            inductive_final_marking, variant="alignments")['averageFitness']
 
             precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                                                 inductive_final_marking)
-            # F1 = 2 * fitness * precision / (fitness + precision)
+            # fitness, precision = get_fit_prec_hpc(log, log)
+            F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
             plot_fit[str(i)] = fitness
