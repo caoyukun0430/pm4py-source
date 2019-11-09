@@ -13,6 +13,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fclu
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
 from pm4py.objects.log.importer.xes import factory as xes_importer
+from pm4py.objects.log.exporter.xes import factory as xes_exporter
 from pm4py.algo.discovery.inductive import factory as inductive_miner
 from pm4py.evaluation.replay_fitness import factory as replay_factory
 from pm4py.visualization.petrinet import factory as pn_vis_factory
@@ -21,7 +22,7 @@ from pm4py.objects.log.log import EventLog
 from pm4py.util import constants
 from pm4py.algo.filtering.log.attributes import attributes_filter
 from trace_cluster.evaluation import fake_log_eval
-from pm4py.objects.log.exporter.xes import factory as xes_exporter
+
 from trace_cluster.variant import act_dist_calc
 from trace_cluster.variant import suc_dist_calc
 from trace_cluster.linkage_method import linkage_avg
@@ -189,7 +190,7 @@ def clusteredlog(Z, maxclust, list_of_vals, log,METHOD, ATTR_NAME):
         clu_list.append(temp)
         logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
-        filename = 'home/yukun/resultlog/Payment_application/'+ATTR_NAME+'/'+'log' + '_' + str(maxclust) + '_' + str(i) + '_' + METHOD +ATTR_NAME + '.xes'
+        filename = '/home/yukun/resultlog/Payment_application/'+ATTR_NAME+'/'+'log' + '_' + str(maxclust) + '_' + str(i) + '_' + METHOD +ATTR_NAME + '.xes'
         xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
