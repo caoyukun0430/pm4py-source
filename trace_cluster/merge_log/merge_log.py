@@ -225,6 +225,9 @@ if __name__ == "__main__":
     print(LOG_PATH)
     print(ATTR_NAME)
     print(METHOD)
+    filename = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/' + 'log' + '_' + METHOD + ATTR_NAME + '.xes'
+    xes_exporter.export_log(log, filename)
+    print("finished")
     # METHOD = 'dfg'
     # ATTR_NAME = 'RequestedAmount'
 
