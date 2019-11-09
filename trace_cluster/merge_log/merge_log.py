@@ -8,7 +8,7 @@ import numpy as np
 import json
 import sys
 import time
-# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -221,6 +221,9 @@ if __name__ == "__main__":
 
     # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
     log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
     # METHOD = 'dfg'
     # ATTR_NAME = 'RequestedAmount'
 
