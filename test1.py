@@ -1,5 +1,6 @@
 import pm4pycvxopt
 from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+from pm4py.evaluation.precision import factory as precision_factory
 from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.objects.log.importer.parquet import factory as parquet_importer
 from pm4py.algo.discovery.inductive import factory as inductive_miner
@@ -40,6 +41,8 @@ print("local",fitness)
 precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
 print("cluster",precision)
 
+precision = precision_factory.apply(log, net, im, fm)
+print("local",precision)
 """
 wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 aa = time.time()
