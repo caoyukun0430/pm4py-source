@@ -20,9 +20,31 @@ def get_fit_prec_hpc(log):
     return fitness,precision
 
 
-log = xes_importer.apply("/home/yukun/dataset/filteredbpic2017.xes")
-sublog2 = xes_importer.apply("/home/yukun/pm4py-source/log_3_1_DMMCreditScore.xes")
+log = xes_importer.apply("/home/yukun/dataset/document_logs/Payment_application.xes")
+sublog2 = xes_importer.apply("/home/yukun/resultlog/Payment_application/amount_applied0/log_4_0_dfgamount_applied0.xes")
 #log = parquet_importer.import_minimal_log("bpic2017_application.parquet")
+print("imported")
+net, im, fm = inductive_miner.apply(sublog2)
+# net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
+#gviz = pn_vis_factory.apply(net, im, fm)
+#pn_vis_factory.view(gviz)
+print("calculated model")
+wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
+aa = time.time()
+# fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
+bb = time.time()
+print(fitness)
+# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+# print("local",fitness)
+
+precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+print("cluster",precision)
+
+# precision = precision_factory.apply(log, net, im, fm)
+# print("local",precision)
+
+log = xes_importer.apply("/home/yukun/dataset/document_logs/Entitlement_application.xes")
 print("imported")
 net, im, fm = inductive_miner.apply(log)
 # net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
@@ -35,14 +57,51 @@ aa = time.time()
 fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
 bb = time.time()
 print(fitness)
-fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
-print("local",fitness)
+# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+# print("local",fitness)
 
 precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
 print("cluster",precision)
 
-precision = precision_factory.apply(log, net, im, fm)
-print("local",precision)
+
+log = xes_importer.apply("/home/yukun/dataset/document_logs/Geo_parcel_document.xes")
+print("imported")
+net, im, fm = inductive_miner.apply(log)
+# net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
+#gviz = pn_vis_factory.apply(net, im, fm)
+#pn_vis_factory.view(gviz)
+print("calculated model")
+wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
+aa = time.time()
+# fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
+bb = time.time()
+print(fitness)
+# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+# print("local",fitness)
+
+precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+print("cluster",precision)
+
+log = xes_importer.apply("/home/yukun/dataset/document_logs/Inspection.xes")
+print("imported")
+net, im, fm = inductive_miner.apply(log)
+# net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
+#gviz = pn_vis_factory.apply(net, im, fm)
+#pn_vis_factory.view(gviz)
+print("calculated model")
+wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
+aa = time.time()
+# fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
+bb = time.time()
+print(fitness)
+# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+# print("local",fitness)
+
+precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+print("cluster",precision)
+
 """
 wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 aa = time.time()
