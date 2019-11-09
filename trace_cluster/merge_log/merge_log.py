@@ -221,6 +221,7 @@ if __name__ == "__main__":
     LOG_PATH = str(sys.argv[1])
     ATTR_NAME = str(sys.argv[2])
     METHOD = str(sys.argv[3])
+    PIC_PATH = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/'
 
     # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
     log = xes_importer.apply(LOG_PATH)
@@ -274,7 +275,7 @@ if __name__ == "__main__":
     # plt.title('Hierarchical Clustering Dendrogram')
     plt.xlabel(ATTR_NAME)
     plt.ylabel('Distance')
-    plt.savefig('cluster_wupdate' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH+'cluster_wupdate' + '_' + TYPE + '.svg')
     # plt.show()
 
     # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
@@ -294,7 +295,7 @@ if __name__ == "__main__":
     #         length_li.append(length)
     #     print(length_li)
 
-    plot_clu = 7
+    plot_clu = 10
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -377,7 +378,7 @@ if __name__ == "__main__":
     for tl in ax2.get_yticklabels():
         tl.set_color('b')
     # plt.grid(axis='x')
-    fig.savefig('fitprec' + '_' + TYPE + '.svg')
+    fig.savefig(PIC_PATH+'fitprec' + '_' + TYPE + '.svg')
     # fig.show()
 
     # plot F1
@@ -388,7 +389,7 @@ if __name__ == "__main__":
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    plt.savefig('f1' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH+'f1' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -415,7 +416,7 @@ if __name__ == "__main__":
     for tl in ax2.get_yticklabels():
         tl.set_color('b')
     # plt.grid(axis='x')
-    fig.savefig('fitprec_sca' + '_' + TYPE + '.svg')
+    fig.savefig(PIC_PATH+'fitprec_sca' + '_' + TYPE + '.svg')
     # fig.show()
 
     # plot F1
@@ -427,7 +428,7 @@ if __name__ == "__main__":
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    plt.savefig('f1_sca' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH+'f1_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
     # plot boxplot
@@ -444,7 +445,7 @@ if __name__ == "__main__":
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
-    plt.savefig('f1_boxplot' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH+'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -461,7 +462,7 @@ if __name__ == "__main__":
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
-    plt.savefig('f1_boxplot_sca' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH+'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
     print("woupdate", end - start)
