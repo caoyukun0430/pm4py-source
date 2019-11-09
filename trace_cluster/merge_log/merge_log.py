@@ -189,7 +189,7 @@ def clusteredlog(Z, maxclust, list_of_vals, log,METHOD, ATTR_NAME):
         clu_list.append(temp)
         logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
-        filename = 'home/yukun/'+ATTR_NAME+'/'+METHOD+'/'+'log' + '_' + str(maxclust) + '_' + str(i) + '_' + METHOD +ATTR_NAME + '.xes'
+        filename = 'home/yukun/resultlog/Payment_application/'+ATTR_NAME+'/'+'log' + '_' + str(maxclust) + '_' + str(i) + '_' + METHOD +ATTR_NAME + '.xes'
         xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
