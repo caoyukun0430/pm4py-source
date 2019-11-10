@@ -191,7 +191,7 @@ def clusteredlog(Z, maxclust, list_of_vals, log, METHOD, ATTR_NAME):
         logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
         if (maxclust > 3):
-            filename = '/home/yukun/' + ATTR_NAME + '/' + 'log' + '_' + str(
+            filename = '/home/yukun/resultlog/Filtered_Payment/' + ATTR_NAME + '/' + 'log' + '_' + str(
                 maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
             xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     LOG_PATH = str(sys.argv[1])
     ATTR_NAME = str(sys.argv[2])
     METHOD = str(sys.argv[3])
-    PIC_PATH = '/home/yukun/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Filtered_Payment/' + ATTR_NAME + '/'
 
     # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
     log = xes_importer.apply(LOG_PATH)
