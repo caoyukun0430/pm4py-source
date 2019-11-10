@@ -87,13 +87,13 @@ def eval_DMM_variant(loglist, percent, alpha):
     size = len(loglist)
     #print(size)
     dist_mat = np.zeros((size, size))
-    print("stop1")
+    # print("stop1")
 
     for i in range(0, size - 1):
         for j in range(i + 1, size):
-            print("stop2")
+            # print("stop2")
             dist_act = act_dist_calc.act_sim_percent(loglist[i], loglist[j],percent,percent)
-            print("stop3")
+            # print("stop3")
             dist_suc = suc_dist_calc.suc_sim_percent(loglist[i], loglist[j], percent, percent)
             print([i, j, dist_act, dist_suc])
             dist_mat[i][j] = dist_act * alpha + dist_suc * (1 - alpha)
