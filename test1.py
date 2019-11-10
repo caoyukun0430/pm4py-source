@@ -20,54 +20,54 @@ def get_fit_prec_hpc(log):
     return fitness,precision
 
 
-log = xes_importer.apply("/home/yukun/dataset/document_logs/Filtered_Geo.xes")
-# sublog2 = xes_importer.apply("/home/yukun/resultlog/Payment_application/amount_applied0/log_4_0_dfgamount_applied0.xes")
-#log = parquet_importer.import_minimal_log("bpic2017_application.parquet")
-print("imported")
-# net, im, fm = inductive_miner.apply(log)
-for i in range(0,7):
-    petripath = '/home/yukun/dataset/document_logs/'+str(i)+'.pnml'
-    net, im, fm = petri_importer.apply(petripath)
-    # gviz = pn_vis_factory.apply(net, im, fm)
-    # pn_vis_factory.view(gviz)
-    print("calculated model")
-    wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
-    aa = time.time()
-    # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
-    fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})[
-        'averageFitness']
-    bb = time.time()
-    print("fit",fitness)
-    # fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
-    # print("local",fitness)
+# log = xes_importer.apply("/home/yukun/dataset/document_logs/Filtered_Geo.xes")
+# # sublog2 = xes_importer.apply("/home/yukun/resultlog/Payment_application/amount_applied0/log_4_0_dfgamount_applied0.xes")
+# #log = parquet_importer.import_minimal_log("bpic2017_application.parquet")
+# print("imported")
+# # net, im, fm = inductive_miner.apply(log)
+# for i in range(0,7):
+#     petripath = '/home/yukun/dataset/document_logs/'+str(i)+'.pnml'
+#     net, im, fm = petri_importer.apply(petripath)
+#     # gviz = pn_vis_factory.apply(net, im, fm)
+#     # pn_vis_factory.view(gviz)
+#     print("calculated model")
+#     wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
+#     aa = time.time()
+#     # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+#     fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})[
+#         'averageFitness']
+#     bb = time.time()
+#     print("fit",fitness)
+#     # fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+#     # print("local",fitness)
+#
+#     precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+#     print("prec", precision)
+#     F1 = 2 * fitness * precision / (fitness + precision)
+#     print("F1",F1)
 
-    precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
-    print("prec", precision)
-    F1 = 2 * fitness * precision / (fitness + precision)
-    print("F1",F1)
-    
 
 # precision = precision_factory.apply(log, net, im, fm)
 # print("local",precision)
 
-# log = xes_importer.apply("/home/yukun/dataset/document_logs/Filtered_Entitlement.xes")
-# print("imported")
-# net, im, fm = inductive_miner.apply(log)
-# # net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
-# #gviz = pn_vis_factory.apply(net, im, fm)
-# #pn_vis_factory.view(gviz)
-# print("calculated model")
-# wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
-# aa = time.time()
-# # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
-# fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
-# bb = time.time()
-# print(fitness)
-# # fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
-# # print("local",fitness)
-#
-# precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
-# print("cluster",precision)
+log = xes_importer.apply("/home/yukun/dataset/BPIC2015_1.xes")
+print("imported")
+net, im, fm = inductive_miner.apply(log)
+# net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
+#gviz = pn_vis_factory.apply(net, im, fm)
+#pn_vis_factory.view(gviz)
+print("calculated model")
+wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
+aa = time.time()
+# fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
+fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
+bb = time.time()
+print(fitness)
+# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+# print("local",fitness)
+
+precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+print("cluster",precision)
 #
 #
 # log = xes_importer.apply("/home/yukun/dataset/document_logs/Filtered_Geo.xes")
