@@ -34,16 +34,18 @@ for i in range(0,7):
     wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
     aa = time.time()
     # fitness = wrapper.calculate_fitness_with_tbr(net, im, fm, log)
-    fitness = \
-    wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})[
+    fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})[
         'averageFitness']
     bb = time.time()
-    print(fitness)
+    print("fit",fitness)
     # fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
     # print("local",fitness)
 
     precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
-    print("cluster", precision)
+    print("prec", precision)
+    F1 = 2 * fitness * precision / (fitness + precision)
+    print("F1",F1)
+    
 
 # precision = precision_factory.apply(log, net, im, fm)
 # print("local",precision)
