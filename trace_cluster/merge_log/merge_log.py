@@ -221,7 +221,7 @@ if __name__ == "__main__":
     LOG_PATH = str(sys.argv[1])
     ATTR_NAME = str(sys.argv[2])
     METHOD = str(sys.argv[3])
-    PIC_PATH = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
 
     # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
     log = xes_importer.apply(LOG_PATH)
@@ -295,7 +295,7 @@ if __name__ == "__main__":
     #         length_li.append(length)
     #     print(length_li)
 
-    plot_clu = 100
+    plot_clu = 20
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
