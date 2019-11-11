@@ -92,8 +92,8 @@ bb = time.time()
 print(fitness)
 # fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
 # print("local",fitness)
-precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
-print("prec",precision)
+# precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+# print("prec",precision)
 
 fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
 print("local",fitness)
