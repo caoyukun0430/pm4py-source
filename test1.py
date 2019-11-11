@@ -50,7 +50,7 @@ def get_fit_prec_hpc(log):
 # precision = precision_factory.apply(log, net, im, fm)
 # print("local",precision)
 
-log = xes_importer.apply("/home/yukun/dataset/BPIC2015_1.xes")
+log = xes_importer.apply("/home/yukun/dataset/CCC19.xes")
 print("imported")
 net, im, fm = inductive_miner.apply(log)
 # net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
