@@ -50,8 +50,8 @@ def get_fit_prec_hpc(log):
 # precision = precision_factory.apply(log, net, im, fm)
 # print("local",precision)
 
-log = xes_importer.apply("/home/yukun/dataset/Receipt.xes")
-sublog = xes_importer.apply("/home/yukun/dataset/sublog_receipt.xes")
+log = xes_importer.apply("/home/yukun/dataset/document_logs/Geo_parcel_document.xes")
+# sublog = xes_importer.apply("/home/yukun/dataset/sublog_receipt.xes")
 print("imported")
 net, im, fm = inductive_miner.apply(log)
 # net, im, fm = petri_importer.apply("/home/yukun/dataset/sublog2.pnml")
@@ -69,14 +69,10 @@ print(fitness)
 precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
 print("prec",precision)
 
-net, im, fm = inductive_miner.apply(sublog)
-fitness = wrapper.calculate_fitness_with_alignments(net, im, fm, log, parameters={"align_variant": "state_equation_a_star"})['averageFitness']
-bb = time.time()
-print(fitness)
-# fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
-# print("local",fitness)
+fitness = replay_factory.apply(log, net, im, fm, variant="alignments")['averageFitness']
+print("local",fitness)
 
-precision = wrapper.calculate_precision_with_tbr(net, im, fm, log)
+precision = precision_factory.apply(log, net, im, fm)
 print("prec",precision)
 #
 #
