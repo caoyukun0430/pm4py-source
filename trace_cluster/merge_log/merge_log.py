@@ -222,12 +222,12 @@ if __name__ == "__main__":
     # ATTR_NAME = str(sys.argv[2])
     # METHOD = str(sys.argv[3])
 
-    LOG_PATH = "/home/yukun/dataset/document_logs/Inspection.xes"
-    ATTR_NAME = 'area'
+    LOG_PATH = "/home/yukun/dataset/document_logs/Filtered_Entitlement.xes"
+    ATTR_NAME = 'amount_applied0'
     METHOD = 'dfg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/Inspection/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Filtered_Entitlement/' + ATTR_NAME + '/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -532,10 +532,10 @@ if __name__ == "__main__":
 
 
     # # for area
-    ATTR_NAME = 'amount_applied0'
+    ATTR_NAME = 'area'
     METHOD = 'dfg'
 
-    PIC_PATH = '/home/yukun/resultlog/Inspection/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Filtered_Entitlement/' + ATTR_NAME + '/'
     print(LOG_PATH)
     print(ATTR_NAME)
     print(METHOD)
