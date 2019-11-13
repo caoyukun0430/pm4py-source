@@ -222,12 +222,12 @@ if __name__ == "__main__":
     # ATTR_NAME = str(sys.argv[2])
     # METHOD = str(sys.argv[3])
 
-    LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
+    LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
     ATTR_NAME = 'area'
     METHOD = 'dfg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
