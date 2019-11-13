@@ -518,21 +518,21 @@ if __name__ == "__main__":
     # plt.show()
 
     # plot boxplot
-    fig3 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o',whis = 1)
-
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH+'f1_boxplot' + '_' + TYPE + '.svg')
+    # fig3 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    #
+    # data = pd.DataFrame(plot_box)
+    # print(data)
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # data.boxplot(sym='o',whis = 1)
+    #
+    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    # plt.savefig(PIC_PATH+'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -785,21 +785,21 @@ if __name__ == "__main__":
     # plt.show()
 
     # plot boxplot
-    fig3 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # fig3 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    #
+    # data = pd.DataFrame(plot_box)
+    # print(data)
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # data.boxplot(sym='o', whis=1)
+    #
+    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -1115,21 +1115,21 @@ if __name__ == "__main__":
     # plt.show()
 
     # plot boxplot
-    fig3 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # fig3 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    #
+    # data = pd.DataFrame(plot_box)
+    # print(data)
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # data.boxplot(sym='o', whis=1)
+    #
+    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -1380,21 +1380,21 @@ if __name__ == "__main__":
     # plt.show()
 
     # plot boxplot
-    fig3 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # fig3 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    #
+    # data = pd.DataFrame(plot_box)
+    # print(data)
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # data.boxplot(sym='o', whis=1)
+    #
+    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -1708,21 +1708,21 @@ if __name__ == "__main__":
     # plt.show()
 
     # plot boxplot
-    fig3 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # fig3 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    #
+    # data = pd.DataFrame(plot_box)
+    # print(data)
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # data.boxplot(sym='o', whis=1)
+    #
+    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -1973,21 +1973,21 @@ if __name__ == "__main__":
     # plt.show()
 
     # plot boxplot
-    fig3 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # fig3 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    #
+    # data = pd.DataFrame(plot_box)
+    # print(data)
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # data.boxplot(sym='o', whis=1)
+    #
+    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='x')
+    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
