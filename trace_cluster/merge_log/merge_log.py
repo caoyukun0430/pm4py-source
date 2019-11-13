@@ -2007,6 +2007,7 @@ if __name__ == "__main__":
     plt.grid(axis='x')
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
+    print("runtime",runtime)
 
 
 
