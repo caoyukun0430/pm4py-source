@@ -8,7 +8,7 @@ import numpy as np
 import json
 import sys
 import time
-# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -222,12 +222,12 @@ if __name__ == "__main__":
     # ATTR_NAME = str(sys.argv[2])
     # METHOD = str(sys.argv[3])
 
-    LOG_PATH = "/home/yukun/dataset/document_logs/Inspection.xes"
+    LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
     ATTR_NAME = 'area'
     METHOD = 'dfg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/Inspection/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)

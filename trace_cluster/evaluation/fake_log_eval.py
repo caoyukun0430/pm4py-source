@@ -28,8 +28,8 @@ def dfg_dis(loglist, percent, alpha,list_of_vals):
             print([i, j, dist_act, dist_dfg])
             # if(np.isnan(dist_dfg)==True):
             #     dist_dfg =1
-            # if(j%50==0):
-            #     print([i, j, dist_act, dist_dfg])
+            if(j%50==0):
+                print([i, j, dist_act, dist_dfg])
             dist_mat[i][j] = dist_act * alpha + dist_dfg * (1 - alpha)
             dist_mat[j][i] = dist_mat[i][j]
 
