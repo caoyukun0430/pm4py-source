@@ -8,7 +8,7 @@ import numpy as np
 import json
 import sys
 import time
-from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -222,12 +222,13 @@ if __name__ == "__main__":
     # ATTR_NAME = str(sys.argv[2])
     # METHOD = str(sys.argv[3])
 
-    LOG_PATH = "/home/yukun/dataset/document_logs/Filtered_Entitlement.xes"
-    ATTR_NAME = 'amount_applied0'
+    LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
+    ATTR_NAME = 'area'
     METHOD = 'dfg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/Filtered_Entitlement/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/'
+    # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -257,7 +258,7 @@ if __name__ == "__main__":
     for i in range(len(list_of_vals)):
         logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
         list_log.append(logsample)
-    # print(list_log)
+    print(len(list_log))
 
     # DFG test
     start = time.time()
@@ -311,13 +312,13 @@ if __name__ == "__main__":
     F1_li = []
     for i in range(1, plot_clu + 1):
         if i == 1:
-            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                           inductive_final_marking, variant="alignments")['averageFitness']
-
-            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                                inductive_final_marking)
-            # fitness, precision = get_fit_prec_hpc(log, log)
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
+            fitness, precision = get_fit_prec_hpc(log, log)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -373,13 +374,13 @@ if __name__ == "__main__":
 
             for j in range(0, 2):
                 length = len(clu_list_log[clu_list.index(diff[j])])
-                inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    clu_list_log[clu_list.index(diff[j])])
-                fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                               inductive_final_marking, variant="alignments")['averageFitness']
-                precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                                                    inductive_final_marking)
-                # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+                # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                #     clu_list_log[clu_list.index(diff[j])])
+                # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                #                                inductive_final_marking, variant="alignments")['averageFitness']
+                # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                #                                     inductive_final_marking)
+                fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                 F1 = 2 * fitness * precision / (fitness + precision)
                 # individual info for each sublog
                 length_li.append(length)
@@ -400,6 +401,7 @@ if __name__ == "__main__":
             print(length_li)
             print("fit", fit_li)
             print("prec", prec_li)
+            print("F1", F1_li)
             plot_fit[str(i)] = np.average(fit_li, weights=length_li)
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
@@ -500,7 +502,7 @@ if __name__ == "__main__":
     print(data)
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.xticks(x_axis)
-    data.boxplot(sym='o')
+    data.boxplot(sym='o',whis = 1)
 
     plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
     plt.xlabel("Num. of Cluster")
@@ -517,7 +519,7 @@ if __name__ == "__main__":
     print(data)
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.xticks(x_axis)
-    data.boxplot(sym='o')
+    data.boxplot(sym='o',whis = 1)
 
     plt.ylim(0, 1.04)
     plt.xlabel("Num. of Cluster")
