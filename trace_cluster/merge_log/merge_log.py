@@ -235,6 +235,7 @@ if __name__ == "__main__":
     print(ATTR_NAME)
     print(METHOD)
     runtime = dict()
+    # F1val = dict()
     # METHOD = 'dfg'
     # ATTR_NAME = 'RequestedAmount'
 
@@ -428,6 +429,8 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+
+    F1val= list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -735,6 +738,8 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    F1valup= list(plot_F1.values())
+    F1dfg = [F1val, F1valup]
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -819,6 +824,19 @@ if __name__ == "__main__":
     plt.grid(axis='x')
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
+
+
+    # w w/o F1 compare
+    fig5 = plt.figure()
+    l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['DFG', 'DFG_update'], loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
 
 
 
@@ -1025,6 +1043,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    F1val = list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -1330,6 +1349,8 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    F1valup=list(plot_F1.values())
+    F1DMM = [F1val, F1valup]
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -1414,6 +1435,17 @@ if __name__ == "__main__":
     plt.grid(axis='x')
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
+
+    fig5 = plt.figure()
+    l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['DMM', 'DMM_update'], loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
 
     # avg
     ATTR_NAME = 'responsible'
@@ -1618,6 +1650,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    F1val=list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -1923,6 +1956,8 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    F1valup=list(plot_F1.values())
+    F1avg = [F1val,F1valup]
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -2007,6 +2042,68 @@ if __name__ == "__main__":
     plt.grid(axis='x')
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
+
+    fig5 = plt.figure()
+    l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['AVG', 'AVG_update'], loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
+
+
+    # final three methods compare
+    fig6 = plt.figure()
+    l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM[0], color="r", linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(x_axis, F1avg[0], color="g", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2,l3], labels=['DFG', 'DMM','AVG'],  loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'threedot' + '.svg')
+
+    fig7 = plt.figure()
+    l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", linewidth=2)
+    l2 = plt.plot(x_axis, F1DMM[0], color="r", linestyle="-", linewidth=2)
+    l3 = plt.plot(x_axis, F1avg[0], color="g", linestyle="-", linewidth=2)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3], labels=['DFG', 'DMM', 'AVG'], loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'threenodot' +'.svg')
+
+    fig8 = plt.figure()
+    l1 = plt.plot(x_axis, F1dfg[1], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM[1], color="r", linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(x_axis, F1avg[1], color="g", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3], labels=['DFG', 'DMM', 'AVG'], loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'threedotupdate' + '.svg')
+
+    fig9 = plt.figure()
+    l1 = plt.plot(x_axis, F1dfg[1], color="b", linestyle="-", linewidth=2)
+    l2 = plt.plot(x_axis, F1DMM[1], color="r", linestyle="-", linewidth=2)
+    l3 = plt.plot(x_axis, F1avg[1], color="g", linestyle="-", linewidth=2)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3], labels=['DFG', 'DMM', 'AVG'], loc='best')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'threenodotupdate' + '.svg')
+
     print("runtime",runtime)
 
 
