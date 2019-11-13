@@ -25,7 +25,7 @@ def dfg_dis(loglist, percent, alpha,list_of_vals):
     for i in range(0, size - 1):
         for j in range(i + 1, size):
             (dist_act, dist_dfg) = dfg_dist.dfg_dist_calc(loglist[i], loglist[j])
-            print([i, j, dist_act, dist_dfg])
+            # print([i, j, dist_act, dist_dfg])
             if(j%50==0):
                 print([i, j, dist_act, dist_dfg])
             dist_mat[i][j] = dist_act * alpha + dist_dfg * (1 - alpha)
@@ -60,7 +60,8 @@ def eval_avg_variant(loglist, percent, alpha):
         for j in range(i + 1, size):
             dist_act = act_dist_calc.act_sim_percent_avg(loglist[i], loglist[j],percent,percent)
             dist_suc = suc_dist_calc.suc_sim_percent_avg(loglist[i], loglist[j], percent, percent)
-            print([i,j,dist_act,dist_suc])
+            if (j % 50 == 0):
+                print([i,j,dist_act,dist_suc])
             dist_mat[i][j] = dist_act * alpha + dist_suc * (1 - alpha)
             dist_mat[j][i] = dist_mat[i][j]
 
@@ -97,7 +98,8 @@ def eval_DMM_variant(loglist, percent, alpha):
             dist_act = act_dist_calc.act_sim_percent(loglist[i], loglist[j],percent,percent)
             # print("stop3")
             dist_suc = suc_dist_calc.suc_sim_percent(loglist[i], loglist[j], percent, percent)
-            print([i, j, dist_act, dist_suc])
+            if (j % 50 == 0):
+                print([i, j, dist_act, dist_suc])
             dist_mat[i][j] = dist_act * alpha + dist_suc * (1 - alpha)
             dist_mat[j][i] = dist_mat[i][j]
 
