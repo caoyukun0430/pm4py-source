@@ -58,6 +58,8 @@ def dfg_dist_calc(log1, log2):
     # print("df_dfg", df_dfg)
     dist_act = pdist(np.array([df_act['freq_x'].values, df_act['freq_y'].values]), 'cosine')[0]
     dist_dfg = pdist(np.array([df_dfg['freq_x'].values, df_dfg['freq_y'].values]), 'cosine')[0]
+    if(np.isnan(dist_dfg)==True):
+        dist_dfg =1
     # print([dist_act, dist_dfg])
     # dist = dist_act * alpha + dist_dfg * (1 - alpha)
     return dist_act, dist_dfg

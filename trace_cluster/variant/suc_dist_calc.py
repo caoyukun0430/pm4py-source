@@ -317,8 +317,8 @@ def suc_sim_percent(log1, log2, percent_1, percent_2):
                 # print(df)
                 # cosine similarity is used to calculate trace similarity
                 dist_vec[j] = (pdist(np.array([df['freq_x'].values, df['freq_y'].values]), 'cosine')[0])
-                # if (np.isnan(dist_vec[j]) == True):
-                #     dist_vec[j] = 1
+                if (np.isnan(dist_vec[j]) == True):
+                    dist_vec[j] = 1
                 dist_matrix[i][j] = dist_vec[j]
                 # dist_matrix[i][j] = innerprod / (sqrt_1 * sqrt_2)
                 if j == (min_len - 1):
@@ -402,8 +402,8 @@ def suc_sim_percent_avg(log1, log2, percent_1, percent_2):
             df = pd.merge(df_1, df_2, how='outer', on='direct_suc').fillna(0)
             # cosine similarity is used to calculate trace similarity
             dist_vec[j] = (pdist(np.array([df['freq_x'].values, df['freq_y'].values]), 'cosine')[0])
-            # if(np.isnan(dist_vec[j])==True):
-            #     dist_vec[j]=1
+            if(np.isnan(dist_vec[j])==True):
+                dist_vec[j]=1
             # print([i, j, df, dist_vec[j]])
             dist_matrix[i][j] = dist_vec[j]
             col_sum[i] += dist_vec[j] * var_count_max.iloc[i] * var_count_min.iloc[j]

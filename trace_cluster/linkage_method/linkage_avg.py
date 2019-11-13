@@ -97,10 +97,11 @@ def linkage_dfg_update(loglist, dist_mat,alpha,percent):
     cluster_size[n - 1 + k] = cluster_size[temp[0]] + cluster_size[temp[1]]
     temp.append(cluster_size[n - 1 + k])
     Z.append(temp)
+    Z = np.array(Z)
 
     return Z
 
-def linkage_avg(loglist, dist_mat):
+def linkage_avg(loglist, dist_mat,alpha,percent):
     index_list = []
     cluster_size = []
     for i in range(len(dist_mat)):
@@ -173,6 +174,7 @@ def linkage_avg(loglist, dist_mat):
     cluster_size[n - 1 + k] = cluster_size[temp[0]] + cluster_size[temp[1]]
     temp.append(cluster_size[n - 1 + k])
     Z.append(temp)
+    Z = np.array(Z)
 
     return Z
 
@@ -264,6 +266,7 @@ def linkage_DMM_update(loglist, dist_mat,alpha,percent):
     cluster_size[n - 1 + k] = cluster_size[temp[0]] + cluster_size[temp[1]]
     temp.append(cluster_size[n - 1 + k])
     Z.append(temp)
+    Z = np.array(Z)
 
     return Z
 
