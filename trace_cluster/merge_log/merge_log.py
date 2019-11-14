@@ -1,4 +1,5 @@
 import pm4pycvxopt
+from matplotlib import rc
 import matplotlib.pyplot as plt
 from functools import reduce
 import pandas as pd
@@ -223,12 +224,12 @@ if __name__ == "__main__":
     # METHOD = str(sys.argv[3])
 
     # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
-    LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
-    ATTR_NAME = 'CreditScore'
+    LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
+    ATTR_NAME = 'responsible'
     METHOD = 'dfg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -479,7 +480,8 @@ if __name__ == "__main__":
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
-
+    rc('text', usetex=True)
+    rc('font', family='serif')
     ax1 = fig.add_subplot(111)
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
     ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
@@ -504,11 +506,14 @@ if __name__ == "__main__":
     for tl in ax2.get_yticklabels():
         tl.set_color('b')
     ax2.grid(axis='y')
+
     fig.savefig(PIC_PATH+'fitprec_sca' + '_' + TYPE + '.svg')
     # fig.show()
 
     # plot F1
     fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -542,8 +547,11 @@ if __name__ == "__main__":
     fig4 = plt.figure()
     plot_box["2"] = plot_box["1"]
 
+
     data = pd.DataFrame(plot_box)
     print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -558,10 +566,10 @@ if __name__ == "__main__":
 
 
     #update dfg
-    ATTR_NAME = 'CreditScore'
+    ATTR_NAME = 'responsible'
     METHOD = 'dfg'
 
-    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
 
     TYPE = METHOD + ATTR_NAME+'update'
 
@@ -748,7 +756,8 @@ if __name__ == "__main__":
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
-
+    rc('text', usetex=True)
+    rc('font', family='serif')
     ax1 = fig.add_subplot(111)
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
     ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
@@ -778,6 +787,8 @@ if __name__ == "__main__":
 
     # plot F1
     fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -813,6 +824,8 @@ if __name__ == "__main__":
 
     data = pd.DataFrame(plot_box)
     print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -828,6 +841,8 @@ if __name__ == "__main__":
 
     # w w/o F1 compare
     fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
@@ -841,10 +856,10 @@ if __name__ == "__main__":
 
 
     #DMM
-    ATTR_NAME = 'CreditScore'
+    ATTR_NAME = 'responsible'
     METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     # log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -1092,7 +1107,8 @@ if __name__ == "__main__":
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
-
+    rc('text', usetex=True)
+    rc('font', family='serif')
     ax1 = fig.add_subplot(111)
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
     ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
@@ -1122,6 +1138,8 @@ if __name__ == "__main__":
 
     # plot F1
     fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1157,6 +1175,8 @@ if __name__ == "__main__":
 
     data = pd.DataFrame(plot_box)
     print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1170,10 +1190,10 @@ if __name__ == "__main__":
     # plt.show()
 
     # update DMM
-    ATTR_NAME = 'CreditScore'
+    ATTR_NAME = 'responsible'
     METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/CreditScore/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
 
     TYPE = METHOD + ATTR_NAME + 'update'
 
@@ -1359,7 +1379,8 @@ if __name__ == "__main__":
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
-
+    rc('text', usetex=True)
+    rc('font', family='serif')
     ax1 = fig.add_subplot(111)
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
     ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
@@ -1389,6 +1410,8 @@ if __name__ == "__main__":
 
     # plot F1
     fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1424,6 +1447,8 @@ if __name__ == "__main__":
 
     data = pd.DataFrame(plot_box)
     print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1437,6 +1462,8 @@ if __name__ == "__main__":
     # plt.show()
 
     fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
@@ -1448,10 +1475,10 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
 
     # avg
-    ATTR_NAME = 'CreditScore'
+    ATTR_NAME = 'responsible'
     METHOD = 'avg'
 
-    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     # log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -1699,7 +1726,8 @@ if __name__ == "__main__":
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
-
+    rc('text', usetex=True)
+    rc('font', family='serif')
     ax1 = fig.add_subplot(111)
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
     ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
@@ -1729,6 +1757,8 @@ if __name__ == "__main__":
 
     # plot F1
     fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1764,6 +1794,8 @@ if __name__ == "__main__":
 
     data = pd.DataFrame(plot_box)
     print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1777,10 +1809,10 @@ if __name__ == "__main__":
     # plt.show()
 
     # update avg
-    ATTR_NAME = 'CreditScore'
+    ATTR_NAME = 'responsible'
     METHOD = 'avg'
 
-    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
 
     TYPE = METHOD + ATTR_NAME + 'update'
 
@@ -1966,6 +1998,8 @@ if __name__ == "__main__":
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
 
     ax1 = fig.add_subplot(111)
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
@@ -1996,6 +2030,8 @@ if __name__ == "__main__":
 
     # plot F1
     fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -2031,6 +2067,8 @@ if __name__ == "__main__":
 
     data = pd.DataFrame(plot_box)
     print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -2044,6 +2082,8 @@ if __name__ == "__main__":
     # plt.show()
 
     fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
@@ -2057,6 +2097,8 @@ if __name__ == "__main__":
 
     # final three methods compare
     fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1DMM[0], color="r", linestyle="-", marker="s", linewidth=1)
     l3 = plt.plot(x_axis, F1avg[0], color="g", linestyle="-", marker="s", linewidth=1)
@@ -2069,6 +2111,8 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'threedot' + '.svg')
 
     fig7 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", linewidth=2)
     l2 = plt.plot(x_axis, F1DMM[0], color="r", linestyle="-", linewidth=2)
     l3 = plt.plot(x_axis, F1avg[0], color="g", linestyle="-", linewidth=2)
@@ -2081,6 +2125,8 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'threenodot' +'.svg')
 
     fig8 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[1], color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1DMM[1], color="r", linestyle="-", marker="s", linewidth=1)
     l3 = plt.plot(x_axis, F1avg[1], color="g", linestyle="-", marker="s", linewidth=1)
@@ -2093,6 +2139,8 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'threedotupdate' + '.svg')
 
     fig9 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[1], color="b", linestyle="-", linewidth=2)
     l2 = plt.plot(x_axis, F1DMM[1], color="r", linestyle="-", linewidth=2)
     l3 = plt.plot(x_axis, F1avg[1], color="g", linestyle="-", linewidth=2)
