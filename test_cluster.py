@@ -1,4 +1,5 @@
 from __future__ import division, print_function, absolute_import
+from matplotlib import rc
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
 from scipy.spatial.distance import pdist
@@ -96,14 +97,277 @@ plt.yscale('log')
 plt.show()
 '''
 
-y = np.array([0.00031656 ,0.0005384  ,0.00119314, 0.00079948 ,0.00076642, 0.00021545,
- 0.00053412, 0.00035174 ,0.00030837 ,0.00101519, 0.00063727, 0.00053139,
- 0.00090698, 0.00103637 ,0.00062803])
-Z = linkage(y, method='average')
-print(Z)
-print(cophenet(Z, y))
-dn = dendrogram(Z)
-plt.title('Hierarchical Clustering Dendrogram')
-plt.xlabel('Attribute Value')
-plt.ylabel('Distance')
+# y = np.array([0.00200144 ,0.01357403 ,0.0084349 , 0.00392522 ,0.012375 ,  0.00893385,
+#  0.00513085, 0.00127037 ,0.01103749 ,0.00154929 ,0.00766808, 0.00339415,
+#  0.00387665 ,0.00554735 ,0.01107205])
+# Z = linkage(y, method='average')
+# print(Z)
+# print(cophenet(Z, y))
+# dn = dendrogram(Z,labels=np.array(['25000', '15000', '7000', '10000','12000','8000']))
+# plt.title('Hierarchical Clustering Dendrogram')
+# plt.xlabel('Loan Amount')
+# plt.ylabel('Distance')
+# plt.show()
+
+# x= range(1,8)
+# fit =[1, 0.980399804,0.980360337,0.980360337,0.980360337,0.980360337,0.980345158]
+# prec= [0.843,0.898949651,0.898949651,0.898949651,0.898949651,0.898949651,0.898949651]
+# f1 = [0.914812805,0.935093506,0.935071146,0.935071146,0.935071146,0.935071146,0.935062546]
+
+# DMM
+# fit=[1,0.999964503
+# ,
+# 0.980369445
+# ,
+# 0.978596109
+# ,
+# 0.971961187
+# ,
+# 0.939703183
+# ,
+# 0.933902291
+# ]
+# prec = [0.843,0.843014666
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ]
+# f1 = [0.914812805,0.914798851,
+# 0.935074236
+# ,
+# 0.934121031
+# ,
+# 0.930572662
+# ,
+# 0.912087997
+# ,
+# 0.908728049
+# ]
+
+#DFG
+# fit=[1,0.999964503
+# ,
+# 0.980369445
+# ,
+# 0.980156932
+# ,
+# 0.980156932
+# ,
+# 0.980156932
+# ,
+# 0.979983793
+# ]
+#
+# prec=[0.843,0.843014666
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ,
+# 0.898949651
+# ]
+#
+# f1=[0.914812805,0.914798851
+# ,
+# 0.935074236
+# ,
+# 0.934953838
+# ,
+# 0.934953838
+# ,
+# 0.934953838
+# ,
+# 0.934861256]
+
+
+#BPIC 2017
+# x= range(0,4)
+# fit=[1,0.855,0.615,0.6125]
+# prec = [0.83,0.915,1,1]
+# plt.figure(1)
+# plt.subplot(1, 2, 1)
+# plt.plot(x, fit, color="r", linestyle="-", marker="o", linewidth=1
+# plt.xlabel("Depth")
+# plt.ylabel("Fitness")
+# plt.figure(1)
+# plt.subplot(1, 2, 2)
+# plt.plot(x, prec, color="b", linestyle="-", marker="o", linewidth=1)
+# plt.xlabel("Depth")
+# plt.ylabel("Precision")
+# plt.show()
+# fig = plt.figure()
+#
+# ax1 = fig.add_subplot(111)
+# ax1.plot(x, fit, color="r", linestyle="-", marker="s", linewidth=1,label='Fitness') # 画图
+# # ax1.set_ylim(0,1.02)
+# ax1.set_ylabel('Fitness')
+# ax1.set_xlabel('Num. of Cluster')
+# ax1.set_xticks(x)
+# ax1.yaxis.label.set_color('r')
+# for tl in ax1.get_yticklabels():
+#     tl.set_color('r')
+# ax2 = ax1.twinx()
+#
+# ax2.plot(x, prec, color="b", linestyle="-", marker="s", linewidth=1,label='Precision') # 画图
+# # ax2.set_ylim(0,1.02)
+# ax2.set_ylim(np.min(prec)-0.01,1)
+# ax2.set_ylabel('Precision')
+# ax2.yaxis.label.set_color('b')
+# for tl in ax2.get_yticklabels():
+#     tl.set_color('b')
+# fig.show()
+# fig2 = plt.figure()
+# plt.plot(x, f1, color="b", linestyle="-", marker="s", linewidth=1)
+# plt.ylim(np.min(f1)-0.01,1)
+# # plt.ylim(0,1)
+# plt.xlabel("Num. of Cluster")
+# plt.ylabel("F1-Score")
+# plt.show()
+
+
+
+# # fig for f1 scores
+# x= range(1,8)
+# f1dfg=[0.914812805,0.914798851
+# ,
+# 0.935074236
+# ,
+# 0.934953838
+# ,
+# 0.934953838
+# ,
+# 0.934953838
+# ,
+# 0.934861256]
+# f1dfg_update=[0.914812805,0.914810069
+# ,
+# 0.935081466
+# ,
+# 0.935069076
+# ,
+# 0.934953838
+# ,
+# 0.934953838
+# ,
+# 0.934892025
+# ]
+# f1DMM = [0.914812805,0.914798851,
+# 0.935074236
+# ,
+# 0.934121031
+# ,
+# 0.930572662
+# ,
+# 0.912087997
+# ,
+# 0.908728049
+# ]
+# f1avg = [0.914812805,0.935093506,0.935071146,0.935071146,0.935071146,0.935071146,0.935062546]
+# fig = plt.figure()
+# l1=plt.plot(x, f1DMM, color="b", linestyle="--", marker="s", linewidth=1)
+# l2=plt.plot(x, f1dfg, color="r", linestyle="-", marker="s", linewidth=1)
+#
+# l3=plt.plot(x, f1avg, color="g", linestyle="-", marker="s", linewidth=1)
+# plt.ylim(np.min(f1DMM)-0.01,1)
+# plt.legend([l1, l2,l3], labels=['DMM', 'DFG','AVG'],  loc='best')
+# # plt.ylim(0,1)
+# plt.xlabel("Num. of Cluster")
+# plt.ylabel("F1-Score")
+# plt.show()
+
+# #compare update or not
+# l1=plt.plot(x, f1dfg, color="b", linestyle="-", marker="s", linewidth=1)
+# l2=plt.plot(x, f1dfg_update, color="r", linestyle="-", marker="o", linewidth=1)
+# # plt.ylim(np.min(f1dfg)-0.01,1)
+# plt.legend([l1, l2], labels=['DFG', 'DFG_update'],  loc='best')
+# # plt.ylim(0,1)
+# plt.xlabel("Num. of Cluster")
+# plt.ylabel("F1-Score")
+# plt.show()
+
+
+# df = pd.DataFrame(np.random.rand(10, 1), columns=['A', 'B', 'C', 'D', 'E'])
+#
+# plt.figure(figsize=(10, 4))
+#
+# f = df.boxplot(sym='o',vert = True,showfliers = True)
+#
+# plt.plot(range(1,6), np.random.rand(5, 1), color="g", linestyle="-", marker="s", linewidth=1)
+# plt.show()
+
+
+
+# s1 = pd.Series(np.array([0.62,1,0.945]))
+# s2 = pd.Series(np.array([0.62,1,0.945,0.815]))
+# s3 = pd.Series(np.array([0.62,1,0.945,0.815,0.815]))
+# s4 = pd.Series(np.array([0.62,1,0.945,0.815,0.815,0.815]))
+# s5 = pd.Series(np.array([0.62,1,0.945,0.815,0.815,0.815,0.923]))
+
+#boxplot DMM
+# s0 = pd.Series(np.array([0.914812805]))
+# s1 = pd.Series(np.array([0.765432099,0.914812805,0.971722365]))
+# s2 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.954521694]))
+# s3 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.954521694,0.911268372]))
+# s4 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.954521694,0.911268372,0.959958398]))
+# s5 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.954521694,0.911268372,0.959958398,0.954521694]))
+
+#DFG
+# s0 = pd.Series(np.array([0.914812805]))
+# s1 = pd.Series(np.array([0.765432099,0.914812805,0.971722365]))
+# s2 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.898071625]))
+# s3 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.898071625,0.898071625]))
+# s4 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.898071625,0.898071625,0.898071625]))
+# s5 = pd.Series(np.array([0.765432099,0.914812805,0.971722365,0.898071625,0.898071625,0.898071625,0.959958398]))
+
+#AVG
+# s0 = pd.Series(np.array([0.914812805]))
+# s1 = pd.Series(np.array([0.898071625,0.914812805,0.971722365]))
+# s2 = pd.Series(np.array([0.898071625,0.898071625,0.914812805,0.971722365]))
+# s3 = pd.Series(np.array([0.898071625,0.898071625,0.914812805,0.971722365,0.898071625]))
+# s4 = pd.Series(np.array([0.898071625,0.898071625,0.914812805,0.971722365,0.898071625,0.898071625]))
+# s5 = pd.Series(np.array([0.898071625,0.898071625,0.914812805,0.971722365,0.898071625,0.898071625,0.898071625]))
+# data = pd.DataFrame({"1":s0, "2":s0,"3": s1, "4": s2, "5": s3, "6": s4,"7":s5})
+# print(data)
+# plt.plot(range(1,8), f1DMM, color="b", linestyle="-", marker="s", linewidth=1)
+# data.boxplot(sym='o')
+#
+# plt.ylim(0.74,1)
+# plt.xlabel("Num. of Cluster")
+# plt.ylabel("F1-Score")
+# plt.grid(axis='x')
+# plt.show()
+
+
+
+#Receipt
+dfg= {'1': 0.2449566096779114, '2': 0.24640818212144894, '3': 0.24645205009656512, '4': 0.24719404833834047, '5': 0.24826074444652005, '6': 0.2617804581738966, '7': 0.27639472285599204, '8': 0.3447425563887006, '9': 0.3464888826844202, '10': 0.34719989283229297, '11': 0.3070841921534124, '12': 0.3066532744259339, '13': 0.3126335605058499, '14': 0.4301175913668744, '15': 0.4366424958973945, '16': 0.4423642683882837, '17': 0.42636556323608443, '18': 0.6442167152515513, '19': 0.6682346218043699, '20': 0.6776970885418656, '21': 0.6638192565766592, '22': 0.617234025519495, '23': 0.617280114110985}
+f1dfg = dfg.values()
+dfgup ={'1': 0.2449566096779114, '2': 0.24640818212144894, '3': 0.24645205009656512, '4': 0.24751874620474468, '5': 0.24826074444652005, '6': 0.2617804581738966, '7': 0.27639472285599204, '8': 0.3447425563887006, '9': 0.30432644424743194, '10': 0.3038955265199534, '11': 0.3124008538270108, '12': 0.3174471485417448, '13': 0.3192898582238419, '14': 0.5441174386220617, '15': 0.5697821100720859, '16': 0.6004824849611563, '17': 0.6088445043616922, '18': 0.699916370449059, '19': 0.6999163704490591, '20': 0.6545515749623987, '21': 0.6250981302997787, '22': 0.6251442188912688, '23': 0.617280114110985}
+f1dfg_update = dfgup.values()
+
+avg ={'1': 0.2449566096779114, '2': 0.24640818212144894, '3': 0.24645205009656512, '4': 0.24751874620474468, '5': 0.24826074444652005, '6': 0.2617804581738966, '7': 0.26243566225903336, '8': 0.31070647848218863, '9': 0.31310057209381903, '10': 0.3460579649569415, '11': 0.30573823620205054, '12': 0.3474779536222246, '13': 0.34839299184610795, '14': 0.3556723004173724, '15': 0.3605924760757178, '16': 0.36648758750587235, '17': 0.3740585596880312, '18': 0.3874190988330173, '19': 0.39231796318617895, '20': 0.6008454164566367, '21': 0.608872006118959, '22': 0.617234025519495, '23': 0.617280114110985}
+f1avg = avg.values()
+x= range(1,24)
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+l1=plt.plot(x, f1dfg, color="b", linestyle="-", linewidth=2)
+l2=plt.plot(x, f1dfg_update, color="r", linestyle="-" ,linewidth=2)
+l3=plt.plot(x, f1avg, color="g", linestyle="-", linewidth=2)
+plt.xticks(x)
+plt.ylim(0,1.04)
+plt.legend([l1, l2,l3], labels=['DFG', 'DMM','AVG'],  loc='best')
+# plt.ylim(0,1)
+plt.xlabel("Num. of Cluster")
+plt.ylabel("F1-Score")
 plt.show()
