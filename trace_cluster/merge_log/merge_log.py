@@ -315,7 +315,7 @@ if __name__ == "__main__":
     #         length_li.append(length)
     #     print(length_li)
 
-    plot_clu = 20
+    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -631,7 +631,7 @@ if __name__ == "__main__":
     #         length_li.append(length)
     #     print(length_li)
 
-    plot_clu = 20
+    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
