@@ -1,5 +1,6 @@
 from __future__ import division, print_function, absolute_import
 from matplotlib import rc
+# rc('font',**{'family':'sans-serif'})
 import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
 from scipy.spatial.distance import pdist
@@ -366,7 +367,7 @@ l2=plt.plot(x, f1dfg_update, color="r", linestyle="-" ,linewidth=2)
 l3=plt.plot(x, f1avg, color="g", linestyle="-", linewidth=2)
 plt.xticks(x)
 plt.ylim(0,1.04)
-plt.legend([l1, l2,l3], labels=['DFG', 'DMM','AVG'],  loc='best')
+plt.legend([l1, l2,l3], labels=['DFG_update', 'DMM','AVG'],  loc='best')
 # plt.ylim(0,1)
 plt.xlabel("Num. of Cluster")
 plt.ylabel("F1-Score")
