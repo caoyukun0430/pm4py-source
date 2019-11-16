@@ -1,6 +1,7 @@
 import pm4pycvxopt
 from matplotlib import rc
 import matplotlib.pyplot as plt
+import seaborn as sns
 from functools import reduce
 import pandas as pd
 import scipy.spatial
@@ -9,6 +10,7 @@ import numpy as np
 import json
 import sys
 import time
+from collections import Counter
 from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
@@ -320,6 +322,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_length = []
     clu_list_dict = dict()
     length_li = []
     fit_li = []
@@ -341,6 +344,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
         else:
@@ -352,14 +356,14 @@ if __name__ == "__main__":
             F1_li = []
             for j in range(0, i):
                 length = len(clu_list_log[j])
-                if length !=0:
+                if length != 0:
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
                     #     clu_list_log[j])
                     # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -423,13 +427,15 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
-            print("plot_fit",plot_fit)
-            print("plot_prec",plot_prec)
-            print("plot_F1",plot_F1)
+            plot_length.append(length_li)
+            print("plot_fit", plot_fit)
+            print("plot_prec", plot_prec)
+            print("plot_F1", plot_F1)
 
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    print('length',plot_length)
 
     F1val= list(plot_F1.values())
     # print(plot_box)
@@ -564,6 +570,37 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH+'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
+    #show cluster size
+    fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist=(np.ones(i+1) * (i+1))
+        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    plt.xticks(range(1,24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH+'clustersize' + '_' + TYPE + '.svg')
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        a=sorted(dict(Counter(plot_length[i])).items(),key=lambda x:x[0])
+        weights=[40*a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
+
 
     #update dfg
     ATTR_NAME = 'responsible'
@@ -636,6 +673,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_length = []
     clu_list_dict = dict()
     length_li = []
     fit_li = []
@@ -657,6 +695,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
         else:
@@ -675,7 +714,7 @@ if __name__ == "__main__":
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -739,6 +778,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -746,6 +786,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    print('length', plot_length)
     F1valup= list(plot_F1.values())
     F1dfg = [F1val, F1valup]
     # print(plot_box)
@@ -838,9 +879,39 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
+    # show cluster size
+    fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
 
     # w w/o F1 compare
-    fig5 = plt.figure()
+    fig7 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
@@ -948,6 +1019,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_length = []
     clu_list_dict = dict()
     length_li = []
     fit_li = []
@@ -969,6 +1041,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
         else:
@@ -987,7 +1060,7 @@ if __name__ == "__main__":
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -1051,6 +1124,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -1058,6 +1132,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    print('length', plot_length)
     F1val = list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
@@ -1188,6 +1263,35 @@ if __name__ == "__main__":
     plt.grid(axis='x')
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
+    # show cluster size
+    fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
     # update DMM
     ATTR_NAME = 'responsible'
@@ -1259,6 +1363,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_length = []
     clu_list_dict = dict()
     length_li = []
     fit_li = []
@@ -1280,6 +1385,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
         else:
@@ -1298,7 +1404,7 @@ if __name__ == "__main__":
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -1362,6 +1468,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -1369,6 +1476,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    print('length', plot_length)
     F1valup=list(plot_F1.values())
     F1DMM = [F1val, F1valup]
     # print(plot_box)
@@ -1461,7 +1569,37 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
+    # show cluster size
     fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
+    fig7 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
@@ -1567,6 +1705,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_length = []
     clu_list_dict = dict()
     length_li = []
     fit_li = []
@@ -1588,6 +1727,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
         else:
@@ -1606,7 +1746,7 @@ if __name__ == "__main__":
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -1670,6 +1810,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -1677,6 +1818,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    print('length', plot_length)
     F1val=list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
@@ -1808,6 +1950,36 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
+    # show cluster size
+    fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
     # update avg
     ATTR_NAME = 'responsible'
     METHOD = 'avg'
@@ -1878,6 +2050,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_length = []
     clu_list_dict = dict()
     length_li = []
     fit_li = []
@@ -1899,6 +2072,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
         else:
@@ -1917,7 +2091,7 @@ if __name__ == "__main__":
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j],log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -1981,6 +2155,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -1988,6 +2163,7 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
+    print('length', plot_length)
     F1valup=list(plot_F1.values())
     F1avg = [F1val,F1valup]
     # print(plot_box)
@@ -2081,7 +2257,37 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
+    # show cluster size
     fig5 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = (np.ones(i + 1) * (i + 1))
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
+    fig7 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
@@ -2096,7 +2302,7 @@ if __name__ == "__main__":
 
 
     # final three methods compare
-    fig6 = plt.figure()
+    fig8 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", marker="s", linewidth=1)
@@ -2110,7 +2316,7 @@ if __name__ == "__main__":
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'threedot' + '.svg')
 
-    fig7 = plt.figure()
+    fig9 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", linewidth=2)
@@ -2124,7 +2330,7 @@ if __name__ == "__main__":
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'threenodot' +'.svg')
 
-    fig8 = plt.figure()
+    fig10 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[1], color="b", linestyle="-", marker="s", linewidth=1)
@@ -2138,7 +2344,7 @@ if __name__ == "__main__":
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'threedotupdate' + '.svg')
 
-    fig9 = plt.figure()
+    fig11 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1dfg[1], color="b", linestyle="-", linewidth=2)
