@@ -885,7 +885,7 @@ if __name__ == "__main__":
     rc('font', family='serif')
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -900,8 +900,8 @@ if __name__ == "__main__":
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -1269,7 +1269,7 @@ if __name__ == "__main__":
     rc('font', family='serif')
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -1284,8 +1284,8 @@ if __name__ == "__main__":
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -1575,7 +1575,7 @@ if __name__ == "__main__":
     rc('font', family='serif')
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -1590,8 +1590,8 @@ if __name__ == "__main__":
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i],marker="o", s=weights)
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -1956,7 +1956,7 @@ if __name__ == "__main__":
     rc('font', family='serif')
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -1971,8 +1971,8 @@ if __name__ == "__main__":
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i],  marker="o", s=weights)
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -2263,7 +2263,7 @@ if __name__ == "__main__":
     rc('font', family='serif')
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], color='b', fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
@@ -2278,8 +2278,8 @@ if __name__ == "__main__":
     for i in range(0, 23):
         xlist = (np.ones(i + 1) * (i + 1))
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [40 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i], color='b', marker="o", s=weights)
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plt.scatter(xlist, plot_length[i],  marker="o", s=weights)
     plt.xticks(range(1, 24))
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
