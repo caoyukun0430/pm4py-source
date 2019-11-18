@@ -436,9 +436,10 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length',plot_length)
+    print('plot_box',plot_box)
 
     F1val= list(plot_F1.values())
-    # print(plot_box)
+
     # print(clu_list_dict)
 
     x_axis = range(1, plot_clu + 1)
@@ -787,8 +788,10 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
+    print('plot_box', plot_box)
     F1valup= list(plot_F1.values())
     F1dfg = [F1val, F1valup]
+    print('F1compare',F1dfg)
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -1133,6 +1136,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
+    print('plot_box', plot_box)
     F1val = list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
@@ -1477,8 +1481,10 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
+    print('plot_box', plot_box)
     F1valup=list(plot_F1.values())
     F1DMM = [F1val, F1valup]
+    print('F1compare',F1DMM)
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -1819,6 +1825,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
+    print('plot_box', plot_box)
     F1val=list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
@@ -2164,8 +2171,10 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
+    print('plot_box', plot_box)
     F1valup=list(plot_F1.values())
     F1avg = [F1val,F1valup]
+    print('F1compare',F1avg)
     # print(plot_box)
     # print(clu_list_dict)
 
