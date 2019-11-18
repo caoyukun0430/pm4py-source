@@ -322,6 +322,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_box2 = dict()
     plot_length = []
     clu_list_dict = dict()
     length_li = []
@@ -344,6 +345,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
             plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
@@ -427,6 +429,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
             plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
@@ -436,7 +439,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length',plot_length)
-    print('plot_box',plot_box)
+    print('plot_box',plot_box2)
 
     F1val= list(plot_F1.values())
 
@@ -676,6 +679,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_box2 = dict()
     plot_length = []
     clu_list_dict = dict()
     length_li = []
@@ -698,6 +702,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
             plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
@@ -781,6 +786,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
             plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
@@ -790,7 +796,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
-    print('plot_box', plot_box)
+    print('plot_box', plot_box2)
     F1valup= list(plot_F1.values())
     F1dfg = [F1val, F1valup]
     print('F1compare',F1dfg)
@@ -1026,6 +1032,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_box2 = dict()
     plot_length = []
     clu_list_dict = dict()
     length_li = []
@@ -1048,6 +1055,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
             plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
@@ -1131,6 +1139,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
             plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
@@ -1140,7 +1149,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
-    print('plot_box', plot_box)
+    print('plot_box', plot_box2)
     F1val = list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
@@ -1373,6 +1382,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_box2 = dict()
     plot_length = []
     clu_list_dict = dict()
     length_li = []
@@ -1395,6 +1405,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
             plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
@@ -1478,6 +1489,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
             plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
@@ -1487,7 +1499,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
-    print('plot_box', plot_box)
+    print('plot_box', plot_box2)
     F1valup=list(plot_F1.values())
     F1DMM = [F1val, F1valup]
     print('F1compare',F1DMM)
@@ -1720,6 +1732,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_box2 = dict()
     plot_length = []
     clu_list_dict = dict()
     length_li = []
@@ -1742,6 +1755,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
             plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
@@ -1825,6 +1839,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
             plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
@@ -1834,7 +1849,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
-    print('plot_box', plot_box)
+    print('plot_box', plot_box2)
     F1val=list(plot_F1.values())
     # print(plot_box)
     # print(clu_list_dict)
@@ -2068,6 +2083,7 @@ if __name__ == "__main__":
     plot_prec = dict()
     plot_F1 = dict()
     plot_box = dict()
+    plot_box2 = dict()
     plot_length = []
     clu_list_dict = dict()
     length_li = []
@@ -2090,6 +2106,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = precision
             plot_F1[str(i)] = F1
             plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
             plot_length.append([len(log)])
             tempclu_list_log = [list_log]
             tempclu_list = [list_of_vals]
@@ -2173,6 +2190,7 @@ if __name__ == "__main__":
             plot_prec[str(i)] = np.average(prec_li, weights=length_li)
             plot_F1[str(i)] = np.average(F1_li, weights=length_li)
             plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
             plot_length.append(length_li)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
@@ -2182,7 +2200,7 @@ if __name__ == "__main__":
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
     print('length', plot_length)
-    print('plot_box', plot_box)
+    print('plot_box', plot_box2)
     F1valup=list(plot_F1.values())
     F1avg = [F1val,F1valup]
     print('F1compare',F1avg)
