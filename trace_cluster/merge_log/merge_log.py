@@ -572,29 +572,31 @@ if __name__ == "__main__":
     # plt.show()
 
     #show cluster size
-    fig5 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist=(np.ones(i+1) * (i+1))
-        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    plt.xticks(range(1,24))
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH+'clustersize' + '_' + TYPE + '.svg')
+    # fig5 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # for i in range(0, 23):
+    #     xlist=(np.ones(i+1) * (i+1))
+    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # plt.xticks(range(1,24))
+    # plt.yscale('log')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("Cluster Size")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH+'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
-        a=sorted(dict(Counter(plot_length[i])).items(),key=lambda x:x[0])
-        weights=[20*a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plot_length[i] = sorted(plot_length[i], reverse=False)
         plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
@@ -883,29 +885,31 @@ if __name__ == "__main__":
     # plt.show()
 
     # show cluster size
-    fig5 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    plt.xticks(range(1, 24))
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    # fig5 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # for i in range(0, 23):
+    #     xlist = (np.ones(i + 1) * (i + 1))
+    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # plt.xticks(range(1, 24))
+    # plt.yscale('log')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("Cluster Size")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plot_length[i] = sorted(plot_length[i], reverse=False)
         plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
@@ -1268,29 +1272,31 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
     # show cluster size
-    fig5 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    plt.xticks(range(1, 24))
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    # fig5 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # for i in range(0, 23):
+    #     xlist = (np.ones(i + 1) * (i + 1))
+    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # plt.xticks(range(1, 24))
+    # plt.yscale('log')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("Cluster Size")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plot_length[i] = sorted(plot_length[i], reverse=False)
         plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
@@ -1576,29 +1582,32 @@ if __name__ == "__main__":
     # plt.show()
 
     # show cluster size
-    fig5 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    plt.xticks(range(1, 24))
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    # fig5 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # for i in range(0, 23):
+    #
+    #     xlist = (np.ones(i + 1) * (i + 1))
+    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # plt.xticks(range(1, 24))
+    # plt.yscale('log')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("Cluster Size")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i],marker="o", s=weights)
+        plot_length[i] = sorted(plot_length[i], reverse=False)
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
@@ -1958,29 +1967,31 @@ if __name__ == "__main__":
     # plt.show()
 
     # show cluster size
-    fig5 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    plt.xticks(range(1, 24))
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    # fig5 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # for i in range(0, 23):
+    #     xlist = (np.ones(i + 1) * (i + 1))
+    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # plt.xticks(range(1, 24))
+    # plt.yscale('log')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("Cluster Size")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i],  marker="o", s=weights)
+        plot_length[i] = sorted(plot_length[i], reverse=False)
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
@@ -2267,29 +2278,31 @@ if __name__ == "__main__":
     # plt.show()
 
     # show cluster size
-    fig5 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
-        sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    plt.xticks(range(1, 24))
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    # fig5 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # for i in range(0, 23):
+    #     xlist = (np.ones(i + 1) * (i + 1))
+    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # plt.xticks(range(1, 24))
+    # plt.yscale('log')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("Cluster Size")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = (np.ones(i + 1) * (i + 1))
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plt.scatter(xlist, plot_length[i],  marker="o", s=weights)
+        plot_length[i] = sorted(plot_length[i], reverse=False)
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
