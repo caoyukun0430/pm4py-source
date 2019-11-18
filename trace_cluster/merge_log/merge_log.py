@@ -1299,7 +1299,7 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        xlist = np.ones(len(plot_length[i])) * (i+1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
@@ -1613,7 +1613,7 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, 23):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        xlist = np.ones(len(plot_length[i])) * (i+1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
