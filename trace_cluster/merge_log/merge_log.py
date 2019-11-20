@@ -1589,7 +1589,7 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, plot_clu):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        xlist = np.ones(len(plot_length[i])) * (i+1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
@@ -1839,7 +1839,7 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, plot_clu):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        xlist = np.ones(len(plot_length[i])) * (i+1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
@@ -1860,6 +1860,7 @@ if __name__ == "__main__":
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
     plt.ylim(0, 1.04)
     plt.legend([l1, l2], labels=['AVG', 'AVG-recomputing'], loc='best')
     plt.title('Leven-AVG')
@@ -2171,7 +2172,7 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, plot_clu):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        xlist = np.ones(len(plot_length[i])) * (i+1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
@@ -2416,7 +2417,7 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     for i in range(0, plot_clu):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        xlist = np.ones(len(plot_length[i])) * (i+1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
@@ -2483,7 +2484,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     # log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -2856,7 +2857,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
 
     TYPE = METHOD + ATTR_NAME + 'FTupdate'
 
@@ -3590,7 +3591,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     METHOD = 'avg'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
 
     TYPE = METHOD + ATTR_NAME + 'FTupdate'
 
