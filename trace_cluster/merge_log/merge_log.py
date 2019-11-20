@@ -1288,7 +1288,7 @@ if __name__ == "__main__":
     METHOD = 'avg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -1611,7 +1611,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     METHOD = 'avg'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -1872,7 +1872,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -2188,7 +2188,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
