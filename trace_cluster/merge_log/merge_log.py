@@ -18,6 +18,7 @@ from trace_cluster import filter_subsets
 from pm4py.objects.log.importer.xes import factory as xes_importer
 from pm4py.objects.log.exporter.xes import factory as xes_exporter
 from pm4py.algo.discovery.inductive import factory as inductive_miner
+from pm4py.algo.discovery.alpha import factory as alpha_miner
 from pm4py.evaluation.replay_fitness import factory as replay_factory
 from pm4py.visualization.petrinet import factory as pn_vis_factory
 from pm4py.evaluation.precision import factory as precision_factory
@@ -226,6 +227,7 @@ if __name__ == "__main__":
     # METHOD = str(sys.argv[3])
 
     # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
+    '''
     F1all = dict()
     # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
     # ATTR_NAME = 'CreditScore'
@@ -1277,21 +1279,16 @@ if __name__ == "__main__":
 
     F1all['BPIC2012_ADMM'] = list(plot_F1.values())
 
-    print('F1all',F1all)
+    print('F1all',F1all)'''
 
 
-
-
-
-
-
-    '''
+    # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
     LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
     ATTR_NAME = 'responsible'
-    METHOD = 'dfg'
+    METHOD = 'avg'
 
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
     # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
@@ -1330,20 +1327,20 @@ if __name__ == "__main__":
     start = time.time()
     if METHOD == 'dfg':
         print("dfg is using!")
-        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
     elif METHOD == 'DMM':
         print("DMM is using!")
-        y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
+        y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
     elif METHOD == 'avg':
         print("avg is using!")
-        y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
+        y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
     # print(y)
     Z = linkage(y, method='average')
     # # print("z",Z.type)
     # print("Z",Z)
     # print(np.shape(Z1))
     # dist_mat = squareform(y)
-    # Z = linkage_avg.linkage_DMM_update(list_log, dist_mat,alpha,percent)
+    # Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat,alpha,percent)
     # print("shape",np.shape(Z))
 
     # print("Z",len(Z))
@@ -1360,8 +1357,600 @@ if __name__ == "__main__":
     plt.savefig(PIC_PATH+'cluster_wupdate' + '_' + TYPE + '.svg')
     # plt.show()
 
-    # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
+    # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
     # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,METHOD, ATTR_NAME)
+    # for i in range(0,3):
+    #     net, initial_marking, final_marking = alpha_miner.apply(clu_list_log3[i])
+    #     parameters = {"format": "svg"}
+    #     gviz = pn_vis_factory.apply(net, initial_marking, final_marking, parameters={"format": "svg"})
+    #     filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(
+    #         i + 1) + ".svg"
+    #     print(filenname)
+    #     pn_vis_factory.save(gviz, filenname)
+    #
+    # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals,METHOD, ATTR_NAME)
+
+    # plot_clu = 7
+    # for i in range(2, plot_clu + 1):
+    #     clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+    #     length_li = []
+    #     for j in range(0, i):
+    #         length = len(clu_list_log[j])
+    #         length_li.append(length)
+    #     print(length_li)
+
+
+    plot_clu = 23
+    plot_fit = dict()
+    plot_prec = dict()
+    plot_F1 = dict()
+    plot_box = dict()
+    plot_box2 = dict()
+    plot_length = []
+    clu_list_dict = dict()
+    length_li = []
+    fit_li = []
+    prec_li = []
+    F1_li = []
+    for i in range(1, plot_clu + 1):
+        if i == 1:
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
+            fitness, precision = get_fit_prec_hpc(log, log)
+            F1 = 2 * fitness * precision / (fitness + precision)
+            print("fit", fitness)
+            print("prec", precision)
+            plot_fit[str(i)] = fitness
+            plot_prec[str(i)] = precision
+            plot_F1[str(i)] = F1
+            plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
+            plot_length.append([len(log)])
+            tempclu_list_log = [list_log]
+            tempclu_list = [list_of_vals]
+        else:
+            # print("tempclu_list",tempclu_list)
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+            length_li = []
+            fit_li = []
+            prec_li = []
+            F1_li = []
+            for j in range(0, i):
+                length = len(clu_list_log[j])
+                if length != 0:
+                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                    #     clu_list_log[j])
+                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                inductive_final_marking, variant="alignments")['averageFitness']
+                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                     inductive_final_marking)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    F1 = 2 * fitness * precision / (fitness + precision)
+                    # individual info for each sublog
+                    length_li.append(length)
+                    fit_li.append(fitness)
+                    prec_li.append(precision)
+                    F1_li.append(F1)
+
+            # if len(clu_list_log[-1])!=0:
+            #     # print("lenclu_list_log",len(clu_list_log))
+            #     diff = [item for item in clu_list if not item in tempclu_list]
+            #     diff_old = [item for item in tempclu_list if not item in clu_list]
+            #     # print("diff",diff)
+            #     # print("diff_old", diff_old)
+            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
+            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
+            #     # print(tempclu_list)
+            #
+            #
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+            #     # print(len(tempclu_list_log))
+            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
+            #     # print("del",len(tempclu_list_log))
+            #     # clu_list_dict[str(i)] = clu_list
+            #
+            #
+            #
+            #     for j in range(0, 2):
+            #         length = len(clu_list_log[clu_list.index(diff[j])])
+            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #             clu_list_log[clu_list.index(diff[j])])
+            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                        inductive_final_marking, variant="alignments")['averageFitness']
+            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                             inductive_final_marking)
+            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+            #
+            #     # print(length_li)
+            #     # print("fit", fit_li)
+            #     # print("prec", prec_li)
+            #     if (i > 2):
+            #         del length_li[tempclu_list.index(diff_old[0])]
+            #         del fit_li[tempclu_list.index(diff_old[0])]
+            #         del prec_li[tempclu_list.index(diff_old[0])]
+            #         del F1_li[tempclu_list.index(diff_old[0])]
+            #     del tempclu_list[tempclu_list.index(diff_old[0])]
+            # # print("del", tempclu_list)
+
+            print(length_li)
+            print("fit", fit_li)
+            print("prec", prec_li)
+            print("F1", F1_li)
+
+            plot_fit[str(i)] = np.average(fit_li, weights=length_li)
+            plot_prec[str(i)] = np.average(prec_li, weights=length_li)
+            plot_F1[str(i)] = np.average(F1_li, weights=length_li)
+            plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
+            plot_length.append(length_li)
+            print("plot_fit", plot_fit)
+            print("plot_prec", plot_prec)
+            print("plot_F1", plot_F1)
+
+    print("plot_fit", plot_fit)
+    print("plot_prec", plot_prec)
+    print("plot_F1", plot_F1)
+    print('length',plot_length)
+    print('plot_box',plot_box2)
+
+    F1val= list(plot_F1.values())
+
+    # print(clu_list_dict)
+
+    x_axis = range(1, plot_clu + 1)
+
+    # rescale to 0-1
+    # plot fit&prec
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    ax1 = plt.gca()
+    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
+    ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
+    ax1.set_ylim(0, 1.04)
+    ax1.set_ylabel('Fitness')
+    ax1.set_xlabel('Num. of Cluster')
+    ax1.set_xticks(x_axis)
+    ax1.invert_xaxis()
+    ax1.yaxis.label.set_color('r')
+    ax1.grid(axis='y')
+    for tl in ax1.get_yticklabels():
+        tl.set_color('r')
+    ax2 = ax1.twinx()
+
+    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+             label='Precision')
+    ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    ax2.set_ylim(0, 1.04)
+    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
+    ax2.set_ylabel('Precision')
+    ax2.yaxis.label.set_color('b')
+    for tl in ax2.get_yticklabels():
+        tl.set_color('b')
+    ax2.grid(axis='y')
+    fig.savefig(PIC_PATH+'fitprec_sca' + '_' + TYPE + '.svg')
+    # fig.show()
+
+    # plot F1
+    fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    plt.ylim(0, 1.04)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH+'f1_sca' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # rescale to 0-1
+    fig4 = plt.figure()
+    plot_box["2"] = plot_box["1"]
+
+
+    data = pd.DataFrame(plot_box)
+    print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    data.boxplot(sym='o',whis = 1)
+
+    plt.ylim(0, 1.04)
+    plt.gca().invert_xaxis()
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='x')
+    plt.savefig(PIC_PATH+'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, plot_clu):
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plot_length[i] = sorted(plot_length[i], reverse=False)
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
+
+
+
+
+
+    #update dfg
+    ATTR_NAME = 'responsible'
+    METHOD = 'avg'
+
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    runtime = dict()
+    # F1val = dict()
+    # METHOD = 'dfg'
+    # ATTR_NAME = 'RequestedAmount'
+
+    # sublog = xes_importer.apply(
+    #     "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\sublog_598.xes")
+    # log1 = xes_importer.apply(
+    #     "C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\merge_log\\log_3_0_dfg.xes")
+
+    percent = 1
+    alpha = 0.5
+    # ATTR_NAME = 'amount_applied0'
+    TYPE = METHOD + ATTR_NAME+'update'
+
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
+
+    # DFG test
+    start = time.time()
+    if METHOD == 'dfg':
+        print("dfg is using!")
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
+    elif METHOD == 'DMM':
+        print("DMM is using!")
+        y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
+    elif METHOD == 'avg':
+        print("avg is using!")
+        y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
+    # print(y)
+    # Z = linkage(y, method='average')
+    # # print("z",Z.type)
+    # print("Z",Z)
+    # print(np.shape(Z1))
+    dist_mat = squareform(y)
+    Z = linkage_avg.linkage_avg(list_log, dist_mat,alpha,percent)
+    # print("shape",np.shape(Z))
+
+    # print("Z",len(Z))
+    end = time.time()
+    runtime[TYPE] = end - start
+    # print(Z)
+    print("runtime" + TYPE, runtime[TYPE])
+
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    plot_clu = 23
+    plot_fit = dict()
+    plot_prec = dict()
+    plot_F1 = dict()
+    plot_box = dict()
+    plot_box2 = dict()
+    plot_length = []
+    clu_list_dict = dict()
+    length_li = []
+    fit_li = []
+    prec_li = []
+    F1_li = []
+    for i in range(1, plot_clu + 1):
+        if i == 1:
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
+            fitness, precision = get_fit_prec_hpc(log, log)
+            F1 = 2 * fitness * precision / (fitness + precision)
+            print("fit", fitness)
+            print("prec", precision)
+            plot_fit[str(i)] = fitness
+            plot_prec[str(i)] = precision
+            plot_F1[str(i)] = F1
+            plot_box[str(i)] = pd.Series(F1)
+            plot_box2[str(i)] = F1
+            plot_length.append([len(log)])
+            tempclu_list_log = [list_log]
+            tempclu_list = [list_of_vals]
+        else:
+            # print("tempclu_list",tempclu_list)
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+            length_li = []
+            fit_li = []
+            prec_li = []
+            F1_li = []
+            for j in range(0, i):
+                length = len(clu_list_log[j])
+                if length != 0:
+                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                    #     clu_list_log[j])
+                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                inductive_final_marking, variant="alignments")['averageFitness']
+                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                     inductive_final_marking)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    F1 = 2 * fitness * precision / (fitness + precision)
+                    # individual info for each sublog
+                    length_li.append(length)
+                    fit_li.append(fitness)
+                    prec_li.append(precision)
+                    F1_li.append(F1)
+
+            print(length_li)
+            print("fit", fit_li)
+            print("prec", prec_li)
+            print("F1", F1_li)
+
+            plot_fit[str(i)] = np.average(fit_li, weights=length_li)
+            plot_prec[str(i)] = np.average(prec_li, weights=length_li)
+            plot_F1[str(i)] = np.average(F1_li, weights=length_li)
+            plot_box[str(i)] = pd.Series(F1_li)
+            plot_box2[str(i)] = F1_li
+            plot_length.append(length_li)
+            print("plot_fit", plot_fit)
+            print("plot_prec", plot_prec)
+            print("plot_F1", plot_F1)
+
+    print("plot_fit", plot_fit)
+    print("plot_prec", plot_prec)
+    print("plot_F1", plot_F1)
+    print('length', plot_length)
+    print('plot_box', plot_box2)
+    F1valup= list(plot_F1.values())
+    F1avg = [F1val, F1valup]
+    print('F1compare',F1avg)
+    # print(plot_box)
+    # print(clu_list_dict)
+
+    x_axis = range(1, plot_clu + 1)
+
+    # rescale to 0-1
+    # plot fit&prec
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    ax1 = plt.gca()
+    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
+    ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
+    ax1.set_ylim(0, 1.04)
+    ax1.set_ylabel('Fitness')
+    ax1.set_xlabel('Num. of Cluster')
+    ax1.set_xticks(x_axis)
+    ax1.invert_xaxis()
+    ax1.yaxis.label.set_color('r')
+    ax1.grid(axis='y')
+    for tl in ax1.get_yticklabels():
+        tl.set_color('r')
+    ax2 = ax1.twinx()
+
+    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+             label='Precision')
+    ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    ax2.set_ylim(0, 1.04)
+    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
+    ax2.set_ylabel('Precision')
+    ax2.yaxis.label.set_color('b')
+    for tl in ax2.get_yticklabels():
+        tl.set_color('b')
+    ax2.grid(axis='y')
+    fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
+    # fig.show()
+
+    # plot F1
+    fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    plt.ylim(0, 1.04)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # rescale to 0-1
+    fig4 = plt.figure()
+    plot_box["2"] = plot_box["1"]
+
+    data = pd.DataFrame(plot_box)
+    print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    data.boxplot(sym='o', whis=1)
+
+    plt.ylim(0, 1.04)
+    plt.gca().invert_xaxis()
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='x')
+    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, plot_clu):
+        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plot_length[i] = sorted(plot_length[i], reverse=False)
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+
+
+    # w w/o F1 compare
+    fig7 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['AVG', 'AVG-recomputing'], loc='best')
+    plt.title('Leven-AVG')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
+
+
+    ATTR_NAME = 'responsible'
+    METHOD = 'DMM'
+
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    runtime = dict()
+    # F1val = dict()
+    # METHOD = 'dfg'
+    # ATTR_NAME = 'RequestedAmount'
+
+    # sublog = xes_importer.apply(
+    #     "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\sublog_598.xes")
+    # log1 = xes_importer.apply(
+    #     "C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\merge_log\\log_3_0_dfg.xes")
+
+    percent = 1
+    alpha = 0.5
+    # ATTR_NAME = 'amount_applied0'
+    TYPE = METHOD + ATTR_NAME
+
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
+
+    # DFG test
+    start = time.time()
+    if METHOD == 'dfg':
+        print("dfg is using!")
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
+    elif METHOD == 'DMM':
+        print("DMM is using!")
+        y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
+    elif METHOD == 'avg':
+        print("avg is using!")
+        y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
+    # print(y)
+    Z = linkage(y, method='average')
+    # # print("z",Z.type)
+    # print("Z",Z)
+    # print(np.shape(Z1))
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat,alpha,percent)
+    # print("shape",np.shape(Z))
+
+    # print("Z",len(Z))
+    end = time.time()
+    runtime[TYPE] = end - start
+    # print(Z)
+    print("runtime" + TYPE, runtime[TYPE])
+
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
+    # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,METHOD, ATTR_NAME)
+    # for i in range(0,3):
+    #     net, initial_marking, final_marking = alpha_miner.apply(clu_list_log3[i])
+    #     parameters = {"format": "svg"}
+    #     gviz = pn_vis_factory.apply(net, initial_marking, final_marking, parameters={"format": "svg"})
+    #     filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(
+    #         i + 1) + ".svg"
+    #     print(filenname)
+    #     pn_vis_factory.save(gviz, filenname)
     #
     # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals,METHOD, ATTR_NAME)
     # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals,METHOD, ATTR_NAME)
@@ -1498,67 +2087,28 @@ if __name__ == "__main__":
     print("plot_fit", plot_fit)
     print("plot_prec", plot_prec)
     print("plot_F1", plot_F1)
-    print('length',plot_length)
-    print('plot_box',plot_box2)
+    print('length', plot_length)
+    print('plot_box', plot_box2)
 
-    F1val= list(plot_F1.values())
+    F1val = list(plot_F1.values())
 
     # print(clu_list_dict)
 
     x_axis = range(1, plot_clu + 1)
-
-    # plot fit&prec
-    # fig = plt.figure()
-    #
-    # ax1 = fig.add_subplot(111)
-    # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    # ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
-    # # ax1.set_ylim(0,1.02)
-    # ax1.set_ylabel('Fitness')
-    # ax1.set_xlabel('Num. of Cluster')
-    # ax1.set_xticks(x_axis)
-    # ax1.yaxis.label.set_color('r')
-    # for tl in ax1.get_yticklabels():
-    #     tl.set_color('r')
-    # ax2 = ax1.twinx()
-    #
-    # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-    #          label='Precision')
-    # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # # ax2.set_ylim(0,1.02)
-    # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
-    # ax2.set_ylabel('Precision')
-    # ax2.yaxis.label.set_color('b')
-    # for tl in ax2.get_yticklabels():
-    #     tl.set_color('b')
-    # plt.grid(axis='y')
-    # fig.savefig(PIC_PATH+'fitprec' + '_' + TYPE + '.svg')
-    # # fig.show()
-    #
-    # # plot F1
-    # fig2 = plt.figure()
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
-    # # plt.ylim(0,1)
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH+'f1' + '_' + TYPE + '.svg')
-    # plt.show()
 
     # rescale to 0-1
     # plot fit&prec
     fig = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
-    ax1 = fig.add_subplot(111)
+    ax1 = plt.gca()
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
+    ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
     ax1.set_ylim(0, 1.04)
     ax1.set_ylabel('Fitness')
     ax1.set_xlabel('Num. of Cluster')
     ax1.set_xticks(x_axis)
+    ax1.invert_xaxis()
     ax1.yaxis.label.set_color('r')
     ax1.grid(axis='y')
     for tl in ax1.get_yticklabels():
@@ -1576,8 +2126,7 @@ if __name__ == "__main__":
     for tl in ax2.get_yticklabels():
         tl.set_color('b')
     ax2.grid(axis='y')
-
-    fig.savefig(PIC_PATH+'fitprec_sca' + '_' + TYPE + '.svg')
+    fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
     # fig.show()
 
     # plot F1
@@ -1587,36 +2136,18 @@ if __name__ == "__main__":
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
     # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
     plt.ylim(0, 1.04)
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
-    plt.savefig(PIC_PATH+'f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # plot boxplot
-    # fig3 = plt.figure()
-    # plot_box["2"] = plot_box["1"]
-    #
-    # data = pd.DataFrame(plot_box)
-    # print(data)
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # plt.xticks(x_axis)
-    # data.boxplot(sym='o',whis = 1)
-    #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # plt.grid(axis='x')
-    # plt.savefig(PIC_PATH+'f1_boxplot' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
     fig4 = plt.figure()
     plot_box["2"] = plot_box["1"]
-
 
     data = pd.DataFrame(plot_box)
     print(data)
@@ -1625,34 +2156,21 @@ if __name__ == "__main__":
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
-    data.boxplot(sym='o',whis = 1)
+    data.boxplot(sym='o', whis=1)
 
     plt.ylim(0, 1.04)
+    plt.gca().invert_xaxis()
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
-    plt.savefig(PIC_PATH+'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
-
-    #show cluster size
-    # fig5 = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # for i in range(0, 23):
-    #     xlist=(np.ones(i+1) * (i+1))
-    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    # plt.xticks(range(1,24))
-    # plt.yscale('log')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("Cluster Size")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH+'clustersize' + '_' + TYPE + '.svg')
 
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
-    for i in range(0, 23):
+    for i in range(0, plot_clu):
         xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
@@ -1666,48 +2184,63 @@ if __name__ == "__main__":
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
-
-
-    #update dfg
+    # update dfg
     ATTR_NAME = 'responsible'
-    METHOD = 'dfg'
+    METHOD = 'DMM'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
+    PIC_PATH = '/home/yukun/resultlog/Receipt/leven' + ATTR_NAME + '/'
+    # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    runtime = dict()
+    # F1val = dict()
+    # METHOD = 'dfg'
+    # ATTR_NAME = 'RequestedAmount'
 
-    TYPE = METHOD + ATTR_NAME+'update'
+    # sublog = xes_importer.apply(
+    #     "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\sublog_598.xes")
+    # log1 = xes_importer.apply(
+    #     "C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\merge_log\\log_3_0_dfg.xes")
 
-    # list_of_vals = []
-    # list_log = []
-    # list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
-    #
-    # list_of_vals_keys = list(list_of_vals_dict.keys())
-    # for i in range(len(list_of_vals_keys)):
-    #     list_of_vals.append(list_of_vals_keys[i])
-    #
-    # print(list_of_vals)
-    # for i in range(len(list_of_vals)):
-    #     logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
-    #     list_log.append(logsample)
-    # print(len(list_log))
+    percent = 1
+    alpha = 0.5
+    # ATTR_NAME = 'amount_applied0'
+    TYPE = METHOD + ATTR_NAME + 'update'
+
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
 
     # DFG test
     start = time.time()
     if METHOD == 'dfg':
         print("dfg is using!")
-        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
     elif METHOD == 'DMM':
         print("DMM is using!")
-        y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
+        y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
     elif METHOD == 'avg':
         print("avg is using!")
-        y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
+        y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
     # print(y)
     # Z = linkage(y, method='average')
     # # print("z",Z.type)
     # print("Z",Z)
     # print(np.shape(Z1))
     dist_mat = squareform(y)
-    Z = linkage_avg.linkage_dfg_update(list_log, dist_mat,alpha,percent)
+    Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat, alpha, percent)
     # print("shape",np.shape(Z))
 
     # print("Z",len(Z))
@@ -1723,16 +2256,6 @@ if __name__ == "__main__":
     plt.ylabel('Distance')
     plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
     # plt.show()
-
-
-    # plot_clu = 7
-    # for i in range(2, plot_clu + 1):
-    #     clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-    #     length_li = []
-    #     for j in range(0, i):
-    #         length = len(clu_list_log[j])
-    #         length_li.append(length)
-    #     print(length_li)
 
     plot_clu = 23
     plot_fit = dict()
@@ -1790,53 +2313,6 @@ if __name__ == "__main__":
                     prec_li.append(precision)
                     F1_li.append(F1)
 
-            # if len(clu_list_log[-1])!=0:
-            #     # print("lenclu_list_log",len(clu_list_log))
-            #     diff = [item for item in clu_list if not item in tempclu_list]
-            #     diff_old = [item for item in tempclu_list if not item in clu_list]
-            #     # print("diff",diff)
-            #     # print("diff_old", diff_old)
-            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
-            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
-            #     # print(tempclu_list)
-            #
-            #
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
-            #     # print(len(tempclu_list_log))
-            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
-            #     # print("del",len(tempclu_list_log))
-            #     # clu_list_dict[str(i)] = clu_list
-            #
-            #
-            #
-            #     for j in range(0, 2):
-            #         length = len(clu_list_log[clu_list.index(diff[j])])
-            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-            #             clu_list_log[clu_list.index(diff[j])])
-            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                        inductive_final_marking, variant="alignments")['averageFitness']
-            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                             inductive_final_marking)
-            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
-            #         F1 = 2 * fitness * precision / (fitness + precision)
-            #         # individual info for each sublog
-            #         length_li.append(length)
-            #         fit_li.append(fitness)
-            #         prec_li.append(precision)
-            #         F1_li.append(F1)
-            #
-            #     # print(length_li)
-            #     # print("fit", fit_li)
-            #     # print("prec", prec_li)
-            #     if (i > 2):
-            #         del length_li[tempclu_list.index(diff_old[0])]
-            #         del fit_li[tempclu_list.index(diff_old[0])]
-            #         del prec_li[tempclu_list.index(diff_old[0])]
-            #         del F1_li[tempclu_list.index(diff_old[0])]
-            #     del tempclu_list[tempclu_list.index(diff_old[0])]
-            # # print("del", tempclu_list)
-
             print(length_li)
             print("fit", fit_li)
             print("prec", prec_li)
@@ -1857,9 +2333,9 @@ if __name__ == "__main__":
     print("plot_F1", plot_F1)
     print('length', plot_length)
     print('plot_box', plot_box2)
-    F1valup= list(plot_F1.values())
-    F1dfg = [F1val, F1valup]
-    print('F1compare',F1dfg)
+    F1valup = list(plot_F1.values())
+    F1DMM = [F1val, F1valup]
+    print('F1compare', F1DMM)
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -1870,13 +2346,14 @@ if __name__ == "__main__":
     fig = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
-    ax1 = fig.add_subplot(111)
+    ax1 = plt.gca()
     ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
     ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
     ax1.set_ylim(0, 1.04)
     ax1.set_ylabel('Fitness')
     ax1.set_xlabel('Num. of Cluster')
     ax1.set_xticks(x_axis)
+    ax1.invert_xaxis()
     ax1.yaxis.label.set_color('r')
     ax1.grid(axis='y')
     for tl in ax1.get_yticklabels():
@@ -1904,30 +2381,13 @@ if __name__ == "__main__":
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
     # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
     plt.ylim(0, 1.04)
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # plot boxplot
-    # fig3 = plt.figure()
-    # plot_box["2"] = plot_box["1"]
-    #
-    # data = pd.DataFrame(plot_box)
-    # print(data)
-    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # plt.xticks(x_axis)
-    # data.boxplot(sym='o', whis=1)
-    #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # plt.grid(axis='x')
-    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
     # plt.show()
 
     # rescale to 0-1
@@ -1944,31 +2404,18 @@ if __name__ == "__main__":
     data.boxplot(sym='o', whis=1)
 
     plt.ylim(0, 1.04)
+    plt.gca().invert_xaxis()
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='x')
     plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
     # plt.show()
 
-    # show cluster size
-    # fig5 = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # for i in range(0, 23):
-    #     xlist = (np.ones(i + 1) * (i + 1))
-    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
-    # plt.xticks(range(1, 24))
-    # plt.yscale('log')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("Cluster Size")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
-
     # show cluster size dot
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
-    for i in range(0, 23):
+    for i in range(0, plot_clu):
         xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
@@ -1982,7 +2429,6 @@ if __name__ == "__main__":
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
-
     # w w/o F1 compare
     fig7 = plt.figure()
     rc('text', usetex=True)
@@ -1990,12 +2436,46 @@ if __name__ == "__main__":
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
     plt.ylim(0, 1.04)
-    plt.legend([l1, l2], labels=['DFG', 'DFG-recomputing'], loc='best')
+    plt.legend([l1, l2], labels=['DMM', 'DMM-recomputing'], loc='best')
+    plt.title('Leven-DMM')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
+
+    #  F1 compare DMM AVG leven
+    fig8 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1avg[0], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM[0], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['AVG', 'DMM'], loc='best')
+    plt.title('Leven-No-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Leven-No-Recomputing' + '.svg')
+
+    fig9 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1avg[1], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM[1], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['AVG', 'DMM'], loc='best')
+    plt.title('Leven-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Leven-Recomputing' + '.svg')
+
 
 
 
@@ -2020,7 +2500,7 @@ if __name__ == "__main__":
     percent = 1
     alpha = 0.5
     # ATTR_NAME = 'amount_applied0'
-    TYPE = METHOD + ATTR_NAME
+    TYPE = METHOD + ATTR_NAME+'FT'
 
     list_of_vals = []
     list_log = []
@@ -2040,7 +2520,7 @@ if __name__ == "__main__":
     start = time.time()
     if METHOD == 'dfg':
         print("dfg is using!")
-        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
     elif METHOD == 'DMM':
         print("DMM is using!")
         y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
@@ -2214,19 +2694,62 @@ if __name__ == "__main__":
     # print(plot_box)
     # print(clu_list_dict)
 
-    x_axis = range(1, plot_clu + 1)
-
-    # plot fit&prec
-    # fig = plt.figure()
+    # x_axis = range(1, plot_clu + 1)
     #
+    # # plot fit&prec
+    # # fig = plt.figure()
+    # #
+    # # ax1 = fig.add_subplot(111)
+    # # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
+    # # ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
+    # # # ax1.set_ylim(0,1.02)
+    # # ax1.set_ylabel('Fitness')
+    # # ax1.set_xlabel('Num. of Cluster')
+    # # ax1.set_xticks(x_axis)
+    # # ax1.yaxis.label.set_color('r')
+    # # for tl in ax1.get_yticklabels():
+    # #     tl.set_color('r')
+    # # ax2 = ax1.twinx()
+    # #
+    # # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+    # #          label='Precision')
+    # # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # # ax2.set_ylim(0,1.02)
+    # # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    # # ax2.set_ylabel('Precision')
+    # # ax2.yaxis.label.set_color('b')
+    # # for tl in ax2.get_yticklabels():
+    # #     tl.set_color('b')
+    # # plt.grid(axis='y')
+    # # fig.savefig(PIC_PATH+'fitprec' + '_' + TYPE + '.svg')
+    # # # fig.show()
+    # #
+    # # # plot F1
+    # # fig2 = plt.figure()
+    # # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
+    # # # plt.ylim(0,1)
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("F1-Score")
+    # # plt.grid(axis='y')
+    # # plt.savefig(PIC_PATH+'f1' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # rescale to 0-1
+    # # plot fit&prec
+    # fig = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # ax1 = fig.add_subplot(111)
     # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    # ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
-    # # ax1.set_ylim(0,1.02)
+    # ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
+    # ax1.set_ylim(0, 1.04)
     # ax1.set_ylabel('Fitness')
     # ax1.set_xlabel('Num. of Cluster')
     # ax1.set_xticks(x_axis)
     # ax1.yaxis.label.set_color('r')
+    # ax1.grid(axis='y')
     # for tl in ax1.get_yticklabels():
     #     tl.set_color('r')
     # ax2 = ax1.twinx()
@@ -2234,143 +2757,100 @@ if __name__ == "__main__":
     # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
     #          label='Precision')
     # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # # ax2.set_ylim(0,1.02)
     # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    # ax2.set_ylim(0, 1.04)
+    # # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
     # ax2.set_ylabel('Precision')
     # ax2.yaxis.label.set_color('b')
     # for tl in ax2.get_yticklabels():
     #     tl.set_color('b')
-    # plt.grid(axis='y')
-    # fig.savefig(PIC_PATH+'fitprec' + '_' + TYPE + '.svg')
+    # ax2.grid(axis='y')
+    # fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
     # # fig.show()
     #
     # # plot F1
     # fig2 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
-    # # plt.ylim(0,1)
+    # plt.xticks(x_axis)
+    # # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    # plt.ylim(0, 1.04)
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("F1-Score")
     # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH+'f1' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # rescale to 0-1
-    # plot fit&prec
-    fig = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    ax1 = fig.add_subplot(111)
-    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
-    ax1.set_ylim(0, 1.04)
-    ax1.set_ylabel('Fitness')
-    ax1.set_xlabel('Num. of Cluster')
-    ax1.set_xticks(x_axis)
-    ax1.yaxis.label.set_color('r')
-    ax1.grid(axis='y')
-    for tl in ax1.get_yticklabels():
-        tl.set_color('r')
-    ax2 = ax1.twinx()
-
-    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-             label='Precision')
-    ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
-    ax2.set_ylim(0, 1.04)
-    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
-    ax2.set_ylabel('Precision')
-    ax2.yaxis.label.set_color('b')
-    for tl in ax2.get_yticklabels():
-        tl.set_color('b')
-    ax2.grid(axis='y')
-    fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
-    # fig.show()
-
-    # plot F1
-    fig2 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # plot boxplot
-    # fig3 = plt.figure()
+    # plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # plot boxplot
+    # # fig3 = plt.figure()
+    # # plot_box["2"] = plot_box["1"]
+    # #
+    # # data = pd.DataFrame(plot_box)
+    # # print(data)
+    # # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # plt.xticks(x_axis)
+    # # data.boxplot(sym='o', whis=1)
+    # #
+    # # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("F1-Score")
+    # # plt.grid(axis='x')
+    # # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # rescale to 0-1
+    # fig4 = plt.figure()
     # plot_box["2"] = plot_box["1"]
     #
     # data = pd.DataFrame(plot_box)
     # print(data)
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     # plt.xticks(x_axis)
     # data.boxplot(sym='o', whis=1)
     #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.ylim(0, 1.04)
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # rescale to 0-1
-    fig4 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-    # show cluster size
-    # fig5 = plt.figure()
+    # plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    # # show cluster size
+    # # fig5 = plt.figure()
+    # # rc('text', usetex=True)
+    # # rc('font', family='serif')
+    # # for i in range(0, 23):
+    # #     xlist = (np.ones(i + 1) * (i + 1))
+    # #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # # plt.xticks(range(1, 24))
+    # # plt.yscale('log')
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("Cluster Size")
+    # # plt.grid(axis='y')
+    # # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    #
+    # # show cluster size dot
+    # fig6 = plt.figure()
     # rc('text', usetex=True)
     # rc('font', family='serif')
     # for i in range(0, 23):
-    #     xlist = (np.ones(i + 1) * (i + 1))
-    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    #     xlist = np.ones(len(plot_length[i])) * (i+1)
+    #     a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+    #     weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+    #     plot_length[i] = sorted(plot_length[i], reverse=False)
+    #     plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     # plt.xticks(range(1, 24))
+    # plt.ylim(0.5, 1000)
     # plt.yscale('log')
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("Cluster Size")
     # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
-
-    # show cluster size dot
-    fig6 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = np.ones(len(plot_length[i])) * (i+1)
-        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plot_length[i] = sorted(plot_length[i], reverse=False)
-        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
-    plt.xticks(range(1, 24))
-    plt.ylim(0.5, 1000)
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+    # plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
     # update DMM
     ATTR_NAME = 'responsible'
@@ -2378,7 +2858,7 @@ if __name__ == "__main__":
 
     PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
 
-    TYPE = METHOD + ATTR_NAME + 'update'
+    TYPE = METHOD + ATTR_NAME + 'FTupdate'
 
     list_of_vals = []
     list_log = []
@@ -2398,7 +2878,7 @@ if __name__ == "__main__":
     start = time.time()
     if METHOD == 'dfg':
         print("dfg is using!")
-        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
     elif METHOD == 'DMM':
         print("DMM is using!")
         y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
@@ -2561,8 +3041,8 @@ if __name__ == "__main__":
     print('length', plot_length)
     print('plot_box', plot_box2)
     F1valup=list(plot_F1.values())
-    F1DMM = [F1val, F1valup]
-    print('F1compare',F1DMM)
+    F1DMM_FT = [F1val, F1valup]
+    print('F1compare',F1DMM_FT)
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -2570,121 +3050,121 @@ if __name__ == "__main__":
 
     # rescale to 0-1
     # plot fit&prec
-    fig = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    ax1 = fig.add_subplot(111)
-    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
-    ax1.set_ylim(0, 1.04)
-    ax1.set_ylabel('Fitness')
-    ax1.set_xlabel('Num. of Cluster')
-    ax1.set_xticks(x_axis)
-    ax1.yaxis.label.set_color('r')
-    ax1.grid(axis='y')
-    for tl in ax1.get_yticklabels():
-        tl.set_color('r')
-    ax2 = ax1.twinx()
-
-    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-             label='Precision')
-    ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
-    ax2.set_ylim(0, 1.04)
-    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
-    ax2.set_ylabel('Precision')
-    ax2.yaxis.label.set_color('b')
-    for tl in ax2.get_yticklabels():
-        tl.set_color('b')
-    ax2.grid(axis='y')
-    fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
-    # fig.show()
-
-    # plot F1
-    fig2 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # plot boxplot
-    # fig3 = plt.figure()
+    # fig = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # ax1 = fig.add_subplot(111)
+    # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
+    # ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
+    # ax1.set_ylim(0, 1.04)
+    # ax1.set_ylabel('Fitness')
+    # ax1.set_xlabel('Num. of Cluster')
+    # ax1.set_xticks(x_axis)
+    # ax1.yaxis.label.set_color('r')
+    # ax1.grid(axis='y')
+    # for tl in ax1.get_yticklabels():
+    #     tl.set_color('r')
+    # ax2 = ax1.twinx()
+    #
+    # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+    #          label='Precision')
+    # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    # ax2.set_ylim(0, 1.04)
+    # # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
+    # ax2.set_ylabel('Precision')
+    # ax2.yaxis.label.set_color('b')
+    # for tl in ax2.get_yticklabels():
+    #     tl.set_color('b')
+    # ax2.grid(axis='y')
+    # fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
+    # # fig.show()
+    #
+    # # plot F1
+    # fig2 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    # plt.ylim(0, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # plot boxplot
+    # # fig3 = plt.figure()
+    # # plot_box["2"] = plot_box["1"]
+    # #
+    # # data = pd.DataFrame(plot_box)
+    # # print(data)
+    # # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # plt.xticks(x_axis)
+    # # data.boxplot(sym='o', whis=1)
+    # #
+    # # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("F1-Score")
+    # # plt.grid(axis='x')
+    # # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # rescale to 0-1
+    # fig4 = plt.figure()
     # plot_box["2"] = plot_box["1"]
     #
     # data = pd.DataFrame(plot_box)
     # print(data)
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     # plt.xticks(x_axis)
     # data.boxplot(sym='o', whis=1)
     #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.ylim(0, 1.04)
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # rescale to 0-1
-    fig4 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # show cluster size
-    # fig5 = plt.figure()
+    # plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # show cluster size
+    # # fig5 = plt.figure()
+    # # rc('text', usetex=True)
+    # # rc('font', family='serif')
+    # # for i in range(0, 23):
+    # #
+    # #     xlist = (np.ones(i + 1) * (i + 1))
+    # #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # # plt.xticks(range(1, 24))
+    # # plt.yscale('log')
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("Cluster Size")
+    # # plt.grid(axis='y')
+    # # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    #
+    # # show cluster size dot
+    # fig6 = plt.figure()
     # rc('text', usetex=True)
     # rc('font', family='serif')
     # for i in range(0, 23):
-    #
-    #     xlist = (np.ones(i + 1) * (i + 1))
-    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    #     xlist = np.ones(len(plot_length[i])) * (i+1)
+    #     a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+    #     weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+    #     plot_length[i] = sorted(plot_length[i], reverse=False)
+    #     plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     # plt.xticks(range(1, 24))
+    # plt.ylim(0.5, 1000)
     # plt.yscale('log')
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("Cluster Size")
     # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
-
-    # show cluster size dot
-    fig6 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = np.ones(len(plot_length[i])) * (i+1)
-        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plot_length[i] = sorted(plot_length[i], reverse=False)
-        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
-    plt.xticks(range(1, 24))
-    plt.ylim(0.5, 1000)
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+    # plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
     fig7 = plt.figure()
     rc('text', usetex=True)
@@ -2692,12 +3172,45 @@ if __name__ == "__main__":
     l1 = plt.plot(x_axis, F1val, color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1valup, color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
     plt.ylim(0, 1.04)
     plt.legend([l1, l2], labels=['DMM', 'DMM-recomputing'], loc='best')
+    plt.title('Feature-Vector-DMM')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
+
+    #  F1 compare DMM leven and FT
+    fig8 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1DMM[0], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM_FT[0], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['Leven', 'Feature Vector'], loc='best')
+    plt.title('DMM-No-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'DMM-No-Recomputing' + '.svg')
+
+    fig9 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1DMM[1], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM_FT[1], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['Leven', 'Feature Vector'], loc='best')
+    plt.title('DMM-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'DMM-Recomputing' + '.svg')
 
     # avg
     ATTR_NAME = 'responsible'
@@ -2720,7 +3233,7 @@ if __name__ == "__main__":
     percent = 1
     alpha = 0.5
     # ATTR_NAME = 'amount_applied0'
-    TYPE = METHOD + ATTR_NAME
+    TYPE = METHOD + ATTR_NAME+'FT'
 
     list_of_vals = []
     list_log = []
@@ -2740,7 +3253,7 @@ if __name__ == "__main__":
     start = time.time()
     if METHOD == 'dfg':
         print("dfg is using!")
-        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
     elif METHOD == 'DMM':
         print("DMM is using!")
         y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
@@ -2914,19 +3427,62 @@ if __name__ == "__main__":
     # print(plot_box)
     # print(clu_list_dict)
 
-    x_axis = range(1, plot_clu + 1)
-
-    # plot fit&prec
-    # fig = plt.figure()
+    # x_axis = range(1, plot_clu + 1)
     #
+    # # plot fit&prec
+    # # fig = plt.figure()
+    # #
+    # # ax1 = fig.add_subplot(111)
+    # # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
+    # # ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
+    # # # ax1.set_ylim(0,1.02)
+    # # ax1.set_ylabel('Fitness')
+    # # ax1.set_xlabel('Num. of Cluster')
+    # # ax1.set_xticks(x_axis)
+    # # ax1.yaxis.label.set_color('r')
+    # # for tl in ax1.get_yticklabels():
+    # #     tl.set_color('r')
+    # # ax2 = ax1.twinx()
+    # #
+    # # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+    # #          label='Precision')
+    # # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # # ax2.set_ylim(0,1.02)
+    # # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    # # ax2.set_ylabel('Precision')
+    # # ax2.yaxis.label.set_color('b')
+    # # for tl in ax2.get_yticklabels():
+    # #     tl.set_color('b')
+    # # plt.grid(axis='y')
+    # # fig.savefig(PIC_PATH+'fitprec' + '_' + TYPE + '.svg')
+    # # # fig.show()
+    # #
+    # # # plot F1
+    # # fig2 = plt.figure()
+    # # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
+    # # # plt.ylim(0,1)
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("F1-Score")
+    # # plt.grid(axis='y')
+    # # plt.savefig(PIC_PATH+'f1' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # rescale to 0-1
+    # # plot fit&prec
+    # fig = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # ax1 = fig.add_subplot(111)
     # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    # ax1.hlines(list(plot_fit.values())[0],1,plot_clu,colors = "r", linestyles = "dashed")
-    # # ax1.set_ylim(0,1.02)
+    # ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
+    # ax1.set_ylim(0, 1.04)
     # ax1.set_ylabel('Fitness')
     # ax1.set_xlabel('Num. of Cluster')
     # ax1.set_xticks(x_axis)
     # ax1.yaxis.label.set_color('r')
+    # ax1.grid(axis='y')
     # for tl in ax1.get_yticklabels():
     #     tl.set_color('r')
     # ax2 = ax1.twinx()
@@ -2934,144 +3490,101 @@ if __name__ == "__main__":
     # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
     #          label='Precision')
     # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # # ax2.set_ylim(0,1.02)
     # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    # ax2.set_ylim(0, 1.04)
+    # # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
     # ax2.set_ylabel('Precision')
     # ax2.yaxis.label.set_color('b')
     # for tl in ax2.get_yticklabels():
     #     tl.set_color('b')
-    # plt.grid(axis='y')
-    # fig.savefig(PIC_PATH+'fitprec' + '_' + TYPE + '.svg')
+    # ax2.grid(axis='y')
+    # fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
     # # fig.show()
     #
     # # plot F1
     # fig2 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    # plt.ylim(np.min(list(plot_F1.values())) - 0.01, 1)
-    # # plt.ylim(0,1)
+    # plt.xticks(x_axis)
+    # # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    # plt.ylim(0, 1.04)
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("F1-Score")
     # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH+'f1' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # rescale to 0-1
-    # plot fit&prec
-    fig = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    ax1 = fig.add_subplot(111)
-    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
-    ax1.set_ylim(0, 1.04)
-    ax1.set_ylabel('Fitness')
-    ax1.set_xlabel('Num. of Cluster')
-    ax1.set_xticks(x_axis)
-    ax1.yaxis.label.set_color('r')
-    ax1.grid(axis='y')
-    for tl in ax1.get_yticklabels():
-        tl.set_color('r')
-    ax2 = ax1.twinx()
-
-    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-             label='Precision')
-    ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
-    ax2.set_ylim(0, 1.04)
-    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
-    ax2.set_ylabel('Precision')
-    ax2.yaxis.label.set_color('b')
-    for tl in ax2.get_yticklabels():
-        tl.set_color('b')
-    ax2.grid(axis='y')
-    fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
-    # fig.show()
-
-    # plot F1
-    fig2 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # plot boxplot
-    # fig3 = plt.figure()
+    # plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # plot boxplot
+    # # fig3 = plt.figure()
+    # # plot_box["2"] = plot_box["1"]
+    # #
+    # # data = pd.DataFrame(plot_box)
+    # # print(data)
+    # # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # plt.xticks(x_axis)
+    # # data.boxplot(sym='o', whis=1)
+    # #
+    # # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("F1-Score")
+    # # plt.grid(axis='x')
+    # # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # rescale to 0-1
+    # fig4 = plt.figure()
     # plot_box["2"] = plot_box["1"]
     #
     # data = pd.DataFrame(plot_box)
     # print(data)
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     # plt.xticks(x_axis)
     # data.boxplot(sym='o', whis=1)
     #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.ylim(0, 1.04)
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # rescale to 0-1
-    fig4 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # show cluster size
-    # fig5 = plt.figure()
+    # plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # show cluster size
+    # # fig5 = plt.figure()
+    # # rc('text', usetex=True)
+    # # rc('font', family='serif')
+    # # for i in range(0, 23):
+    # #     xlist = (np.ones(i + 1) * (i + 1))
+    # #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # # plt.xticks(range(1, 24))
+    # # plt.yscale('log')
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("Cluster Size")
+    # # plt.grid(axis='y')
+    # # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    #
+    # # show cluster size dot
+    # fig6 = plt.figure()
     # rc('text', usetex=True)
     # rc('font', family='serif')
     # for i in range(0, 23):
-    #     xlist = (np.ones(i + 1) * (i + 1))
-    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    #     xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+    #     a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+    #     weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+    #     plot_length[i] = sorted(plot_length[i], reverse=False)
+    #     plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     # plt.xticks(range(1, 24))
+    # plt.ylim(0.5, 1000)
     # plt.yscale('log')
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("Cluster Size")
     # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
-
-    # show cluster size dot
-    fig6 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
-        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plot_length[i] = sorted(plot_length[i], reverse=False)
-        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
-    plt.xticks(range(1, 24))
-    plt.ylim(0.5, 1000)
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+    # plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
     # update avg
     ATTR_NAME = 'responsible'
@@ -3079,7 +3592,7 @@ if __name__ == "__main__":
 
     PIC_PATH = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/'
 
-    TYPE = METHOD + ATTR_NAME + 'update'
+    TYPE = METHOD + ATTR_NAME + 'FTupdate'
 
     list_of_vals = []
     list_log = []
@@ -3099,7 +3612,7 @@ if __name__ == "__main__":
     start = time.time()
     if METHOD == 'dfg':
         print("dfg is using!")
-        y = fake_log_eval.dfg_dis(list_log, percent, alpha, list_of_vals)
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
     elif METHOD == 'DMM':
         print("DMM is using!")
         y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
@@ -3262,8 +3775,8 @@ if __name__ == "__main__":
     print('length', plot_length)
     print('plot_box', plot_box2)
     F1valup=list(plot_F1.values())
-    F1avg = [F1val,F1valup]
-    print('F1compare',F1avg)
+    F1avgFT = [F1val,F1valup]
+    print('F1compare',F1avgFT)
     # print(plot_box)
     # print(clu_list_dict)
 
@@ -3271,121 +3784,121 @@ if __name__ == "__main__":
 
     # rescale to 0-1
     # plot fit&prec
-    fig = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-
-    ax1 = fig.add_subplot(111)
-    ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
-    ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
-    ax1.set_ylim(0, 1.04)
-    ax1.set_ylabel('Fitness')
-    ax1.set_xlabel('Num. of Cluster')
-    ax1.set_xticks(x_axis)
-    ax1.yaxis.label.set_color('r')
-    ax1.grid(axis='y')
-    for tl in ax1.get_yticklabels():
-        tl.set_color('r')
-    ax2 = ax1.twinx()
-
-    ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
-             label='Precision')
-    ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
-    ax2.set_ylim(0, 1.04)
-    # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
-    ax2.set_ylabel('Precision')
-    ax2.yaxis.label.set_color('b')
-    for tl in ax2.get_yticklabels():
-        tl.set_color('b')
-    ax2.grid(axis='y')
-    fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
-    # fig.show()
-
-    # plot F1
-    fig2 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # plot boxplot
-    # fig3 = plt.figure()
+    # fig = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    #
+    # ax1 = fig.add_subplot(111)
+    # ax1.plot(x_axis, list(plot_fit.values()), color="r", linestyle="-", marker="s", linewidth=1, label='Fitness')
+    # ax1.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="r", linestyles="dashed")
+    # ax1.set_ylim(0, 1.04)
+    # ax1.set_ylabel('Fitness')
+    # ax1.set_xlabel('Num. of Cluster')
+    # ax1.set_xticks(x_axis)
+    # ax1.yaxis.label.set_color('r')
+    # ax1.grid(axis='y')
+    # for tl in ax1.get_yticklabels():
+    #     tl.set_color('r')
+    # ax2 = ax1.twinx()
+    #
+    # ax2.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1,
+    #          label='Precision')
+    # ax2.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # ax2.set_ylim(np.min(list(plot_prec.values())) - 0.01, 1)
+    # ax2.set_ylim(0, 1.04)
+    # # ax2.set_ylim(np.min(list(plot_prec.values()))-0.01,1)
+    # ax2.set_ylabel('Precision')
+    # ax2.yaxis.label.set_color('b')
+    # for tl in ax2.get_yticklabels():
+    #     tl.set_color('b')
+    # ax2.grid(axis='y')
+    # fig.savefig(PIC_PATH + 'fitprec_sca' + '_' + TYPE + '.svg')
+    # # fig.show()
+    #
+    # # plot F1
+    # fig2 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # plt.xticks(x_axis)
+    # # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    # plt.ylim(0, 1.04)
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'f1_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # plot boxplot
+    # # fig3 = plt.figure()
+    # # plot_box["2"] = plot_box["1"]
+    # #
+    # # data = pd.DataFrame(plot_box)
+    # # print(data)
+    # # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    # # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    # # plt.xticks(x_axis)
+    # # data.boxplot(sym='o', whis=1)
+    # #
+    # # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("F1-Score")
+    # # plt.grid(axis='x')
+    # # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # rescale to 0-1
+    # fig4 = plt.figure()
     # plot_box["2"] = plot_box["1"]
     #
     # data = pd.DataFrame(plot_box)
     # print(data)
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     # plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     # plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     # plt.xticks(x_axis)
     # data.boxplot(sym='o', whis=1)
     #
-    # plt.ylim(np.min(plot_box[str(plot_clu)]) - 0.01, 1.04)
+    # plt.ylim(0, 1.04)
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("F1-Score")
     # plt.grid(axis='x')
-    # plt.savefig(PIC_PATH + 'f1_boxplot' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # rescale to 0-1
-    fig4 = plt.figure()
-    plot_box["2"] = plot_box["1"]
-
-    data = pd.DataFrame(plot_box)
-    print(data)
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
-    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
-    data.boxplot(sym='o', whis=1)
-
-    plt.ylim(0, 1.04)
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='x')
-    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
-    # plt.show()
-
-    # show cluster size
-    # fig5 = plt.figure()
+    # plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    # # plt.show()
+    #
+    # # show cluster size
+    # # fig5 = plt.figure()
+    # # rc('text', usetex=True)
+    # # rc('font', family='serif')
+    # # for i in range(0, 23):
+    # #     xlist = (np.ones(i + 1) * (i + 1))
+    # #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    # # plt.xticks(range(1, 24))
+    # # plt.yscale('log')
+    # # plt.xlabel("Num. of Cluster")
+    # # plt.ylabel("Cluster Size")
+    # # plt.grid(axis='y')
+    # # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
+    #
+    # # show cluster size dot
+    # fig6 = plt.figure()
     # rc('text', usetex=True)
     # rc('font', family='serif')
     # for i in range(0, 23):
-    #     xlist = (np.ones(i + 1) * (i + 1))
-    #     sns.regplot(xlist, plot_length[i], fit_reg=False, y_jitter=0.1, scatter_kws={'alpha': 0.4})
+    #     xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
+    #     a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+    #     weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+    #     plot_length[i] = sorted(plot_length[i], reverse=False)
+    #     plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     # plt.xticks(range(1, 24))
+    # plt.ylim(0.5, 1000)
     # plt.yscale('log')
     # plt.xlabel("Num. of Cluster")
     # plt.ylabel("Cluster Size")
     # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'clustersize' + '_' + TYPE + '.svg')
-
-    # show cluster size dot
-    fig6 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    for i in range(0, 23):
-        xlist = np.ones(len(plot_length[i])) * len(plot_length[i])
-        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
-        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
-        plot_length[i] = sorted(plot_length[i], reverse=False)
-        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
-    plt.xticks(range(1, 24))
-    plt.ylim(0.5, 1000)
-    plt.yscale('log')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("Cluster Size")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
+    # plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
     fig7 = plt.figure()
     rc('text', usetex=True)
@@ -3395,10 +3908,46 @@ if __name__ == "__main__":
     plt.xticks(x_axis)
     plt.ylim(0, 1.04)
     plt.legend([l1, l2], labels=['AVG', 'AVG-recomputing'], loc='best')
+    plt.title('Feature Vector-AVG')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'woupdate' + '_' + METHOD + '.svg')
+    plt.savefig(PIC_PATH + 'Feature Vector-AVG' + '.svg')
+
+    #  F1 compare AVG leven and FT
+    fig8 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1avg[0], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1avgFT[0], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['Leven', 'Feature Vector'], loc='best')
+    plt.title('AVG-No-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'AVG-No-Recomputing' + '.svg')
+
+    fig9 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1avg[1], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1avgFT[1], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis)
+    plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['Leven', 'Feature Vector'], loc='best')
+    plt.title('AVG-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'AVG-Recomputing' + '.svg')
+
+    print('runtime',runtime)
+
+    '''
 
 
     # final three methods compare
