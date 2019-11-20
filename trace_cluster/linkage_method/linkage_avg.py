@@ -270,6 +270,97 @@ def linkage_DMM_update(loglist, dist_mat,alpha,percent):
 
     return Z
 
+
+def linkage_DMM_update_leven(loglist, dist_mat,alpha,percent):
+    index_list = []
+    for i in range(len(dist_mat)):
+        for j in range(i + 1, len(dist_mat)):
+            index_list.append([i, j])
+
+    y = squareform(dist_mat)
+    n = len(dist_mat)  # The number of observations.
+    Z = []
+    cluster_size = dict(zip(range(n), np.ones(n)))  # record merged cluster size every step
+    k = 1
+    logsindex = list(range(len(loglist)))
+    while (k <= n - 2):
+        min_index = np.argmin(y)
+
+        # update Z
+        temp = []
+        temp.extend(index_list[min_index])
+        temp.append(y[min_index])
+        cluster_size[n - 1 + k] = cluster_size[temp[0]] + cluster_size[temp[1]]
+        temp.append(cluster_size[n - 1 + k])
+
+        Z.append(temp)
+
+        # get index of min in y
+        item = index_list[min_index][::]
+        record1 = []
+        record2 = []
+        for ele in index_list:
+            if item[0] in ele:
+                record1.append(index_list.index(ele))
+                inde = ele.index(item[0])
+                ele[inde] = n - 1 + k
+            if item[1] in ele:  # here if/elif both works
+                record2.append(index_list.index(ele))
+                inde = ele.index(item[1])
+                ele[inde] = n - 1 + k
+            ele.sort()
+
+        record = list(set(record1).union(set(record2)))
+
+        merged1 = merge_log.update_merge([loglist[item[0]], loglist[item[1]]])
+        # here the logsindex is changing
+        diff = list(set(logsindex).difference(set(item)))  # diff is the node number need to be updated
+
+        update_dist = dict()
+        for ele in diff:
+            tempdist =leven_dist_calc.leven_dist(merged1, loglist[ele], percent, percent)
+            # tempdist = leven_dist_calc.leven_dist_avg(merged1, loglist[ele], percent, percent)
+            update_dist[ele] = tempdist
+
+        loglist.append(merged1)
+        diff.append(n - 1 + k)
+        logsindex = diff
+
+        del (record1[record1.index(min_index)])
+        del (record2[record2.index(min_index)])
+
+        # for i in range(len(record1)):
+        #     y[record1[i]] = (y[record1[i]]*cluster_size[item[0]] + y[record2[i]]*cluster_size[item[1]]) / (cluster_size[item[0]]+cluster_size[item[1]])
+        for ele in record1:
+            uindex = index_list[ele][0]  # record1 is the location if nodes in diff in the index_list
+            y[ele] = update_dist[uindex]
+
+        diff1 = list(set(range(len(index_list))).difference(set(record)))
+        newindex = record1 + diff1
+        newindex.sort()
+
+        range_newindex = range(len(newindex))
+        tempy = list(range_newindex)
+        templist = list(range_newindex)
+        for i in range_newindex:
+            tempy[i] = y[newindex[i]]
+            templist[i] = index_list[newindex[i]]
+
+        index_list = templist
+        y = tempy
+        k = k + 1
+
+    temp = []
+    temp.extend(index_list[0])
+    temp.append(y[0])
+
+    cluster_size[n - 1 + k] = cluster_size[temp[0]] + cluster_size[temp[1]]
+    temp.append(cluster_size[n - 1 + k])
+    Z.append(temp)
+    Z = np.array(Z)
+
+    return Z
+
 if __name__ == "__main__":
     percent = 1
     alpha = 0.5

@@ -4,7 +4,33 @@ from scipy.spatial.distance import squareform
 import numpy as np
 from trace_cluster.pt_gene import pt_gen
 from trace_cluster import filter_subsets
+from trace_cluster.merge_log import merge_log
 import Levenshtein
+
+from pm4py.objects.log.importer.xes import factory as xes_importer
+from pm4py.algo.filtering.log.attributes import attributes_filter
+import string
+
+def leven_preprocess(list1,list2):
+    '''
+    this function transform event name to alphabet for the sake of levenshtein distance
+    :param list1:
+    :param list2:
+    :return:
+    '''
+
+    listsum = sorted(list(set(list1+list2)))
+    alphabet = list(string.ascii_letters)[0:len(listsum)]
+    str1 = [alphabet[listsum.index(item)] for item in list1]
+    str2 = [alphabet[listsum.index(item)] for item in list2]
+    # dictmap = dict(zip(listsum, alphabet[0:len(listsum)]))
+    # print(dictmap)
+    # str1 = [value for key, value in dictmap.items() if key in list1]
+    # str2 = [value for key, value in dictmap.items() if key in list2]
+    # print([str1,str2])
+    str1 = ''.join(str1)
+    str2 = ''.join(str2)
+    return str1, str2
 
 
 def leven_dist(log1, log2, percent_1, percent_2):
@@ -50,11 +76,12 @@ def leven_dist(log1, log2, percent_1, percent_2):
     else:
         for i in range(max_len):
             dist_vec = np.zeros(min_len)
-            str1 = ''.join(max_var[i])
+            # str1 = ''.join(max_var[i])
             # print(str1)
             for j in range(min_len):
-                str2 = ''.join(min_var[j])
+                # str2 = ''.join(min_var[j])
                 # print(str2)
+                (str1, str2) = leven_preprocess(max_var[i], min_var[j])
                 max_len = np.max([len(str1), len(str2)])
                 # levenstein distance between variants
                 dist_vec[j] = (Levenshtein.distance(str1, str2)) / max_len
@@ -125,9 +152,9 @@ def leven_dist_avg(log1, log2, percent_1, percent_2):
         var_count_max = dataframe_2['count']
         var_count_min = dataframe_1['count']
 
-    # print("list1:", max_len)
-    # print("list2:", min_len)
-
+    # print("list1:", max_var)
+    # print("list2:", min_var)
+    #
     # print((var_count_max))
     # print((var_count_min))
     dist_matrix = np.zeros((max_len, min_len))
@@ -141,11 +168,12 @@ def leven_dist_avg(log1, log2, percent_1, percent_2):
     for i in range(max_len):
         dist_vec = np.zeros(min_len)
         # join all strings into one
-        str1 = ''.join(max_var[i])
-        # print(str1)
+        # str1 = ''.join(max_var[i])
+        # print('str1',str1)
         for j in range(min_len):
-            str2 = ''.join(min_var[j])
-            # print(str2)
+            # str2 = ''.join(min_var[j])
+            (str1, str2) = leven_preprocess(max_var[i], min_var[j])
+            # print('str', [i, j, str1, str2])
             max_len = np.max([len(str1), len(str2)])
             # levenstein distance between variants
             dist_vec[j] = (Levenshtein.distance(str1, str2)) / max_len
@@ -174,14 +202,55 @@ def leven_dist_avg(log1, log2, percent_1, percent_2):
 
 
 if __name__ == "__main__":
-    percent = 1
-    alpha = 0.5
-    loglist = pt_gen.openAllXes("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 2)
 
+    LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
+    ATTR_NAME = 'responsible'
+    METHOD = 'DMM'
 
-    #dist = leven_dist_avg(loglist[0],loglist[1],1,1)
+    # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
+    log = xes_importer.apply(LOG_PATH)
+    # print(LOG_PATH)
+    # print(ATTR_NAME)
+    # print(METHOD)
+    # runtime = dict()
+    # F1val = dict()
+    # METHOD = 'dfg'
+    # ATTR_NAME = 'RequestedAmount'
 
-    #print(dist)
+    # sublog = xes_importer.apply(
+    #     "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\sublog_598.xes")
+    # log1 = xes_importer.apply(
+    #     "C:\\Users\\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\merge_log\\log_3_0_dfg.xes")
+
+    # percent = 1
+    # alpha = 0.5
+    # # ATTR_NAME = 'amount_applied0'
+    # TYPE = METHOD + ATTR_NAME
+
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = merge_log.log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
+
+    dist = leven_dist_avg(list_log[0], list_log[1], 1, 1)
+
+    # percent = 1
+    # alpha = 0.5
+    # loglist = pt_gen.openAllXes("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 1)
+    #
+    #
+    # dist = leven_dist(loglist[2],loglist[3],1,1)
+
+    print(dist)
     #dist = leven_dist_avg(loglist[2], loglist[3], 1, 1)
 
     #print(dist)
@@ -189,32 +258,32 @@ if __name__ == "__main__":
 
 
 
-    lists = loglist
-    size = len(lists)
-    print(size)
-    dist_mat = np.zeros((size, size))
-
-
-    for i in range(0, size - 1):
-        for j in range(i + 1, size):
-            dist_mat[i][j] = leven_dist(lists[i], lists[j],percent,percent)
-            #print([i,j,dist_mat[i][j]])
-            dist_mat[j][i] = dist_mat[i][j]
-
-    print(dist_mat)
-
-    y = squareform(dist_mat)
-    print(y)
-    Z = linkage(y, method='average')
-    print(Z)
-    print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
-    fig = plt.figure(figsize=(10, 8))
-    # dn = fancy_dendrogram(Z, max_d=0.35)
-    dn = dendrogram(Z)
-    # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    #plt.title('Hierarchical Clustering Dendrogram')
-    plt.xlabel('Sample Index')
-    plt.ylabel('Distance')
-    plt.savefig('cluster.svg')
-    plt.show()
+    # lists = loglist
+    # size = len(lists)
+    # print(size)
+    # dist_mat = np.zeros((size, size))
+    #
+    #
+    # for i in range(0, size - 1):
+    #     for j in range(i + 1, size):
+    #         dist_mat[i][j] = leven_dist(lists[i], lists[j],percent,percent)
+    #         #print([i,j,dist_mat[i][j]])
+    #         dist_mat[j][i] = dist_mat[i][j]
+    #
+    # print(dist_mat)
+    #
+    # y = squareform(dist_mat)
+    # print(y)
+    # Z = linkage(y, method='average')
+    # print(Z)
+    # print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
+    # fig = plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # dn = dendrogram(Z)
+    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # #plt.title('Hierarchical Clustering Dendrogram')
+    # plt.xlabel('Sample Index')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster.svg')
+    # plt.show()
 

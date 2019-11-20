@@ -17,7 +17,7 @@ from trace_cluster.merge_log import merge_log
 from pm4py.statistics.traces.log import case_statistics
 from trace_cluster.dfg import dfg_dist
 
-def dfg_dis(loglist, percent, alpha,list_of_vals):
+def dfg_dis(loglist, percent, alpha):
     size = len(loglist)
     # print(size)
     dist_mat = np.zeros((size, size))
@@ -132,22 +132,22 @@ def eval_avg_leven(loglist, percent, alpha):
             dist_mat[i][j] = leven_dist_calc.leven_dist_avg(loglist[i], loglist[j], percent, percent)
             dist_mat[j][i] = dist_mat[i][j]
 
-    print(dist_mat)
+    # print(dist_mat)
 
     y = squareform(dist_mat)
-    print(y)
-    Z = linkage(y, method='average')
-    print(Z)
-    print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
-    plt.figure(figsize=(10, 8))
-    # dn = fancy_dendrogram(Z, max_d=0.35)
-    dn = dendrogram(Z)
-    # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    plt.title('Hierarchical Clustering Dendrogram')
-    #plt.xlabel('Loan Amount')
-    plt.ylabel('Distance')
-    plt.savefig('cluster.svg')
-    plt.show()
+    # print(y)
+    # Z = linkage(y, method='average')
+    # print(Z)
+    # print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # dn = dendrogram(Z)
+    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    # #plt.xlabel('Loan Amount')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster.svg')
+    # plt.show()
     return y
 
 def eval_DMM_leven(loglist, percent, alpha):
@@ -161,42 +161,46 @@ def eval_DMM_leven(loglist, percent, alpha):
             dist_mat[i][j] = leven_dist_calc.leven_dist(loglist[i], loglist[j], percent, percent)
             dist_mat[j][i] = dist_mat[i][j]
 
-    print(dist_mat)
+    # print(dist_mat)
 
     y = squareform(dist_mat)
     print(y)
     # print((y[1]+y[3])/2)
     # print((y[2] + y[4]) / 2)
-    Z = linkage(y, method='average')
-    print(Z)
-    print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
-    plt.figure(figsize=(10, 8))
-    # dn = fancy_dendrogram(Z, max_d=0.35)
-    dn = dendrogram(Z)
-    # dn = dendrogram(Z,labels=np.array(list_of_vals))
-    plt.title('Hierarchical Clustering Dendrogram')
-    #plt.xlabel('Loan Amount')
-    plt.ylabel('Distance')
-    plt.savefig('cluster.svg')
-    plt.show()
+    # Z = linkage(y, method='average')
+    # print(Z)
+    # print(cophenet(Z, y))  # return vector is the pairwise dist generated from Z
+    # plt.figure(figsize=(10, 8))
+    # # dn = fancy_dendrogram(Z, max_d=0.35)
+    # dn = dendrogram(Z)
+    # # dn = dendrogram(Z,labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    # #plt.xlabel('Loan Amount')
+    # plt.ylabel('Distance')
+    # plt.savefig('cluster.svg')
+    # plt.show()
     return y
 
 if __name__ == "__main__":
 
-    # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
-    log = xes_importer.apply("D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\filteredbpic2017.xes")
-    METHOD = 'dfg'
-    ATTR_NAME = 'RequestedAmount'
-    # sublog = xes_importer.apply(
-    #         "D:\\Sisc\\19SS\\thesis\\Dataset\\resultlog6\\log_6_2_dfgRequestedAmount.xes")
-    filename = 'D:/Sisc/19SS/thesis/Dataset/BPIC2017/' + ATTR_NAME + '/' + 'log' + '_'+ METHOD + ATTR_NAME + '.png'
-    # xes_exporter.export_log(log, filename)
-    inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-    fitness_inductive = replay_factory.apply(log, inductive_petri, inductive_initial_marking, inductive_final_marking)
-    print("fitness_inductive=", fitness_inductive)
+    percent = 1
+    alpha = 0.5
+    loglist = pt_gen.openAllXes("C:\\Users\\yukun\\PycharmProjects\\PTandLogGenerator\\data\\logs", 4, 3)
 
-    gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking)
-    pn_vis_factory.save(gviz,filename)
+    # LOG_PATH = "D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\bpic2017.xes"
+    # log = xes_importer.apply("D:\\Sisc\\19SS\\thesis\\Dataset\\BPIC2017\\filteredbpic2017.xes")
+    # METHOD = 'dfg'
+    # ATTR_NAME = 'RequestedAmount'
+    # # sublog = xes_importer.apply(
+    # #         "D:\\Sisc\\19SS\\thesis\\Dataset\\resultlog6\\log_6_2_dfgRequestedAmount.xes")
+    # filename = 'D:/Sisc/19SS/thesis/Dataset/BPIC2017/' + ATTR_NAME + '/' + 'log' + '_'+ METHOD + ATTR_NAME + '.png'
+    # # xes_exporter.export_log(log, filename)
+    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+    # fitness_inductive = replay_factory.apply(log, inductive_petri, inductive_initial_marking, inductive_final_marking)
+    # print("fitness_inductive=", fitness_inductive)
+    #
+    # gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking)
+    # pn_vis_factory.save(gviz,filename)
 
     # precision_inductive = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
     #                                               inductive_final_marking)
@@ -211,7 +215,7 @@ if __name__ == "__main__":
     # #dist = suc_dist_calc.suc_sim_percent_avg(loglist[2], loglist[3], 1, 1)
     # # print(dist)
     #
-    # eval_DMM_leven(loglist,percent,alpha)
+    eval_DMM_leven(loglist,percent,alpha)
     # #eval_DMM_variant(loglist, percent, alpha)
     #
     # update_loglist = [loglist[0],loglist[1]]
