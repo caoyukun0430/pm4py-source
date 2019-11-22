@@ -23,7 +23,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime)
     fitall['Receipt'] = list(plot_fit.values())
     precall['Receipt'] = list(plot_prec.values())
     F1all['Receipt'] = list(plot_F1.values())
