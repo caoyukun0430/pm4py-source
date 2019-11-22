@@ -215,7 +215,7 @@ def get_fit_prec_hpc(log, ori_log):
     return fitness, precision
 
 
-def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -235,16 +235,21 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     if METHOD == 'dfg':
         print("dfg is using!")
         y = fake_log_eval.dfg_dis(list_log, percent, alpha)
+        dist_mat = squareform(y)
+        Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
     elif METHOD == 'DMM':
         print("DMM is using!")
         y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
+        dist_mat = squareform(y)
+        Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat, alpha, percent)
     elif METHOD == 'avg':
         print("avg is using!")
         y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
+        dist_mat = squareform(y)
+        Z = linkage_avg.linkage_avg(list_log, dist_mat, alpha, percent)
     # print(y)
     # Z = linkage(y, method='average')
-    dist_mat = squareform(y)
-    Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
+
 
     end = time.time()
     runtime[TYPE] = end - start
@@ -383,7 +388,352 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     print('plot_boxfit', plot_boxfit)
     print('plot_boxprec', plot_boxprec)
 
-    return plot_fit, plot_fit, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
+    return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
+
+def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
+
+    # DFG test
+    start = time.time()
+    if METHOD == 'dfg':
+        print("dfg is using!")
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
+        dist_mat = squareform(y)
+        Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
+    elif METHOD == 'DMM':
+        print("DMM is using!")
+        y = fake_log_eval.eval_DMM_variant(list_log, percent, alpha)
+        dist_mat = squareform(y)
+        Z = linkage_avg.linkage_DMM_update(list_log, dist_mat, alpha, percent)
+    elif METHOD == 'avg':
+        print("avg is using!")
+        y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
+        dist_mat = squareform(y)
+        Z = linkage_avg.linkage_avg(list_log, dist_mat, alpha, percent)
+    # print(y)
+    # Z = linkage(y, method='average')
+
+
+    end = time.time()
+    runtime[TYPE] = end - start
+    # print(Z)
+    print("runtime" + TYPE, runtime[TYPE])
+
+    plot_clu = 23
+    plot_fit = dict()
+    plot_prec = dict()
+    plot_F1 = dict()
+    plot_box = dict()
+    plot_box2 = dict()
+    plot_boxfit = dict()
+    plot_boxprec = dict()
+    plot_length = []
+    clu_list_dict = dict()
+    length_li = []
+    fit_li = []
+    prec_li = []
+    F1_li = []
+    for i in range(1, plot_clu + 1):
+        if i == 1:
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
+            fitness, precision = get_fit_prec_hpc(log, log)
+            F1 = 2 * fitness * precision / (fitness + precision)
+            print("fit", fitness)
+            print("prec", precision)
+            plot_fit[str(i)] = fitness
+            plot_prec[str(i)] = precision
+            plot_F1[str(i)] = F1
+            # plot_box[str(i)] = pd.Series(F1)
+            plot_boxfit[str(i)] = fitness
+            plot_boxprec[str(i)] = precision
+            plot_box[str(i)] = F1
+            plot_length.append([len(log)])
+            tempclu_list_log = [list_log]
+            tempclu_list = [list_of_vals]
+        else:
+            # print("tempclu_list",tempclu_list)
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+            length_li = []
+            fit_li = []
+            prec_li = []
+            F1_li = []
+            for j in range(0, i):
+                length = len(clu_list_log[j])
+                if length != 0:
+                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                    #     clu_list_log[j])
+                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                inductive_final_marking, variant="alignments")['averageFitness']
+                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                     inductive_final_marking)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    F1 = 2 * fitness * precision / (fitness + precision)
+                    # individual info for each sublog
+                    length_li.append(length)
+                    fit_li.append(fitness)
+                    prec_li.append(precision)
+                    F1_li.append(F1)
+
+            # if len(clu_list_log[-1])!=0:
+            #     # print("lenclu_list_log",len(clu_list_log))
+            #     diff = [item for item in clu_list if not item in tempclu_list]
+            #     diff_old = [item for item in tempclu_list if not item in clu_list]
+            #     # print("diff",diff)
+            #     # print("diff_old", diff_old)
+            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
+            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
+            #     # print(tempclu_list)
+            #
+            #
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+            #     # print(len(tempclu_list_log))
+            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
+            #     # print("del",len(tempclu_list_log))
+            #     # clu_list_dict[str(i)] = clu_list
+            #
+            #
+            #
+            #     for j in range(0, 2):
+            #         length = len(clu_list_log[clu_list.index(diff[j])])
+            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #             clu_list_log[clu_list.index(diff[j])])
+            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                        inductive_final_marking, variant="alignments")['averageFitness']
+            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                             inductive_final_marking)
+            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+            #
+            #     # print(length_li)
+            #     # print("fit", fit_li)
+            #     # print("prec", prec_li)
+            #     if (i > 2):
+            #         del length_li[tempclu_list.index(diff_old[0])]
+            #         del fit_li[tempclu_list.index(diff_old[0])]
+            #         del prec_li[tempclu_list.index(diff_old[0])]
+            #         del F1_li[tempclu_list.index(diff_old[0])]
+            #     del tempclu_list[tempclu_list.index(diff_old[0])]
+            # # print("del", tempclu_list)
+
+            print(length_li)
+            print("fit", fit_li)
+            print("prec", prec_li)
+            print("F1", F1_li)
+
+            plot_fit[str(i)] = np.average(fit_li)
+            plot_prec[str(i)] = np.average(prec_li)
+            plot_F1[str(i)] = np.average(F1_li)
+            # plot_box[str(i)] = pd.Series(F1_li)
+            plot_boxfit[str(i)] = fit_li
+            plot_boxprec[str(i)] = prec_li
+            plot_box[str(i)] = F1_li
+            plot_length.append(length_li)
+            print("plot_fit", plot_fit)
+            print("plot_prec", plot_prec)
+            print("plot_F1", plot_F1)
+
+    print("plot_fit", plot_fit)
+    print("plot_prec", plot_prec)
+    print("plot_F1", plot_F1)
+    print('length', plot_length)
+    print('plot_box', plot_box)
+    print('plot_boxfit', plot_boxfit)
+    print('plot_boxprec', plot_boxprec)
+
+    return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
+
+def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
+
+    # DFG test
+    start = time.time()
+    if METHOD == 'dfg':
+        print("dfg is using!")
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
+    elif METHOD == 'DMM':
+        print("DMM is using!")
+        y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
+    elif METHOD == 'avg':
+        print("avg is using!")
+        y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
+    # print(y)
+    Z = linkage(y, method='average')
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
+
+    end = time.time()
+    runtime[TYPE] = end - start
+    # print(Z)
+    print("runtime" + TYPE, runtime[TYPE])
+
+    plot_clu = 23
+    plot_fit = dict()
+    plot_prec = dict()
+    plot_F1 = dict()
+    plot_box = dict()
+    plot_box2 = dict()
+    plot_boxfit = dict()
+    plot_boxprec = dict()
+    plot_length = []
+    clu_list_dict = dict()
+    length_li = []
+    fit_li = []
+    prec_li = []
+    F1_li = []
+    for i in range(1, plot_clu + 1):
+        if i == 1:
+            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #
+            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                     inductive_final_marking)
+            fitness, precision = get_fit_prec_hpc(log, log)
+            F1 = 2 * fitness * precision / (fitness + precision)
+            print("fit", fitness)
+            print("prec", precision)
+            plot_fit[str(i)] = fitness
+            plot_prec[str(i)] = precision
+            plot_F1[str(i)] = F1
+            # plot_box[str(i)] = pd.Series(F1)
+            plot_boxfit[str(i)] = fitness
+            plot_boxprec[str(i)] = precision
+            plot_box[str(i)] = F1
+            plot_length.append([len(log)])
+            tempclu_list_log = [list_log]
+            tempclu_list = [list_of_vals]
+        else:
+            # print("tempclu_list",tempclu_list)
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+            length_li = []
+            fit_li = []
+            prec_li = []
+            F1_li = []
+            for j in range(0, i):
+                length = len(clu_list_log[j])
+                if length != 0:
+                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                    #     clu_list_log[j])
+                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                inductive_final_marking, variant="alignments")['averageFitness']
+                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                    #                                     inductive_final_marking)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    F1 = 2 * fitness * precision / (fitness + precision)
+                    # individual info for each sublog
+                    length_li.append(length)
+                    fit_li.append(fitness)
+                    prec_li.append(precision)
+                    F1_li.append(F1)
+
+            # if len(clu_list_log[-1])!=0:
+            #     # print("lenclu_list_log",len(clu_list_log))
+            #     diff = [item for item in clu_list if not item in tempclu_list]
+            #     diff_old = [item for item in tempclu_list if not item in clu_list]
+            #     # print("diff",diff)
+            #     # print("diff_old", diff_old)
+            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
+            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
+            #     # print(tempclu_list)
+            #
+            #
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+            #     # print(len(tempclu_list_log))
+            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
+            #     # print("del",len(tempclu_list_log))
+            #     # clu_list_dict[str(i)] = clu_list
+            #
+            #
+            #
+            #     for j in range(0, 2):
+            #         length = len(clu_list_log[clu_list.index(diff[j])])
+            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #             clu_list_log[clu_list.index(diff[j])])
+            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                        inductive_final_marking, variant="alignments")['averageFitness']
+            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                             inductive_final_marking)
+            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+            #
+            #     # print(length_li)
+            #     # print("fit", fit_li)
+            #     # print("prec", prec_li)
+            #     if (i > 2):
+            #         del length_li[tempclu_list.index(diff_old[0])]
+            #         del fit_li[tempclu_list.index(diff_old[0])]
+            #         del prec_li[tempclu_list.index(diff_old[0])]
+            #         del F1_li[tempclu_list.index(diff_old[0])]
+            #     del tempclu_list[tempclu_list.index(diff_old[0])]
+            # # print("del", tempclu_list)
+
+            print(length_li)
+            print("fit", fit_li)
+            print("prec", prec_li)
+            print("F1", F1_li)
+
+            plot_fit[str(i)] = np.average(fit_li)
+            plot_prec[str(i)] = np.average(prec_li)
+            plot_F1[str(i)] = np.average(F1_li)
+            # plot_box[str(i)] = pd.Series(F1_li)
+            plot_boxfit[str(i)] = fit_li
+            plot_boxprec[str(i)] = prec_li
+            plot_box[str(i)] = F1_li
+            plot_length.append(length_li)
+            print("plot_fit", plot_fit)
+            print("plot_prec", plot_prec)
+            print("plot_F1", plot_F1)
+
+    print("plot_fit", plot_fit)
+    print("plot_prec", plot_prec)
+    print("plot_F1", plot_F1)
+    print('length', plot_length)
+    print('plot_box', plot_box)
+    print('plot_boxfit', plot_boxfit)
+    print('plot_boxprec', plot_boxprec)
+
+    return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
 def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     list_of_vals = []
@@ -412,9 +762,9 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
         print("avg is using!")
         y = fake_log_eval.eval_avg_variant(list_log, percent, alpha)
     # print(y)
-    # Z = linkage(y, method='average')
-    dist_mat = squareform(y)
-    Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
+    Z = linkage(y, method='average')
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
 
     end = time.time()
     runtime[TYPE] = end - start
@@ -553,8 +903,85 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     print('plot_boxfit', plot_boxfit)
     print('plot_boxprec', plot_boxprec)
 
-    return plot_fit, plot_fit, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
+    return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
+def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,x_axis):
+
+    for i in range(1, plot_clu + 1):
+        plot_box[str(i)] = pd.Series(plot_box[str(i)])
+        plot_boxfit[str(i)] = pd.Series(plot_boxfit[str(i)])
+        plot_boxprec[str(i)] = pd.Series(plot_boxprec[str(i)])
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    data = pd.DataFrame(plot_boxfit)
+    # print(data)
+    plt.plot(x_axis, list(plot_fit.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    data.boxplot(sym='o', whis=1)
+    # plt.gca().invert_xaxis()
+    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    plt.ylim(0, 1.04)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Fitness")
+    plt.grid(axis='x')
+    plt.savefig(PIC_PATH + 'fit_sca' + '_' + TYPE + '.svg')
+
+    fig2 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    data = pd.DataFrame(plot_boxprec)
+    # print(data)
+    plt.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    data.boxplot(sym='o', whis=1)
+    # plt.gca().invert_xaxis()
+    # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
+    plt.ylim(0, 1.04)
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Precision")
+    plt.grid(axis='x')
+    plt.savefig(PIC_PATH + 'prec_sca' + '_' + TYPE + '.svg')
+
+
+    # rescale to 0-1
+    fig4 = plt.figure()
+    # plot_box["2"] = plot_box["1"]
+    data = pd.DataFrame(plot_box)
+    # print(data)
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
+    plt.xticks(x_axis)
+    data.boxplot(sym='o', whis=1)
+
+    plt.ylim(0, 1.04)
+    # plt.gca().invert_xaxis()
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='x')
+    plt.savefig(PIC_PATH + 'f1_boxplot_sca' + '_' + TYPE + '.svg')
+    #
+    # show cluster size dot
+    fig6 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    for i in range(0, 23):
+        xlist = np.ones(len(plot_length[i])) * (i + 1)
+        a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
+        weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
+        plot_length[i] = sorted(plot_length[i], reverse=False)
+        plt.scatter(xlist, plot_length[i], marker="o", s=weights)
+    plt.xticks(range(1, 24))
+    plt.ylim(0.5, 1000)
+    plt.yscale('log')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Cluster Size")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'dot_clustersize' + '_' + TYPE + '.svg')
 
 if __name__ == "__main__":
 
@@ -4443,31 +4870,31 @@ if __name__ == "__main__":
     rc('text', usetex=True)
     rc('font', family='serif')
     l1 = plt.plot(x_axis, F1DMM[1], color="b", linestyle="-", marker="s", linewidth=1)
-    l2 = plt.plot(x_axis, F1DMM_FT[1], color="r", linestyle="-", marker="o", linewidth=1)
+    l2 = plt.plot(x_axis, F1avg[1], color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
     # plt.gca().invert_xaxis()
     plt.ylim(0, 1.04)
-    plt.legend([l1, l2], labels=['Leven-DMM', 'Feature Vector-DMM'], loc='best')
-    plt.title('DMM-Recomputing')
+    plt.legend([l1, l2], labels=['Leven-DMM', 'Leven-avg'], loc='best')
+    plt.title('Leven-Recomputing')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'DMM-Recomputing' + '.svg')
+    plt.savefig(PIC_PATH + 'Leven-Recomputing' + '.svg')
 
     fig9 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
-    l1 = plt.plot(x_axis, F1avg[1], color="b", linestyle="-", marker="s", linewidth=1)
+    l1 = plt.plot(x_axis, F1DMM_FT[1], color="b", linestyle="-", marker="s", linewidth=1)
     l2 = plt.plot(x_axis, F1avgFT[1], color="r", linestyle="-", marker="o", linewidth=1)
     plt.xticks(x_axis)
     # plt.gca().invert_xaxis()
     plt.ylim(0, 1.04)
-    plt.legend([l1, l2], labels=['Leven-AVG', 'Feature Vector-AVG'], loc='best')
-    plt.title('AVG-Recomputing')
+    plt.legend([l1, l2], labels=['Feature Vector-DMM', 'Feature Vector-AVG'], loc='best')
+    plt.title('Feature Vector-Recomputing')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'AVG-Recomputing' + '.svg')
+    plt.savefig(PIC_PATH + 'FT-Recomputing' + '.svg')
 
     fig10 = plt.figure()
     rc('text', usetex=True)
