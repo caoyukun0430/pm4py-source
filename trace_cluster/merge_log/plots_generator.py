@@ -3,13 +3,13 @@ from pm4py.objects.log.importer.xes import factory as xes_importer
 from matplotlib import rc
 import matplotlib.pyplot as plt
 if __name__ == "__main__":
-
     F1all = dict()
     precall = dict()
     fitall = dict()
     PIC_PATH = '/home/yukun/resultlog/'
     percent = 1
     alpha = 0.5
+    plot_clu=23
     runtime = dict()
 
     LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
     fitall['Receipt'] = list(plot_fit.values())
     precall['Receipt'] = list(plot_prec.values())
     F1all['Receipt'] = list(plot_F1.values())
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
     fitall['filteredbpic2017'] = list(plot_fit.values())
     precall['filteredbpic2017'] = list(plot_prec.values())
     F1all['filteredbpic2017'] = list(plot_F1.values())
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
     fitall['BPIC2012_A'] = list(plot_fit.values())
     precall['BPIC2012_A'] = list(plot_prec.values())
     F1all['BPIC2012_A'] = list(plot_F1.values())
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
     fitall['Control_summary'] = list(plot_fit.values())
     precall['Control_summary'] = list(plot_prec.values())
     F1all['Control_summary'] = list(plot_F1.values())
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
     fitall['Payment_application'] = list(plot_fit.values())
     precall['Payment_application'] = list(plot_prec.values())
     F1all['Payment_application'] = list(plot_F1.values())
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
     fitall['Geo'] = list(plot_fit.values())
     precall['Geo'] = list(plot_prec.values())
     F1all['Geo'] = list(plot_F1.values())
@@ -222,6 +222,7 @@ if __name__ == "__main__":
     plt.ylabel("Precision")
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'Precisionallreallogs-line' + '.svg')
+
 
 
 

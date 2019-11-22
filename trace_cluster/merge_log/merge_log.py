@@ -215,7 +215,7 @@ def get_fit_prec_hpc(log, ori_log):
     return fitness, precision
 
 
-def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -256,7 +256,6 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
-    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -390,7 +389,7 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -431,7 +430,6 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
-    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -565,7 +563,7 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -601,7 +599,6 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
-    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -735,7 +732,7 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
+def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -771,7 +768,6 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
-    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -905,7 +901,7 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime):
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,x_axis):
+def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,plot_clu,x_axis):
 
     for i in range(1, plot_clu + 1):
         plot_box[str(i)] = pd.Series(plot_box[str(i)])
@@ -969,13 +965,13 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     fig6 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
-    for i in range(0, 23):
+    for i in range(0, plot_clu):
         xlist = np.ones(len(plot_length[i])) * (i + 1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
         plt.scatter(xlist, plot_length[i], marker="o", s=weights)
-    plt.xticks(range(1, 24))
+    plt.xticks(range(1, plot_clu+1))
     plt.ylim(0.5, 1000)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
