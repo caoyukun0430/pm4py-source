@@ -136,6 +136,8 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     F1DMM_FT = [F1DMM, F1DMMup]
     print('F1compare', F1DMM_FT)
 
+    print('runtime',runtime)
+
     fig9 = plt.figure()
     rc('text', usetex=True)
     rc('font', family='serif')
