@@ -4170,7 +4170,7 @@ if __name__ == "__main__":
 
     PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
 
-    TYPE = METHOD + ATTR_NAME + 'dfg'
+    TYPE = METHOD + ATTR_NAME + 'dfg'+'update'
 
     list_of_vals = []
     list_log = []
@@ -4203,7 +4203,7 @@ if __name__ == "__main__":
     # print("Z",Z)
     # print(np.shape(Z1))
     dist_mat = squareform(y)
-    Z = linkage_avg.linkage_DMM_update(list_log, dist_mat, alpha, percent)
+    Z = linkage_avg.linkage_dfg_update(list_log, dist_mat, alpha, percent)
     # print("shape",np.shape(Z))
 
     # print("Z",len(Z))
@@ -4369,15 +4369,29 @@ if __name__ == "__main__":
     l3 = plt.plot(x_axis, F1DMM_FT[1], color="g", linestyle="-", marker="s", linewidth=1)
     plt.xticks(x_axis)
     plt.ylim(0, 1.04)
-    plt.legend([l1, l2, l3], labels=['DFG', 'Leven', 'Feature Vector'], loc='best')
+    plt.legend([l1, l2, l3], labels=['DFG', 'Leven-DMM', 'Feature Vector-DMM'], loc='best')
     plt.title('DFG,Leven and Feature Vector-Recomputing')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
     plt.grid(axis='y')
     # plt.show()
-    plt.savefig(PIC_PATH + 'DFG,Leven and Feature Vector-Recomputin' + '.svg')
+    plt.savefig(PIC_PATH + 'DFG-Leven-FT-DMM' + '.svg')
 
-
+    fig11 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1avg[1], color="r", linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(x_axis, F1avgFT[1], color="g", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3], labels=['DFG', 'Leven-AVG', 'Feature Vector-AVG'], loc='best')
+    plt.title('DFG,Leven and Feature Vector-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    # plt.show()
+    plt.savefig(PIC_PATH + 'DFG-Leven-FT-AVG' + '.svg')
 
 
     print('runtime',runtime)
