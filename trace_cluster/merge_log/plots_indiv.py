@@ -146,7 +146,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     plt.xticks(x_axis)
     # plt.gca().invert_xaxis()
     plt.ylim(0, 1.04)
-    plt.legend([l1, l2], labels=['Leven-DMM', 'Leven-avg'], loc='best')
+    plt.legend([l1, l2], labels=['Leven-DMM', 'Leven-AVG'], loc='best')
     plt.title('Leven-Recomputing')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("F1-Score")
