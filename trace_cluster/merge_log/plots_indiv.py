@@ -3,7 +3,7 @@ from pm4py.objects.log.importer.xes import factory as xes_importer
 from matplotlib import rc
 import matplotlib.pyplot as plt
 
-def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
+def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH,plot_clu):
     # PIC_PATH = '/home/yukun/resultlog/'
     percent = 1
     alpha = 0.5
@@ -12,7 +12,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     log = xes_importer.apply(LOG_PATH)
 
     METHOD = 'avg'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -26,7 +26,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
 
     # ATTR_NAME = 'responsible'
     METHOD = 'avg'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -44,7 +44,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     # ATTR_NAME = 'responsible'
     # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     METHOD = 'DMM'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -58,7 +58,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
 
     # ATTR_NAME = 'responsible'
     METHOD = 'DMM'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -76,7 +76,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     # ATTR_NAME = 'responsible'
     # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     METHOD = 'avg'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -90,7 +90,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
 
     # ATTR_NAME = 'responsible'
     METHOD = 'avg'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -108,7 +108,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     # ATTR_NAME = 'responsible'
     # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     METHOD = 'DMM'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -122,7 +122,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
 
     # ATTR_NAME = 'responsible'
     METHOD = 'DMM'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -205,7 +205,7 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH):
     plt.savefig(PIC_PATH + 'Recomputing-line' + '.svg')
 
     METHOD = 'dfg'
-    plot_clu = 23
+    # plot_clu = 23
 
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -251,32 +251,36 @@ if __name__ == "__main__":
     LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
     ATTR_NAME = 'responsible'
     PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
-    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
+    plot_clu = 23
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
 
-    # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
-    # ATTR_NAME = 'CreditScore'
-    # PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
-    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
-    #
-    # LOG_PATH = "/home/yukun/dataset/BPIC2012_A.xes"
-    # ATTR_NAME = 'AMOUNT_REQ'
-    # PIC_PATH = '/home/yukun/resultlog/BPIC2012_A/' + ATTR_NAME + '/'
-    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
-    #
-    # LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
-    # ATTR_NAME = 'amount_applied0'
-    # PIC_PATH = '/home/yukun/resultlog/Control_summary/' + ATTR_NAME + '/'
-    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
+    LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
+    ATTR_NAME = 'amount_applied0'
+    PIC_PATH = '/home/yukun/resultlog/Control_summary/' + ATTR_NAME + '/'
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
+
+    LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
+    ATTR_NAME = 'CreditScore'
+    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
+
+    LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
+    ATTR_NAME = 'amount_applied0'
+    PIC_PATH = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/'
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu)
+
+    LOG_PATH = "/home/yukun/dataset/BPIC2012_A.xes"
+    ATTR_NAME = 'AMOUNT_REQ'
+    PIC_PATH = '/home/yukun/resultlog/BPIC2012_A/' + ATTR_NAME + '/'
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
+
+
     #
     # LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
     # ATTR_NAME = 'amount_applied0'
     # PIC_PATH = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/'
     # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
     #
-    # LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
-    # ATTR_NAME = 'amount_applied0'
-    # PIC_PATH = '/home/yukun/resultlog/Geo_parcel_document/' + ATTR_NAME + '/'
-    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
 
 
 
