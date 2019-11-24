@@ -294,20 +294,53 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
         else:
             # print("tempclu_list",tempclu_list)
             clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-            length_li = []
-            fit_li = []
-            prec_li = []
-            F1_li = []
-            for j in range(0, i):
-                length = len(clu_list_log[j])
-                if length != 0:
+            # length_li = []
+            # fit_li = []
+            # prec_li = []
+            # F1_li = []
+            # for j in range(0, i):
+            #     length = len(clu_list_log[j])
+            #     if length != 0:
+            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #             clu_list_log[j])
+            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                        inductive_final_marking, variant="alignments")['averageFitness']
+            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                             inductive_final_marking)
+            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+
+            if len(clu_list_log[-1]) != 0:
+                # print("lenclu_list_log",len(clu_list_log))
+                diff = [item for item in clu_list if not item in tempclu_list]
+                diff_old = [item for item in tempclu_list if not item in clu_list]
+                # print("diff",diff)
+                # print("diff_old", diff_old)
+                tempclu_list.append(clu_list[clu_list.index(diff[0])])
+                tempclu_list.append(clu_list[clu_list.index(diff[1])])
+                # print(tempclu_list)
+
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+                # print(len(tempclu_list_log))
+                del tempclu_list_log[tempclu_list.index(diff_old[0])]
+                # print("del",len(tempclu_list_log))
+                # clu_list_dict[str(i)] = clu_list
+
+                for j in range(0, 2):
+                    length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[j])
+                    #     clu_list_log[clu_list.index(diff[j])])
                     # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -315,54 +348,17 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
                     prec_li.append(precision)
                     F1_li.append(F1)
 
-            # if len(clu_list_log[-1])!=0:
-            #     # print("lenclu_list_log",len(clu_list_log))
-            #     diff = [item for item in clu_list if not item in tempclu_list]
-            #     diff_old = [item for item in tempclu_list if not item in clu_list]
-            #     # print("diff",diff)
-            #     # print("diff_old", diff_old)
-            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
-            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
-            #     # print(tempclu_list)
-            #
-            #
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
-            #     # print(len(tempclu_list_log))
-            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
-            #     # print("del",len(tempclu_list_log))
-            #     # clu_list_dict[str(i)] = clu_list
-            #
-            #
-            #
-            #     for j in range(0, 2):
-            #         length = len(clu_list_log[clu_list.index(diff[j])])
-            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-            #             clu_list_log[clu_list.index(diff[j])])
-            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                        inductive_final_marking, variant="alignments")['averageFitness']
-            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                             inductive_final_marking)
-            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
-            #         F1 = 2 * fitness * precision / (fitness + precision)
-            #         # individual info for each sublog
-            #         length_li.append(length)
-            #         fit_li.append(fitness)
-            #         prec_li.append(precision)
-            #         F1_li.append(F1)
-            #
-            #     # print(length_li)
-            #     # print("fit", fit_li)
-            #     # print("prec", prec_li)
-            #     if (i > 2):
-            #         del length_li[tempclu_list.index(diff_old[0])]
-            #         del fit_li[tempclu_list.index(diff_old[0])]
-            #         del prec_li[tempclu_list.index(diff_old[0])]
-            #         del F1_li[tempclu_list.index(diff_old[0])]
-            #     del tempclu_list[tempclu_list.index(diff_old[0])]
-            # # print("del", tempclu_list)
+                # print("fit", fit_li)
+                # print("prec", prec_li)
+                if (i > 2):
+                    del length_li[tempclu_list.index(diff_old[0])]
+                    del fit_li[tempclu_list.index(diff_old[0])]
+                    del prec_li[tempclu_list.index(diff_old[0])]
+                    del F1_li[tempclu_list.index(diff_old[0])]
+                del tempclu_list[tempclu_list.index(diff_old[0])]
+            # print("del", tempclu_list)
 
-            print(length_li)
+            # print('length',length_li)
             print("fit", fit_li)
             print("prec", prec_li)
             print("F1", F1_li)
@@ -371,10 +367,12 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
             plot_prec[str(i)] = np.average(prec_li)
             plot_F1[str(i)] = np.average(F1_li)
             # plot_box[str(i)] = pd.Series(F1_li)
-            plot_boxfit[str(i)] = fit_li
-            plot_boxprec[str(i)] = prec_li
-            plot_box[str(i)] = F1_li
-            plot_length.append(length_li)
+            plot_boxfit[str(i)] = fit_li[::]
+            plot_boxprec[str(i)] = prec_li[::]
+            plot_box[str(i)] = F1_li[::]
+            # length_licopy = length_li[::]
+            plot_length.append(length_li[::])
+            print('plot_length', plot_length)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -468,20 +466,53 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
         else:
             # print("tempclu_list",tempclu_list)
             clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-            length_li = []
-            fit_li = []
-            prec_li = []
-            F1_li = []
-            for j in range(0, i):
-                length = len(clu_list_log[j])
-                if length != 0:
+            # length_li = []
+            # fit_li = []
+            # prec_li = []
+            # F1_li = []
+            # for j in range(0, i):
+            #     length = len(clu_list_log[j])
+            #     if length != 0:
+            #         # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #         #     clu_list_log[j])
+            #         # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #         #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #         # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #         #                                     inductive_final_marking)
+            #         fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+
+            if len(clu_list_log[-1]) != 0:
+                # print("lenclu_list_log",len(clu_list_log))
+                diff = [item for item in clu_list if not item in tempclu_list]
+                diff_old = [item for item in tempclu_list if not item in clu_list]
+                # print("diff",diff)
+                # print("diff_old", diff_old)
+                tempclu_list.append(clu_list[clu_list.index(diff[0])])
+                tempclu_list.append(clu_list[clu_list.index(diff[1])])
+                # print(tempclu_list)
+
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+                # print(len(tempclu_list_log))
+                del tempclu_list_log[tempclu_list.index(diff_old[0])]
+                # print("del",len(tempclu_list_log))
+                # clu_list_dict[str(i)] = clu_list
+
+                for j in range(0, 2):
+                    length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[j])
+                    #     clu_list_log[clu_list.index(diff[j])])
                     # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -489,54 +520,17 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
                     prec_li.append(precision)
                     F1_li.append(F1)
 
-            # if len(clu_list_log[-1])!=0:
-            #     # print("lenclu_list_log",len(clu_list_log))
-            #     diff = [item for item in clu_list if not item in tempclu_list]
-            #     diff_old = [item for item in tempclu_list if not item in clu_list]
-            #     # print("diff",diff)
-            #     # print("diff_old", diff_old)
-            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
-            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
-            #     # print(tempclu_list)
-            #
-            #
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
-            #     # print(len(tempclu_list_log))
-            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
-            #     # print("del",len(tempclu_list_log))
-            #     # clu_list_dict[str(i)] = clu_list
-            #
-            #
-            #
-            #     for j in range(0, 2):
-            #         length = len(clu_list_log[clu_list.index(diff[j])])
-            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-            #             clu_list_log[clu_list.index(diff[j])])
-            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                        inductive_final_marking, variant="alignments")['averageFitness']
-            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                             inductive_final_marking)
-            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
-            #         F1 = 2 * fitness * precision / (fitness + precision)
-            #         # individual info for each sublog
-            #         length_li.append(length)
-            #         fit_li.append(fitness)
-            #         prec_li.append(precision)
-            #         F1_li.append(F1)
-            #
-            #     # print(length_li)
-            #     # print("fit", fit_li)
-            #     # print("prec", prec_li)
-            #     if (i > 2):
-            #         del length_li[tempclu_list.index(diff_old[0])]
-            #         del fit_li[tempclu_list.index(diff_old[0])]
-            #         del prec_li[tempclu_list.index(diff_old[0])]
-            #         del F1_li[tempclu_list.index(diff_old[0])]
-            #     del tempclu_list[tempclu_list.index(diff_old[0])]
-            # # print("del", tempclu_list)
+                # print("fit", fit_li)
+                # print("prec", prec_li)
+                if (i > 2):
+                    del length_li[tempclu_list.index(diff_old[0])]
+                    del fit_li[tempclu_list.index(diff_old[0])]
+                    del prec_li[tempclu_list.index(diff_old[0])]
+                    del F1_li[tempclu_list.index(diff_old[0])]
+                del tempclu_list[tempclu_list.index(diff_old[0])]
+            # print("del", tempclu_list)
 
-            print(length_li)
+            # print('length',length_li)
             print("fit", fit_li)
             print("prec", prec_li)
             print("F1", F1_li)
@@ -545,10 +539,12 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
             plot_prec[str(i)] = np.average(prec_li)
             plot_F1[str(i)] = np.average(F1_li)
             # plot_box[str(i)] = pd.Series(F1_li)
-            plot_boxfit[str(i)] = fit_li
-            plot_boxprec[str(i)] = prec_li
-            plot_box[str(i)] = F1_li
-            plot_length.append(length_li)
+            plot_boxfit[str(i)] = fit_li[::]
+            plot_boxprec[str(i)] = prec_li[::]
+            plot_box[str(i)] = F1_li[::]
+            # length_licopy = length_li[::]
+            plot_length.append(length_li[::])
+            print('plot_length', plot_length)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -637,20 +633,56 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
         else:
             # print("tempclu_list",tempclu_list)
             clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-            length_li = []
-            fit_li = []
-            prec_li = []
-            F1_li = []
-            for j in range(0, i):
-                length = len(clu_list_log[j])
-                if length != 0:
+            # length_li = []
+            # fit_li = []
+            # prec_li = []
+            # F1_li = []
+            # for j in range(0, i):
+            #     length = len(clu_list_log[j])
+            #     if length != 0:
+            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #             clu_list_log[j])
+            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                        inductive_final_marking, variant="alignments")['averageFitness']
+            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                             inductive_final_marking)
+            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+
+            if len(clu_list_log[-1])!=0:
+                # print("lenclu_list_log",len(clu_list_log))
+                diff = [item for item in clu_list if not item in tempclu_list]
+                diff_old = [item for item in tempclu_list if not item in clu_list]
+                # print("diff",diff)
+                # print("diff_old", diff_old)
+                tempclu_list.append(clu_list[clu_list.index(diff[0])])
+                tempclu_list.append(clu_list[clu_list.index(diff[1])])
+                # print(tempclu_list)
+
+
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+                # print(len(tempclu_list_log))
+                del tempclu_list_log[tempclu_list.index(diff_old[0])]
+                # print("del",len(tempclu_list_log))
+                # clu_list_dict[str(i)] = clu_list
+
+
+
+                for j in range(0, 2):
+                    length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[j])
+                    #     clu_list_log[clu_list.index(diff[j])])
                     # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -658,54 +690,17 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
                     prec_li.append(precision)
                     F1_li.append(F1)
 
-            # if len(clu_list_log[-1])!=0:
-            #     # print("lenclu_list_log",len(clu_list_log))
-            #     diff = [item for item in clu_list if not item in tempclu_list]
-            #     diff_old = [item for item in tempclu_list if not item in clu_list]
-            #     # print("diff",diff)
-            #     # print("diff_old", diff_old)
-            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
-            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
-            #     # print(tempclu_list)
-            #
-            #
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
-            #     # print(len(tempclu_list_log))
-            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
-            #     # print("del",len(tempclu_list_log))
-            #     # clu_list_dict[str(i)] = clu_list
-            #
-            #
-            #
-            #     for j in range(0, 2):
-            #         length = len(clu_list_log[clu_list.index(diff[j])])
-            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-            #             clu_list_log[clu_list.index(diff[j])])
-            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                        inductive_final_marking, variant="alignments")['averageFitness']
-            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                             inductive_final_marking)
-            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
-            #         F1 = 2 * fitness * precision / (fitness + precision)
-            #         # individual info for each sublog
-            #         length_li.append(length)
-            #         fit_li.append(fitness)
-            #         prec_li.append(precision)
-            #         F1_li.append(F1)
-            #
-            #     # print(length_li)
-            #     # print("fit", fit_li)
-            #     # print("prec", prec_li)
-            #     if (i > 2):
-            #         del length_li[tempclu_list.index(diff_old[0])]
-            #         del fit_li[tempclu_list.index(diff_old[0])]
-            #         del prec_li[tempclu_list.index(diff_old[0])]
-            #         del F1_li[tempclu_list.index(diff_old[0])]
-            #     del tempclu_list[tempclu_list.index(diff_old[0])]
-            # # print("del", tempclu_list)
+                # print("fit", fit_li)
+                # print("prec", prec_li)
+                if (i > 2):
+                    del length_li[tempclu_list.index(diff_old[0])]
+                    del fit_li[tempclu_list.index(diff_old[0])]
+                    del prec_li[tempclu_list.index(diff_old[0])]
+                    del F1_li[tempclu_list.index(diff_old[0])]
+                del tempclu_list[tempclu_list.index(diff_old[0])]
+            # print("del", tempclu_list)
 
-            print(length_li)
+            # print('length',length_li)
             print("fit", fit_li)
             print("prec", prec_li)
             print("F1", F1_li)
@@ -714,10 +709,12 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
             plot_prec[str(i)] = np.average(prec_li)
             plot_F1[str(i)] = np.average(F1_li)
             # plot_box[str(i)] = pd.Series(F1_li)
-            plot_boxfit[str(i)] = fit_li
-            plot_boxprec[str(i)] = prec_li
-            plot_box[str(i)] = F1_li
-            plot_length.append(length_li)
+            plot_boxfit[str(i)] = fit_li[::]
+            plot_boxprec[str(i)] = prec_li[::]
+            plot_box[str(i)] = F1_li[::]
+            # length_licopy = length_li[::]
+            plot_length.append(length_li[::])
+            print('plot_length', plot_length)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
@@ -806,20 +803,53 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
         else:
             # print("tempclu_list",tempclu_list)
             clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-            length_li = []
-            fit_li = []
-            prec_li = []
-            F1_li = []
-            for j in range(0, i):
-                length = len(clu_list_log[j])
-                if length != 0:
+            # length_li = []
+            # fit_li = []
+            # prec_li = []
+            # F1_li = []
+            # for j in range(0, i):
+            #     length = len(clu_list_log[j])
+            #     if length != 0:
+            #         # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #         #     clu_list_log[j])
+            #         # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #         #                                inductive_final_marking, variant="alignments")['averageFitness']
+            #         # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #         #                                     inductive_final_marking)
+            #         fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+
+            if len(clu_list_log[-1]) != 0:
+                # print("lenclu_list_log",len(clu_list_log))
+                diff = [item for item in clu_list if not item in tempclu_list]
+                diff_old = [item for item in tempclu_list if not item in clu_list]
+                # print("diff",diff)
+                # print("diff_old", diff_old)
+                tempclu_list.append(clu_list[clu_list.index(diff[0])])
+                tempclu_list.append(clu_list[clu_list.index(diff[1])])
+                # print(tempclu_list)
+
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+                tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+                # print(len(tempclu_list_log))
+                del tempclu_list_log[tempclu_list.index(diff_old[0])]
+                # print("del",len(tempclu_list_log))
+                # clu_list_dict[str(i)] = clu_list
+
+                for j in range(0, 2):
+                    length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[j])
+                    #     clu_list_log[clu_list.index(diff[j])])
                     # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                inductive_final_marking, variant="alignments")['averageFitness']
                     # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                     #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -827,54 +857,17 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
                     prec_li.append(precision)
                     F1_li.append(F1)
 
-            # if len(clu_list_log[-1])!=0:
-            #     # print("lenclu_list_log",len(clu_list_log))
-            #     diff = [item for item in clu_list if not item in tempclu_list]
-            #     diff_old = [item for item in tempclu_list if not item in clu_list]
-            #     # print("diff",diff)
-            #     # print("diff_old", diff_old)
-            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
-            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
-            #     # print(tempclu_list)
-            #
-            #
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
-            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
-            #     # print(len(tempclu_list_log))
-            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
-            #     # print("del",len(tempclu_list_log))
-            #     # clu_list_dict[str(i)] = clu_list
-            #
-            #
-            #
-            #     for j in range(0, 2):
-            #         length = len(clu_list_log[clu_list.index(diff[j])])
-            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-            #             clu_list_log[clu_list.index(diff[j])])
-            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                        inductive_final_marking, variant="alignments")['averageFitness']
-            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                             inductive_final_marking)
-            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
-            #         F1 = 2 * fitness * precision / (fitness + precision)
-            #         # individual info for each sublog
-            #         length_li.append(length)
-            #         fit_li.append(fitness)
-            #         prec_li.append(precision)
-            #         F1_li.append(F1)
-            #
-            #     # print(length_li)
-            #     # print("fit", fit_li)
-            #     # print("prec", prec_li)
-            #     if (i > 2):
-            #         del length_li[tempclu_list.index(diff_old[0])]
-            #         del fit_li[tempclu_list.index(diff_old[0])]
-            #         del prec_li[tempclu_list.index(diff_old[0])]
-            #         del F1_li[tempclu_list.index(diff_old[0])]
-            #     del tempclu_list[tempclu_list.index(diff_old[0])]
-            # # print("del", tempclu_list)
+                # print("fit", fit_li)
+                # print("prec", prec_li)
+                if (i > 2):
+                    del length_li[tempclu_list.index(diff_old[0])]
+                    del fit_li[tempclu_list.index(diff_old[0])]
+                    del prec_li[tempclu_list.index(diff_old[0])]
+                    del F1_li[tempclu_list.index(diff_old[0])]
+                del tempclu_list[tempclu_list.index(diff_old[0])]
+            # print("del", tempclu_list)
 
-            print(length_li)
+            # print('length',length_li)
             print("fit", fit_li)
             print("prec", prec_li)
             print("F1", F1_li)
@@ -883,10 +876,12 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
             plot_prec[str(i)] = np.average(prec_li)
             plot_F1[str(i)] = np.average(F1_li)
             # plot_box[str(i)] = pd.Series(F1_li)
-            plot_boxfit[str(i)] = fit_li
-            plot_boxprec[str(i)] = prec_li
-            plot_box[str(i)] = F1_li
-            plot_length.append(length_li)
+            plot_boxfit[str(i)] = fit_li[::]
+            plot_boxprec[str(i)] = prec_li[::]
+            plot_box[str(i)] = F1_li[::]
+            # length_licopy = length_li[::]
+            plot_length.append(length_li[::])
+            print('plot_length', plot_length)
             print("plot_fit", plot_fit)
             print("plot_prec", plot_prec)
             print("plot_F1", plot_F1)
