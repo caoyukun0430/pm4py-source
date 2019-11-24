@@ -434,7 +434,7 @@ def act_sim_percent(log1, log2, percent_1, percent_2):
     index_rec = set(list(range(min_len)))
 
     if var_list_1 == var_list_2:
-        print("Please give different variant lists!")
+        # print("Please give different variant lists!")
         dist = 0
     else:
         for i in range(max_len):
