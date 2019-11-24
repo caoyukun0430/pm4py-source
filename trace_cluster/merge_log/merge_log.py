@@ -985,7 +985,7 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
         plot_length[i] = sorted(plot_length[i], reverse=False)
         plt.scatter(xlist, plot_length[i], marker="o", s=weights)
     plt.xticks(range(1, plot_clu+1))
-    plt.ylim(0.5, 1000)
+    plt.ylim(np.min(np.min(plot_length))/2, np.max(np.max(plot_length))+500)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
     plt.ylabel("Cluster Size")
