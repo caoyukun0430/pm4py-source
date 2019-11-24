@@ -11,7 +11,7 @@ import json
 import sys
 import time
 from collections import Counter
-from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -328,11 +328,16 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
                 # print(len(tempclu_list_log))
+                if (len(diff)>2):
+                    for k in range(0,len(diff)-2):
+                        tempclu_list.append(clu_list[clu_list.index(diff[2+k])])
+                        tempclu_list_log.append(clu_list_log[clu_list.index(diff[2+k])])
+
                 del tempclu_list_log[tempclu_list.index(diff_old[0])]
                 # print("del",len(tempclu_list_log))
                 # clu_list_dict[str(i)] = clu_list
 
-                for j in range(0, 2):
+                for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
                     #     clu_list_log[clu_list.index(diff[j])])
@@ -500,11 +505,16 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
                 # print(len(tempclu_list_log))
+                if (len(diff) > 2):
+                    for k in range(0, len(diff) - 2):
+                        tempclu_list.append(clu_list[clu_list.index(diff[2 + k])])
+                        tempclu_list_log.append(clu_list_log[clu_list.index(diff[2 + k])])
+
                 del tempclu_list_log[tempclu_list.index(diff_old[0])]
                 # print("del",len(tempclu_list_log))
                 # clu_list_dict[str(i)] = clu_list
 
-                for j in range(0, 2):
+                for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
                     #     clu_list_log[clu_list.index(diff[j])])
@@ -668,13 +678,16 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
                 # print(len(tempclu_list_log))
+                if (len(diff) > 2):
+                    for k in range(0, len(diff) - 2):
+                        tempclu_list.append(clu_list[clu_list.index(diff[2 + k])])
+                        tempclu_list_log.append(clu_list_log[clu_list.index(diff[2 + k])])
+
                 del tempclu_list_log[tempclu_list.index(diff_old[0])]
                 # print("del",len(tempclu_list_log))
                 # clu_list_dict[str(i)] = clu_list
 
-
-
-                for j in range(0, 2):
+                for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
                     #     clu_list_log[clu_list.index(diff[j])])
@@ -837,11 +850,16 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
                 tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
                 # print(len(tempclu_list_log))
+                if (len(diff) > 2):
+                    for k in range(0, len(diff) - 2):
+                        tempclu_list.append(clu_list[clu_list.index(diff[2 + k])])
+                        tempclu_list_log.append(clu_list_log[clu_list.index(diff[2 + k])])
+
                 del tempclu_list_log[tempclu_list.index(diff_old[0])]
                 # print("del",len(tempclu_list_log))
                 # clu_list_dict[str(i)] = clu_list
 
-                for j in range(0, 2):
+                for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
                     # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
                     #     clu_list_log[clu_list.index(diff[j])])
