@@ -11,7 +11,7 @@ import json
 import sys
 import time
 from collections import Counter
-# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
