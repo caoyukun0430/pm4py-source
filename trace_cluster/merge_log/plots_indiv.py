@@ -248,11 +248,11 @@ def standard_plt(LOG_PATH,ATTR_NAME,PIC_PATH,plot_clu):
     plt.savefig(PIC_PATH + 'DFG-Leven-FT-AVG' + '.svg')
 
 if __name__ == "__main__":
-    LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
-    ATTR_NAME = 'responsible'
-    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
+    # LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
+    # ATTR_NAME = 'responsible'
+    # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     plot_clu = 23
-    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
+    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
 
     LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
     ATTR_NAME = 'amount_applied0'
