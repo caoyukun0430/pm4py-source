@@ -130,6 +130,8 @@ def eval_avg_leven(loglist, percent, alpha):
     for i in range(0, size - 1):
         for j in range(i + 1, size):
             dist_mat[i][j] = leven_dist_calc.leven_dist_avg(loglist[i], loglist[j], percent, percent)
+            if (j % 50 == 0):
+                print([i, j, dist_mat[i][j]])
             dist_mat[j][i] = dist_mat[i][j]
 
     # print(dist_mat)
@@ -159,6 +161,8 @@ def eval_DMM_leven(loglist, percent, alpha):
     for i in range(0, size - 1):
         for j in range(i + 1, size):
             dist_mat[i][j] = leven_dist_calc.leven_dist(loglist[i], loglist[j], percent, percent)
+            if (j % 50 == 0):
+                print([i, j, dist_mat[i][j]])
             dist_mat[j][i] = dist_mat[i][j]
 
     # print(dist_mat)
