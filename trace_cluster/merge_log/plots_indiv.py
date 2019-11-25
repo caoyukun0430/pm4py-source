@@ -254,14 +254,14 @@ if __name__ == "__main__":
     plot_clu = 23
     # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
 
-    LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
-    ATTR_NAME = 'amount_applied0'
-    PIC_PATH = '/home/yukun/resultlog/Control_summary/' + ATTR_NAME + '/'
-    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
-
     LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
     ATTR_NAME = 'CreditScore'
     PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu)
+
+    LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
+    ATTR_NAME = 'amount_applied0'
+    PIC_PATH = '/home/yukun/resultlog/Control_summary/' + ATTR_NAME + '/'
     standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
 
     LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
