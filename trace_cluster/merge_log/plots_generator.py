@@ -12,72 +12,72 @@ if __name__ == "__main__":
     plot_clu=23
     runtime = dict()
 
-    LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
-    # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
-    ATTR_NAME = 'responsible'
-    METHOD = 'DMM'
-
-    log = xes_importer.apply(LOG_PATH)
-    print(LOG_PATH)
-    print(ATTR_NAME)
-    print(METHOD)
-    TYPE = METHOD + ATTR_NAME
-
-    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    fitall['Receipt'] = list(plot_fit.values())
-    precall['Receipt'] = list(plot_prec.values())
-    F1all['Receipt'] = list(plot_F1.values())
-
-    LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
-    ATTR_NAME = 'CreditScore'
-    METHOD = 'DMM'
-    plot_clu = 50
-
-    log = xes_importer.apply(LOG_PATH)
-    print(LOG_PATH)
-    print(ATTR_NAME)
-    print(METHOD)
-    TYPE = METHOD + ATTR_NAME
-
-    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    fitall['filteredbpic2017'] = list(plot_fit.values())
-    precall['filteredbpic2017'] = list(plot_prec.values())
-    F1all['filteredbpic2017'] = list(plot_F1.values())
-
-    LOG_PATH = "/home/yukun/dataset/BPIC2012_A.xes"
-    ATTR_NAME = 'AMOUNT_REQ'
-    METHOD = 'DMM'
-    plot_clu = 50
-
-    log = xes_importer.apply(LOG_PATH)
-    print(LOG_PATH)
-    print(ATTR_NAME)
-    print(METHOD)
-    TYPE = METHOD + ATTR_NAME
-
-    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    fitall['BPIC2012_A'] = list(plot_fit.values())
-    precall['BPIC2012_A'] = list(plot_prec.values())
-    F1all['BPIC2012_A'] = list(plot_F1.values())
-
-    LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
-    ATTR_NAME = 'amount_applied0'
-    METHOD = 'DMM'
-
-    log = xes_importer.apply(LOG_PATH)
-    print(LOG_PATH)
-    print(ATTR_NAME)
-    print(METHOD)
-    TYPE = METHOD + ATTR_NAME
-
-    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    fitall['Control_summary'] = list(plot_fit.values())
-    precall['Control_summary'] = list(plot_prec.values())
-    F1all['Control_summary'] = list(plot_F1.values())
+    # LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
+    # # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
+    # ATTR_NAME = 'responsible'
+    # METHOD = 'DMM'
+    #
+    # log = xes_importer.apply(LOG_PATH)
+    # print(LOG_PATH)
+    # print(ATTR_NAME)
+    # print(METHOD)
+    # TYPE = METHOD + ATTR_NAME
+    #
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    # fitall['Receipt'] = list(plot_fit.values())
+    # precall['Receipt'] = list(plot_prec.values())
+    # F1all['Receipt'] = list(plot_F1.values())
+    #
+    # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
+    # ATTR_NAME = 'CreditScore'
+    # METHOD = 'DMM'
+    # plot_clu = 50
+    #
+    # log = xes_importer.apply(LOG_PATH)
+    # print(LOG_PATH)
+    # print(ATTR_NAME)
+    # print(METHOD)
+    # TYPE = METHOD + ATTR_NAME
+    #
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    # fitall['filteredbpic2017'] = list(plot_fit.values())
+    # precall['filteredbpic2017'] = list(plot_prec.values())
+    # F1all['filteredbpic2017'] = list(plot_F1.values())
+    #
+    # LOG_PATH = "/home/yukun/dataset/BPIC2012_A.xes"
+    # ATTR_NAME = 'AMOUNT_REQ'
+    # METHOD = 'DMM'
+    # plot_clu = 50
+    #
+    # log = xes_importer.apply(LOG_PATH)
+    # print(LOG_PATH)
+    # print(ATTR_NAME)
+    # print(METHOD)
+    # TYPE = METHOD + ATTR_NAME
+    #
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    # fitall['BPIC2012_A'] = list(plot_fit.values())
+    # precall['BPIC2012_A'] = list(plot_prec.values())
+    # F1all['BPIC2012_A'] = list(plot_F1.values())
+    #
+    # LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
+    # ATTR_NAME = 'amount_applied0'
+    # METHOD = 'DMM'
+    #
+    # log = xes_importer.apply(LOG_PATH)
+    # print(LOG_PATH)
+    # print(ATTR_NAME)
+    # print(METHOD)
+    # TYPE = METHOD + ATTR_NAME
+    #
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    # fitall['Control_summary'] = list(plot_fit.values())
+    # precall['Control_summary'] = list(plot_prec.values())
+    # F1all['Control_summary'] = list(plot_F1.values())
 
     LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
     ATTR_NAME = 'amount_applied0'
