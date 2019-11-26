@@ -13,111 +13,111 @@ if __name__ == "__main__":
     plot_clu = 23
     runtime = dict()
 
-    # LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
-    # # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
-    # ATTR_NAME = 'responsible'
-    # METHOD = 'DMM'
-    #
-    # log = xes_importer.apply(LOG_PATH)
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME
-    #
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    # fitall['Receipt'] = list(plot_fit.values())
-    # precall['Receipt'] = list(plot_prec.values())
-    # F1all['Receipt'] = list(plot_F1.values())
-    #
-    # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
-    # ATTR_NAME = 'CreditScore'
-    # METHOD = 'dfg'
-    # plot_clu = 50
-    #
-    # log = xes_importer.apply(LOG_PATH)
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME
-    #
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    # fitall['filteredbpic2017'] = list(plot_fit.values())
-    # precall['filteredbpic2017'] = list(plot_prec.values())
-    # F1all['filteredbpic2017'] = list(plot_F1.values())
-    #
-    # LOG_PATH = "/home/yukun/dataset/BPIC2012_A.xes"
-    # ATTR_NAME = 'AMOUNT_REQ'
-    # METHOD = 'dfg'
-    # plot_clu = 50
-    #
-    # log = xes_importer.apply(LOG_PATH)
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME
-    #
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    # fitall['BPIC2012_A'] = list(plot_fit.values())
-    # precall['BPIC2012_A'] = list(plot_prec.values())
-    # F1all['BPIC2012_A'] = list(plot_F1.values())
-    #
-    # LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
-    # ATTR_NAME = 'amount_applied0'
-    # METHOD = 'dfg'
-    # plot_clu = 50
-    #
-    # log = xes_importer.apply(LOG_PATH)
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME
-    #
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    # fitall['Control_summary'] = list(plot_fit.values())
-    # precall['Control_summary'] = list(plot_prec.values())
-    # F1all['Control_summary'] = list(plot_F1.values())
-    #
-    # LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
-    # ATTR_NAME = 'amount_applied0'
-    # METHOD = 'dfg'
-    # plot_clu = 50
-    # log = xes_importer.apply(LOG_PATH)
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME
-    #
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
-    # fitall['Geo'] = list(plot_fit.values())
-    # precall['Geo'] = list(plot_prec.values())
-    # F1all['Geo'] = list(plot_F1.values())
-    #
-    #
-    #
-    # LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
-    # ATTR_NAME = 'amount_applied0'
-    # METHOD = 'dfg'
-    # plot_clu = 50
-    # log = xes_importer.apply(LOG_PATH)
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME
-    #
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
-    # fitall['Payment_application'] = list(plot_fit.values())
-    # precall['Payment_application'] = list(plot_prec.values())
-    # F1all['Payment_application'] = list(plot_F1.values())
-    #
-    # print('fitall', fitall)
-    # print('precall', precall)
-    # print('F1all', F1all)
+    LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
+    # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
+    ATTR_NAME = 'responsible'
+    METHOD = 'DMM'
+
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    fitall['Receipt'] = list(plot_fit.values())
+    precall['Receipt'] = list(plot_prec.values())
+    F1all['Receipt'] = list(plot_F1.values())
+
+    LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
+    ATTR_NAME = 'CreditScore'
+    METHOD = 'dfg'
+    plot_clu = 50
+
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    fitall['filteredbpic2017'] = list(plot_fit.values())
+    precall['filteredbpic2017'] = list(plot_prec.values())
+    F1all['filteredbpic2017'] = list(plot_F1.values())
+
+    LOG_PATH = "/home/yukun/dataset/BPIC2012_A.xes"
+    ATTR_NAME = 'AMOUNT_REQ'
+    METHOD = 'dfg'
+    plot_clu = 50
+
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    fitall['BPIC2012_A'] = list(plot_fit.values())
+    precall['BPIC2012_A'] = list(plot_prec.values())
+    F1all['BPIC2012_A'] = list(plot_F1.values())
+
+    LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"
+    ATTR_NAME = 'amount_applied0'
+    METHOD = 'dfg'
+    plot_clu = 50
+
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    fitall['Control_summary'] = list(plot_fit.values())
+    precall['Control_summary'] = list(plot_prec.values())
+    F1all['Control_summary'] = list(plot_F1.values())
+
+    LOG_PATH = "/home/yukun/dataset/document_logs/Geo_parcel_document.xes"
+    ATTR_NAME = 'amount_applied0'
+    METHOD = 'dfg'
+    plot_clu = 50
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+    fitall['Geo'] = list(plot_fit.values())
+    precall['Geo'] = list(plot_prec.values())
+    F1all['Geo'] = list(plot_F1.values())
+
+
+
+    LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
+    ATTR_NAME = 'amount_applied0'
+    METHOD = 'dfg'
+    plot_clu = 50
+    log = xes_importer.apply(LOG_PATH)
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu)
+    fitall['Payment_application'] = list(plot_fit.values())
+    precall['Payment_application'] = list(plot_prec.values())
+    F1all['Payment_application'] = list(plot_F1.values())
+
+    print('fitall', fitall)
+    print('precall', precall)
+    print('F1all', F1all)
 
     # fitall['Receipt'] = list(
     #     {'1': 0.9871623451004897, '2': 0.7252854590998924, '3': 0.622014337783979, '4': 0.7084464941912509,
@@ -313,128 +313,126 @@ if __name__ == "__main__":
     #      '13': 0.3712999135036916, '14': 0.3784100255051652, '15': 0.3793625910382152, '16': 0.3812002909799301,
     #      '17': 0.380702736325684, '18': 0.3831581204285938, '19': 0.3871784764190982, '20': 0.3885499173409183,
     #      '21': 0.3873193758520034, '22': 0.38948601210410805, '23': 0.38921190228301367}.values())
-    #
-    # fig = plt.figure()
-    # x_axis = range(1, 24)
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # l1 = plt.plot(range(1, 51), F1all['filteredbpic2017'], linestyle="-", marker="s", linewidth=1)
-    # l2 = plt.plot(range(1, 51), F1all['BPIC2012_A'], linestyle="-", marker="s", linewidth=1)
-    # l3 = plt.plot(range(1, 51), F1all['Control_summary'], linestyle="-", marker="s", linewidth=1)
-    # l4 = plt.plot(range(1, 51), F1all['Geo'], linestyle="-", marker="s", linewidth=1)
-    # l5 = plt.plot(range(1, 51), F1all['Payment_application'], linestyle="-", marker="s", linewidth=1)
-    # l6 = plt.plot(x_axis, F1all['Receipt'], linestyle="-", marker="s", linewidth=1)
-    # plt.xticks(range(1, 51), fontsize=6)
-    # plt.ylim(0, 1.04)
-    # plt.legend([l1, l2, l3, l4, l5, l6],
-    #            labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
-    #            loc='best')
-    # plt.title('F1-Real logs')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'F1allreallogs' + '.svg')
-    #
-    # fig = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # l1 = plt.plot(range(1, 51), F1all['filteredbpic2017'], linestyle="-", linewidth=2)
-    # l2 = plt.plot(range(1, 51), F1all['BPIC2012_A'], linestyle="-", linewidth=2)
-    # l3 = plt.plot(range(1, 51), F1all['Control_summary'], linestyle="-", linewidth=2)
-    # l4 = plt.plot(range(1, 51), F1all['Geo'], linestyle="-", linewidth=2)
-    # l5 = plt.plot(range(1, 51), F1all['Payment_application'], linestyle="-", linewidth=2)
-    # l6 = plt.plot(x_axis, F1all['Receipt'], linestyle="-", linewidth=2)
-    # plt.xticks(range(1, 51), fontsize=6)
-    # plt.ylim(0, 1.04)
-    # plt.legend([l1, l2, l3, l4, l5, l6],
-    #            labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
-    #            loc='best')
-    # plt.title('F1-Real logs')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("F1-Score")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'F1allreallogs-line' + '.svg')
-    #
-    # fig = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # l1 = plt.plot(range(1, 51), fitall['filteredbpic2017'], linestyle="-", marker="s", linewidth=1)
-    # l2 = plt.plot(range(1, 51), fitall['BPIC2012_A'], linestyle="-", marker="s", linewidth=1)
-    # l3 = plt.plot(range(1, 51), fitall['Control_summary'], linestyle="-", marker="s", linewidth=1)
-    # l4 = plt.plot(range(1, 51), fitall['Geo'], linestyle="-", marker="s", linewidth=1)
-    # l5 = plt.plot(range(1, 51), fitall['Payment_application'], linestyle="-", marker="s", linewidth=1)
-    # l6 = plt.plot(x_axis, fitall['Receipt'], linestyle="-", marker="s", linewidth=1)
-    # plt.xticks(range(1, 51), fontsize=6)
-    # plt.ylim(0, 1.04)
-    # plt.legend([l1, l2, l3, l4, l5, l6],
-    #            labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
-    #            loc='best')
-    # plt.title('Fitness-Real logs')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("Fitness")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'Fitnessallreallogs' + '.svg')
-    #
-    # fig = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # l1 = plt.plot(range(1, 51), fitall['filteredbpic2017'], linestyle="-", linewidth=2)
-    # l2 = plt.plot(range(1, 51), fitall['BPIC2012_A'], linestyle="-", linewidth=2)
-    # l3 = plt.plot(range(1, 51), fitall['Control_summary'], linestyle="-", linewidth=2)
-    # l4 = plt.plot(range(1, 51), fitall['Geo'], linestyle="-", linewidth=2)
-    # l5 = plt.plot(range(1, 51), fitall['Payment_application'], linestyle="-", linewidth=2)
-    # l6 = plt.plot(x_axis, fitall['Receipt'], linestyle="-", linewidth=2)
-    # plt.xticks(range(1, 51), fontsize=6)
-    # plt.ylim(0, 1.04)
-    # plt.legend([l1, l2, l3, l4, l5, l6],
-    #            labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
-    #            loc='best')
-    # plt.title('Fitness-Real logs')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("Fitness")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'Fitnessallreallogs-line' + '.svg')
-    #
-    # fig = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # l1 = plt.plot(range(1, 51), precall['filteredbpic2017'], linestyle="-", marker="s", linewidth=1)
-    # l2 = plt.plot(range(1, 51), precall['BPIC2012_A'], linestyle="-", marker="s", linewidth=1)
-    # l3 = plt.plot(range(1, 51), precall['Control_summary'], linestyle="-", marker="s", linewidth=1)
-    # l4 = plt.plot(range(1, 51), precall['Geo'], linestyle="-", marker="s", linewidth=1)
-    # l5 = plt.plot(range(1, 51), precall['Payment_application'], linestyle="-", marker="s", linewidth=1)
-    # l6 = plt.plot(x_axis, precall['Receipt'], linestyle="-", marker="s", linewidth=1)
-    # plt.xticks(range(1, 51), fontsize=6)
-    # plt.ylim(0, 1.04)
-    # plt.legend([l1, l2, l3, l4, l5, l6],
-    #            labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
-    #            loc='best')
-    # plt.title('Precision-Real logs')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("Precision")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'Precisionallreallogs' + '.svg')
-    #
-    # fig = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
-    # l1 = plt.plot(range(1, 51), precall['filteredbpic2017'], linestyle="-", linewidth=2)
-    # l2 = plt.plot(range(1, 51), precall['BPIC2012_A'], linestyle="-", linewidth=2)
-    # l3 = plt.plot(range(1, 51), precall['Control_summary'], linestyle="-", linewidth=2)
-    # l4 = plt.plot(range(1, 51), precall['Geo'], linestyle="-", linewidth=2)
-    # l5 = plt.plot(range(1, 51), precall['Payment_application'], linestyle="-", linewidth=2)
-    # l6 = plt.plot(x_axis, precall['Receipt'], linestyle="-", linewidth=2)
-    # plt.xticks(range(1, 51), fontsize=6)
-    # plt.ylim(0, 1.04)
-    # plt.legend([l1, l2, l3, l4, l5, l6],
-    #            labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
-    #            loc='best')
-    # plt.title('Precision-Real logs')
-    # plt.xlabel("Num. of Cluster")
-    # plt.ylabel("Precision")
-    # plt.grid(axis='y')
-    # plt.savefig(PIC_PATH + 'Precisionallreallogs-line' + '.svg')
 
-    print('ok')
+    fig = plt.figure()
+    x_axis = range(1, 24)
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(range(1, 51), F1all['filteredbpic2017'], linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(range(1, 51), F1all['BPIC2012_A'], linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(range(1, 51), F1all['Control_summary'], linestyle="-", marker="s", linewidth=1)
+    l4 = plt.plot(range(1, 51), F1all['Geo'], linestyle="-", marker="s", linewidth=1)
+    l5 = plt.plot(range(1, 51), F1all['Payment_application'], linestyle="-", marker="s", linewidth=1)
+    l6 = plt.plot(x_axis, F1all['Receipt'], linestyle="-", marker="s", linewidth=1)
+    plt.xticks(range(1, 51), fontsize=6)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5, l6],
+               labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
+               loc='best')
+    plt.title('F1-Real logs')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'F1allreallogs' + '.svg')
+
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(range(1, 51), F1all['filteredbpic2017'], linestyle="-", linewidth=2)
+    l2 = plt.plot(range(1, 51), F1all['BPIC2012_A'], linestyle="-", linewidth=2)
+    l3 = plt.plot(range(1, 51), F1all['Control_summary'], linestyle="-", linewidth=2)
+    l4 = plt.plot(range(1, 51), F1all['Geo'], linestyle="-", linewidth=2)
+    l5 = plt.plot(range(1, 51), F1all['Payment_application'], linestyle="-", linewidth=2)
+    l6 = plt.plot(x_axis, F1all['Receipt'], linestyle="-", linewidth=2)
+    plt.xticks(range(1, 51), fontsize=6)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5, l6],
+               labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
+               loc='best')
+    plt.title('F1-Real logs')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'F1allreallogs-line' + '.svg')
+
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(range(1, 51), fitall['filteredbpic2017'], linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(range(1, 51), fitall['BPIC2012_A'], linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(range(1, 51), fitall['Control_summary'], linestyle="-", marker="s", linewidth=1)
+    l4 = plt.plot(range(1, 51), fitall['Geo'], linestyle="-", marker="s", linewidth=1)
+    l5 = plt.plot(range(1, 51), fitall['Payment_application'], linestyle="-", marker="s", linewidth=1)
+    l6 = plt.plot(x_axis, fitall['Receipt'], linestyle="-", marker="s", linewidth=1)
+    plt.xticks(range(1, 51), fontsize=6)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5, l6],
+               labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
+               loc='best')
+    plt.title('Fitness-Real logs')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Fitness")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Fitnessallreallogs' + '.svg')
+
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(range(1, 51), fitall['filteredbpic2017'], linestyle="-", linewidth=2)
+    l2 = plt.plot(range(1, 51), fitall['BPIC2012_A'], linestyle="-", linewidth=2)
+    l3 = plt.plot(range(1, 51), fitall['Control_summary'], linestyle="-", linewidth=2)
+    l4 = plt.plot(range(1, 51), fitall['Geo'], linestyle="-", linewidth=2)
+    l5 = plt.plot(range(1, 51), fitall['Payment_application'], linestyle="-", linewidth=2)
+    l6 = plt.plot(x_axis, fitall['Receipt'], linestyle="-", linewidth=2)
+    plt.xticks(range(1, 51), fontsize=6)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5, l6],
+               labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
+               loc='best')
+    plt.title('Fitness-Real logs')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Fitness")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Fitnessallreallogs-line' + '.svg')
+
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(range(1, 51), precall['filteredbpic2017'], linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(range(1, 51), precall['BPIC2012_A'], linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(range(1, 51), precall['Control_summary'], linestyle="-", marker="s", linewidth=1)
+    l4 = plt.plot(range(1, 51), precall['Geo'], linestyle="-", marker="s", linewidth=1)
+    l5 = plt.plot(range(1, 51), precall['Payment_application'], linestyle="-", marker="s", linewidth=1)
+    l6 = plt.plot(x_axis, precall['Receipt'], linestyle="-", marker="s", linewidth=1)
+    plt.xticks(range(1, 51), fontsize=6)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5, l6],
+               labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
+               loc='best')
+    plt.title('Precision-Real logs')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Precision")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Precisionallreallogs' + '.svg')
+
+    fig = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(range(1, 51), precall['filteredbpic2017'], linestyle="-", linewidth=2)
+    l2 = plt.plot(range(1, 51), precall['BPIC2012_A'], linestyle="-", linewidth=2)
+    l3 = plt.plot(range(1, 51), precall['Control_summary'], linestyle="-", linewidth=2)
+    l4 = plt.plot(range(1, 51), precall['Geo'], linestyle="-", linewidth=2)
+    l5 = plt.plot(range(1, 51), precall['Payment_application'], linestyle="-", linewidth=2)
+    l6 = plt.plot(x_axis, precall['Receipt'], linestyle="-", linewidth=2)
+    plt.xticks(range(1, 51), fontsize=6)
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5, l6],
+               labels=['BPIC2017', 'BPIC2012', 'BPIC2018-Control', 'BPIC2018-Geo', 'BPIC2018-Payment', 'Receipt'],
+               loc='best')
+    plt.title('Precision-Real logs')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("Precision")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Precisionallreallogs-line' + '.svg')
 
     # individual
