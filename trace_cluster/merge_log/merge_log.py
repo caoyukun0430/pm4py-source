@@ -194,10 +194,12 @@ def clusteredlog(Z, maxclust, list_of_vals, log, METHOD, ATTR_NAME):
         clu_list.append(temp)
         logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
-        # if (maxclust > 3):
-        #     filename = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/' + 'log' + '_' + str(
+        # if (maxclust > 1):
+        #     filename = 'D:/Sisc/19SS/thesis/Dataset/' + 'log' + '_' + str(
         #         maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
-        # xes_exporter.export_log(logtemp, filename)
+            # filename = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/' + 'log' + '_' + str(
+            #     maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
+            # xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
 
@@ -2053,13 +2055,13 @@ if __name__ == "__main__":
 
     # print('F1all',F1all)
 
-    # LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
-    LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
+    LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
+    # LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
     ATTR_NAME = 'responsible'
     METHOD = 'avg'
 
-    PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
-    # PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
+    # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
+    PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
     log = xes_importer.apply(LOG_PATH)
     print(LOG_PATH)
     print(ATTR_NAME)
@@ -2079,71 +2081,71 @@ if __name__ == "__main__":
     # ATTR_NAME = 'amount_applied0'
     TYPE = METHOD + ATTR_NAME
 
-    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box,plot_length,runtime) = main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime)
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box,plot_length,runtime) = main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime)
 
-    # list_of_vals = []
-    # list_log = []
-    # list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+    list_of_vals = []
+    list_log = []
+    list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
+
+    list_of_vals_keys = list(list_of_vals_dict.keys())
+    for i in range(len(list_of_vals_keys)):
+        list_of_vals.append(list_of_vals_keys[i])
+
+    print(list_of_vals)
+    for i in range(len(list_of_vals)):
+        logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
+        list_log.append(logsample)
+    print(len(list_log))
+
+    # DFG test
+    start = time.time()
+    if METHOD == 'dfg':
+        print("dfg is using!")
+        y = fake_log_eval.dfg_dis(list_log, percent, alpha)
+    elif METHOD == 'DMM':
+        print("DMM is using!")
+        y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
+    elif METHOD == 'avg':
+        print("avg is using!")
+        y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
+    # print(y)
+    Z = linkage(y, method='average')
+    # # print("z",Z.type)
+    # print("Z",Z)
+    # print(np.shape(Z1))
+    # dist_mat = squareform(y)
+    # Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat,alpha,percent)
+    # print("shape",np.shape(Z))
+
+    # print("Z",len(Z))
+    end = time.time()
+    runtime[TYPE] = end - start
+    # print(Z)
+    print("runtime" + TYPE, runtime[TYPE])
+
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+    # plt.show()
+
+    # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
+    # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,METHOD, ATTR_NAME)
+    # for i in range(0,3):
+    #     net, initial_marking, final_marking = alpha_miner.apply(clu_list_log3[i])
+    #     parameters = {"format": "svg"}
+    #     gviz = pn_vis_factory.apply(net, initial_marking, final_marking, parameters={"format": "svg"})
+    #     filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(
+    #         i + 1) + ".svg"
+    #     print(filenname)
+    #     pn_vis_factory.save(gviz, filenname)
     #
-    # list_of_vals_keys = list(list_of_vals_dict.keys())
-    # for i in range(len(list_of_vals_keys)):
-    #     list_of_vals.append(list_of_vals_keys[i])
-    #
-    # print(list_of_vals)
-    # for i in range(len(list_of_vals)):
-    #     logsample = log2sublog(log, list_of_vals[i], ATTR_NAME)
-    #     list_log.append(logsample)
-    # print(len(list_log))
-    #
-    # # DFG test
-    # start = time.time()
-    # if METHOD == 'dfg':
-    #     print("dfg is using!")
-    #     y = fake_log_eval.dfg_dis(list_log, percent, alpha)
-    # elif METHOD == 'DMM':
-    #     print("DMM is using!")
-    #     y = fake_log_eval.eval_DMM_leven(list_log, percent, alpha)
-    # elif METHOD == 'avg':
-    #     print("avg is using!")
-    #     y = fake_log_eval.eval_avg_leven(list_log, percent, alpha)
-    # # print(y)
-    # Z = linkage(y, method='average')
-    # # # print("z",Z.type)
-    # # print("Z",Z)
-    # # print(np.shape(Z1))
-    # # dist_mat = squareform(y)
-    # # Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat,alpha,percent)
-    # # print("shape",np.shape(Z))
-    #
-    # # print("Z",len(Z))
-    # end = time.time()
-    # runtime[TYPE] = end - start
-    # # print(Z)
-    # print("runtime" + TYPE, runtime[TYPE])
-    #
-    # fig = plt.figure(figsize=(12, 10))
-    # dn = dendrogram(Z, labels=np.array(list_of_vals))
-    # # plt.title('Hierarchical Clustering Dendrogram')
-    # plt.xlabel(ATTR_NAME)
-    # plt.ylabel('Distance')
-    # plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
-    # # plt.show()
-    #
-    # # # clu_list_log2, clu_list2 = clusteredlog(Z, 2, list_of_vals, log,METHOD, ATTR_NAME)
-    # # clu_list_log3, clu_list3 = clusteredlog(Z,3,list_of_vals,log,METHOD, ATTR_NAME)
-    # # for i in range(0,3):
-    # #     net, initial_marking, final_marking = alpha_miner.apply(clu_list_log3[i])
-    # #     parameters = {"format": "svg"}
-    # #     gviz = pn_vis_factory.apply(net, initial_marking, final_marking, parameters={"format": "svg"})
-    # #     filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(
-    # #         i + 1) + ".svg"
-    # #     print(filenname)
-    # #     pn_vis_factory.save(gviz, filenname)
-    # #
-    # # clu_list_log4, clu_list4 = clusteredlog(Z, 4, list_of_vals,METHOD, ATTR_NAME)
-    # # clu_list_log5, clu_list5 = clusteredlog(Z, 5, list_of_vals,METHOD, ATTR_NAME)
-    # # clu_list_log6, clu_list6 = clusteredlog(Z, 6, list_of_vals,METHOD, ATTR_NAME)
-    # # clu_list_log7, clu_list7 = clusteredlog(Z, 7, list_of_vals,METHOD, ATTR_NAME)
+    # clu_list_log4, clu_list4 = clusteredlog(Z, 5, list_of_vals, log, METHOD, ATTR_NAME)
+    # clu_list_log5, clu_list5 = clusteredlog(Z, 6, list_of_vals, log, METHOD, ATTR_NAME)
+    # clu_list_log6, clu_list6 = clusteredlog(Z, 7, list_of_vals, log, METHOD, ATTR_NAME)
+    # clu_list_log7, clu_list7 = clusteredlog(Z, 8, list_of_vals, log, METHOD, ATTR_NAME)
     #
     # # plot_clu = 7
     # # for i in range(2, plot_clu + 1):
@@ -2154,143 +2156,150 @@ if __name__ == "__main__":
     # #         length_li.append(length)
     # #     print(length_li)
     #
+    plot_clu = 10
+    plot_fit = dict()
+    plot_prec = dict()
+    plot_F1 = dict()
+    plot_box = dict()
+    plot_box2 = dict()
+    plot_boxfit = dict()
+    plot_boxprec = dict()
+    plot_length = []
+    clu_list_dict = dict()
+    length_li = []
+    fit_li = []
+    prec_li = []
+    F1_li = []
+    for i in range(9, plot_clu + 1):
+        if i == 1:
+            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                           inductive_final_marking, variant="alignments")['averageFitness']
+
+            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                inductive_final_marking)
+            # fitness, precision = get_fit_prec_hpc(log, log)
+            F1 = 2 * fitness * precision / (fitness + precision)
+            print("fit", fitness)
+            print("prec", precision)
+            plot_fit[str(i)] = fitness
+            plot_prec[str(i)] = precision
+            plot_F1[str(i)] = F1
+            # plot_box[str(i)] = pd.Series(F1)
+            plot_boxfit[str(i)] = fitness
+            plot_boxprec[str(i)] = precision
+            plot_box[str(i)] = F1
+            plot_length.append([len(log)])
+            tempclu_list_log = [list_log]
+            tempclu_list = [list_of_vals]
+        else:
+            # print("tempclu_list",tempclu_list)
+            clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
+            length_li = []
+            fit_li = []
+            prec_li = []
+            F1_li = []
+            for j in range(0, i):
+                length = len(clu_list_log[j])
+                if length != 0:
+                    inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                        clu_list_log[j])
+                    fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                   inductive_final_marking, variant="alignments")['averageFitness']
+                    precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                        inductive_final_marking)
+                    parameters = {"format": "svg"}
+                    gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking, parameters={"format": "svg"})
+                    filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(i)+'_'+str(
+                            j + 1) + ".svg"
+                    # print(filenname)
+                    pn_vis_factory.save(gviz, filenname)
+                    #
+                    # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
+                    F1 = 2 * fitness * precision / (fitness + precision)
+                    # individual info for each sublog
+                    length_li.append(length)
+                    fit_li.append(fitness)
+                    prec_li.append(precision)
+                    F1_li.append(F1)
+
+            # if len(clu_list_log[-1])!=0:
+            #     # print("lenclu_list_log",len(clu_list_log))
+            #     diff = [item for item in clu_list if not item in tempclu_list]
+            #     diff_old = [item for item in tempclu_list if not item in clu_list]
+            #     # print("diff",diff)
+            #     # print("diff_old", diff_old)
+            #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
+            #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
+            #     # print(tempclu_list)
+            #
+            #
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
+            #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
+            #     # print(len(tempclu_list_log))
+            #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
+            #     # print("del",len(tempclu_list_log))
+            #     # clu_list_dict[str(i)] = clu_list
+            #
+            #
+            #
+            #     for j in range(0, 2):
+            #         length = len(clu_list_log[clu_list.index(diff[j])])
+            #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+            #             clu_list_log[clu_list.index(diff[j])])
+            #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                        inductive_final_marking, variant="alignments")['averageFitness']
+            #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+            #                                             inductive_final_marking)
+            #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+            #         F1 = 2 * fitness * precision / (fitness + precision)
+            #         # individual info for each sublog
+            #         length_li.append(length)
+            #         fit_li.append(fitness)
+            #         prec_li.append(precision)
+            #         F1_li.append(F1)
+            #
+            #     # print(length_li)
+            #     # print("fit", fit_li)
+            #     # print("prec", prec_li)
+            #     if (i > 2):
+            #         del length_li[tempclu_list.index(diff_old[0])]
+            #         del fit_li[tempclu_list.index(diff_old[0])]
+            #         del prec_li[tempclu_list.index(diff_old[0])]
+            #         del F1_li[tempclu_list.index(diff_old[0])]
+            #     del tempclu_list[tempclu_list.index(diff_old[0])]
+            # # print("del", tempclu_list)
+
+            print(length_li)
+            print("fit", fit_li)
+            print("prec", prec_li)
+            print("F1", F1_li)
+
+            plot_fit[str(i)] = np.average(fit_li)
+            plot_prec[str(i)] = np.average(prec_li)
+            plot_F1[str(i)] = np.average(F1_li)
+            # plot_box[str(i)] = pd.Series(F1_li)
+            plot_boxfit[str(i)] = fit_li
+            plot_boxprec[str(i)] = prec_li
+            plot_box[str(i)] = F1_li
+            plot_length.append(length_li)
+            print("plot_fit", plot_fit)
+            print("plot_prec", plot_prec)
+            print("plot_F1", plot_F1)
+
+    print("plot_fit", plot_fit)
+    print("plot_prec", plot_prec)
+    print("plot_F1", plot_F1)
+    print('length', plot_length)
+    print('plot_box', plot_box)
+    print('plot_boxfit', plot_boxfit)
+    print('plot_boxprec', plot_boxprec)
+    #
+    # F1val = list(plot_F1.values())
+    #
+    # # print(clu_list_dict)
     # plot_clu = 23
-    # plot_fit = dict()
-    # plot_prec = dict()
-    # plot_F1 = dict()
-    # plot_box = dict()
-    # plot_box2 = dict()
-    # plot_boxfit = dict()
-    # plot_boxprec = dict()
-    # plot_length = []
-    # clu_list_dict = dict()
-    # length_li = []
-    # fit_li = []
-    # prec_li = []
-    # F1_li = []
-    # for i in range(1, plot_clu + 1):
-    #     if i == 1:
-    #         # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-    #         # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #         #                                inductive_final_marking, variant="alignments")['averageFitness']
-    #         #
-    #         # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #         #                                     inductive_final_marking)
-    #         fitness, precision = get_fit_prec_hpc(log, log)
-    #         F1 = 2 * fitness * precision / (fitness + precision)
-    #         print("fit", fitness)
-    #         print("prec", precision)
-    #         plot_fit[str(i)] = fitness
-    #         plot_prec[str(i)] = precision
-    #         plot_F1[str(i)] = F1
-    #         # plot_box[str(i)] = pd.Series(F1)
-    #         plot_boxfit[str(i)] = fitness
-    #         plot_boxprec[str(i)] = precision
-    #         plot_box[str(i)] = F1
-    #         plot_length.append([len(log)])
-    #         tempclu_list_log = [list_log]
-    #         tempclu_list = [list_of_vals]
-    #     else:
-    #         # print("tempclu_list",tempclu_list)
-    #         clu_list_log, clu_list = clusteredlog(Z, i, list_of_vals, log, METHOD, ATTR_NAME)
-    #         length_li = []
-    #         fit_li = []
-    #         prec_li = []
-    #         F1_li = []
-    #         for j in range(0, i):
-    #             length = len(clu_list_log[j])
-    #             if length != 0:
-    #                 # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-    #                 #     clu_list_log[j])
-    #                 # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #                 #                                inductive_final_marking, variant="alignments")['averageFitness']
-    #                 # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #                 #                                     inductive_final_marking)
-    #                 fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
-    #                 F1 = 2 * fitness * precision / (fitness + precision)
-    #                 # individual info for each sublog
-    #                 length_li.append(length)
-    #                 fit_li.append(fitness)
-    #                 prec_li.append(precision)
-    #                 F1_li.append(F1)
-    #
-    #         # if len(clu_list_log[-1])!=0:
-    #         #     # print("lenclu_list_log",len(clu_list_log))
-    #         #     diff = [item for item in clu_list if not item in tempclu_list]
-    #         #     diff_old = [item for item in tempclu_list if not item in clu_list]
-    #         #     # print("diff",diff)
-    #         #     # print("diff_old", diff_old)
-    #         #     tempclu_list.append(clu_list[clu_list.index(diff[0])])
-    #         #     tempclu_list.append(clu_list[clu_list.index(diff[1])])
-    #         #     # print(tempclu_list)
-    #         #
-    #         #
-    #         #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[0])])
-    #         #     tempclu_list_log.append(clu_list_log[clu_list.index(diff[1])])
-    #         #     # print(len(tempclu_list_log))
-    #         #     del tempclu_list_log[tempclu_list.index(diff_old[0])]
-    #         #     # print("del",len(tempclu_list_log))
-    #         #     # clu_list_dict[str(i)] = clu_list
-    #         #
-    #         #
-    #         #
-    #         #     for j in range(0, 2):
-    #         #         length = len(clu_list_log[clu_list.index(diff[j])])
-    #         #         inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-    #         #             clu_list_log[clu_list.index(diff[j])])
-    #         #         fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #         #                                        inductive_final_marking, variant="alignments")['averageFitness']
-    #         #         precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-    #         #                                             inductive_final_marking)
-    #         #         # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
-    #         #         F1 = 2 * fitness * precision / (fitness + precision)
-    #         #         # individual info for each sublog
-    #         #         length_li.append(length)
-    #         #         fit_li.append(fitness)
-    #         #         prec_li.append(precision)
-    #         #         F1_li.append(F1)
-    #         #
-    #         #     # print(length_li)
-    #         #     # print("fit", fit_li)
-    #         #     # print("prec", prec_li)
-    #         #     if (i > 2):
-    #         #         del length_li[tempclu_list.index(diff_old[0])]
-    #         #         del fit_li[tempclu_list.index(diff_old[0])]
-    #         #         del prec_li[tempclu_list.index(diff_old[0])]
-    #         #         del F1_li[tempclu_list.index(diff_old[0])]
-    #         #     del tempclu_list[tempclu_list.index(diff_old[0])]
-    #         # # print("del", tempclu_list)
-    #
-    #         print(length_li)
-    #         print("fit", fit_li)
-    #         print("prec", prec_li)
-    #         print("F1", F1_li)
-    #
-    #         plot_fit[str(i)] = np.average(fit_li)
-    #         plot_prec[str(i)] = np.average(prec_li)
-    #         plot_F1[str(i)] = np.average(F1_li)
-    #         # plot_box[str(i)] = pd.Series(F1_li)
-    #         plot_boxfit[str(i)] = fit_li
-    #         plot_boxprec[str(i)] = prec_li
-    #         plot_box[str(i)] = F1_li
-    #         plot_length.append(length_li)
-    #         print("plot_fit", plot_fit)
-    #         print("plot_prec", plot_prec)
-    #         print("plot_F1", plot_F1)
-    #
-    # print("plot_fit", plot_fit)
-    # print("plot_prec", plot_prec)
-    # print("plot_F1", plot_F1)
-    # print('length', plot_length)
-    # print('plot_box', plot_box)
-    # print('plot_boxfit', plot_boxfit)
-    # print('plot_boxprec', plot_boxprec)
-
-    F1val = list(plot_F1.values())
-
-    # print(clu_list_dict)
-    plot_clu = 23
-    x_axis = range(1, plot_clu + 1)
+    # x_axis = range(1, plot_clu + 1)
 
     # rescale to 0-1
     # plot fit&prec
