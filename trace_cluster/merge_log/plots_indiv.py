@@ -274,13 +274,11 @@ if __name__ == "__main__":
     PIC_PATH = '/home/yukun/resultlog/BPIC2012_A/' + ATTR_NAME + '/'
     standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
 
+    LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
+    ATTR_NAME = 'amount_applied0'
+    PIC_PATH = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/'
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
 
-    #
-    # LOG_PATH = "/home/yukun/dataset/document_logs/Payment_application.xes"
-    # ATTR_NAME = 'amount_applied0'
-    # PIC_PATH = '/home/yukun/resultlog/Payment_application/' + ATTR_NAME + '/'
-    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH)
-    #
 
 
 
