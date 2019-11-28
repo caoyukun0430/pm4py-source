@@ -9,6 +9,7 @@ from trace_cluster.dfg import dfg_dist
 from trace_cluster.variant import act_dist_calc
 from trace_cluster.variant import suc_dist_calc
 
+# all the methods for recomputing linkage distance when clustering
 
 def linkage_dfg_update(loglist, dist_mat,alpha,percent):
     index_list = []

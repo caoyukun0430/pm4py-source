@@ -11,7 +11,7 @@ import json
 import sys
 import time
 from collections import Counter
-from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -194,16 +194,22 @@ def clusteredlog(Z, maxclust, list_of_vals, log, METHOD, ATTR_NAME):
         clu_list.append(temp)
         logtemp = logslice(log, temp, ATTR_NAME)
         clu_list_log.append(logtemp)
-        # if (maxclust > 1):
-        #     filename = 'D:/Sisc/19SS/thesis/Dataset/' + 'log' + '_' + str(
-        #         maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
+        if (maxclust > 1):
+            filename = 'D:/Sisc/19SS/thesis/Dataset/' + 'log' + '_' + str(
+                maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
             # filename = '/home/yukun/resultlog/Receipt/' + ATTR_NAME + '/' + 'log' + '_' + str(
             #     maxclust) + '_' + str(i) + '_' + METHOD + ATTR_NAME + '.xes'
-            # xes_exporter.export_log(logtemp, filename)
+            xes_exporter.export_log(logtemp, filename)
     return clu_list_log, clu_list
 
 
 def get_fit_prec_hpc(log, ori_log):
+    '''
+    where you can calculate process model fitness and precision with help of cluster at PADS group
+    :param log:
+    :param ori_log:
+    :return:
+    '''
     net, im, fm = inductive_miner.apply(log)
     wrapper = remote_wrapper_factory.apply("137.226.117.71", "5001", "hello", "DUMMYDUMMY")
 
@@ -218,6 +224,18 @@ def get_fit_prec_hpc(log, ori_log):
 
 
 def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+    '''
+    using levenshtein method without recomputing to get fitness, precision and F1-score of all cluster steps
+    :param log:
+    :param ATTR_NAME:
+    :param METHOD:
+    :param TYPE:
+    :param percent:
+    :param alpha:
+    :param runtime:
+    :param plot_clu:
+    :return:
+    '''
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -395,6 +413,18 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
 def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+    '''
+    using feature vector method with recomputing to get fitness, precision and F1-score of all cluster steps
+    :param log:
+    :param ATTR_NAME:
+    :param METHOD:
+    :param TYPE:
+    :param percent:
+    :param alpha:
+    :param runtime:
+    :param plot_clu:
+    :return:
+    '''
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -572,6 +602,18 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
 def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+    '''
+    using levenshtein method without recomputing to get fitness, precision and F1-score of all cluster steps
+    :param log:
+    :param ATTR_NAME:
+    :param METHOD:
+    :param TYPE:
+    :param percent:
+    :param alpha:
+    :param runtime:
+    :param plot_clu:
+    :return:
+    '''
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -745,6 +787,18 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
 def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+    '''
+    using feature vector method without recomputing to get fitness, precision and F1-score of all cluster steps
+    :param log:
+    :param ATTR_NAME:
+    :param METHOD:
+    :param TYPE:
+    :param percent:
+    :param alpha:
+    :param runtime:
+    :param plot_clu:
+    :return:
+    '''
     list_of_vals = []
     list_log = []
     list_of_vals_dict = attributes_filter.get_trace_attribute_values(log, ATTR_NAME)
@@ -916,8 +970,23 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,plot_clu,x_axis,PIC_PATH,TYPE):
 
+def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,plot_clu,x_axis,PIC_PATH,TYPE):
+    '''
+    generate five plots w.r.t number of cluster, i.e., fitness, precision, F1-score and cluster size
+    :param plot_fit:
+    :param plot_prec:
+    :param plot_F1:
+    :param plot_boxfit:
+    :param plot_boxprec:
+    :param plot_box:
+    :param plot_length:
+    :param plot_clu:
+    :param x_axis:
+    :param PIC_PATH:
+    :param TYPE:
+    :return:
+    '''
     for i in range(1, plot_clu + 1):
         plot_box[str(i)] = pd.Series(plot_box[str(i)])
         plot_boxfit[str(i)] = pd.Series(plot_boxfit[str(i)])
@@ -2058,7 +2127,7 @@ if __name__ == "__main__":
     LOG_PATH = "D:/Sisc/19SS/thesis/Dataset/Receipt4.xes"
     # LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
     ATTR_NAME = 'responsible'
-    METHOD = 'avg'
+    METHOD = 'dfg'
 
     # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
     PIC_PATH = 'D:/Sisc/19SS/thesis/Dataset/'
@@ -2113,8 +2182,8 @@ if __name__ == "__main__":
     # # print("z",Z.type)
     # print("Z",Z)
     # print(np.shape(Z1))
-    # dist_mat = squareform(y)
-    # Z = linkage_avg.linkage_DMM_update_leven(list_log, dist_mat,alpha,percent)
+    dist_mat = squareform(y)
+    Z = linkage_avg.linkage_dfg_update(list_log, dist_mat,alpha,percent)
     # print("shape",np.shape(Z))
 
     # print("Z",len(Z))
@@ -2156,7 +2225,7 @@ if __name__ == "__main__":
     # #         length_li.append(length)
     # #     print(length_li)
     #
-    plot_clu = 10
+    plot_clu = 23
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -2170,7 +2239,7 @@ if __name__ == "__main__":
     fit_li = []
     prec_li = []
     F1_li = []
-    for i in range(9, plot_clu + 1):
+    for i in range(1, plot_clu + 1):
         if i == 1:
             inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
             fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
@@ -2208,12 +2277,12 @@ if __name__ == "__main__":
                                                    inductive_final_marking, variant="alignments")['averageFitness']
                     precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                                                         inductive_final_marking)
-                    parameters = {"format": "svg"}
-                    gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking, parameters={"format": "svg"})
-                    filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(i)+'_'+str(
-                            j + 1) + ".svg"
-                    # print(filenname)
-                    pn_vis_factory.save(gviz, filenname)
+                    # parameters = {"format": "svg"}
+                    # gviz = pn_vis_factory.apply(inductive_petri, inductive_initial_marking, inductive_final_marking, parameters={"format": "svg"})
+                    # filenname = "C:\\Users\yukun\\PycharmProjects\\pm4py-source\\trace_cluster\\evaluation\\" + "pn" + str(i)+'_'+str(
+                    #         j + 1) + ".svg"
+                    # # print(filenname)
+                    # pn_vis_factory.save(gviz, filenname)
                     #
                     # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
