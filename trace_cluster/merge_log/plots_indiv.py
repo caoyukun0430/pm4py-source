@@ -21,7 +21,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'update'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1valup = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -36,7 +36,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_leven(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1val = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -55,7 +55,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'update'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1valup = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -70,7 +70,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_leven(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1val = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -89,7 +89,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'updateFT'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1valup = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -104,7 +104,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'FT'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1val = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -123,7 +123,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'updateFT'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1valup = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -138,7 +138,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'FT'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     F1val = list(plot_F1.values())
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
@@ -222,7 +222,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     print(METHOD)
     TYPE = METHOD + ATTR_NAME + 'dfg'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
                          x_axis, PIC_PATH, TYPE)
@@ -261,15 +261,15 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
 
 
 if __name__ == "__main__":
-    # LOG_PATH = "/home/yukun/dataset/Receipt4.xes"
-    # ATTR_NAME = 'responsible'
-    # PIC_PATH = '/home/yukun/resultlog/Receipt/leven/' + ATTR_NAME + '/'
+    LOG_PATH = "../example/real_log/Receipt.xes"
+    ATTR_NAME = 'responsible'
+    PIC_PATH = '../example/real_log/'
     plot_clu = 23
-    # # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
+    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
     #
     # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
-    ATTR_NAME = 'CreditScore'
-    PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
+    # ATTR_NAME = 'CreditScore'
+    # PIC_PATH = '/home/yukun/resultlog/filteredbpic2017/' + ATTR_NAME + '/'
     # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu)
     #
     # LOG_PATH = "/home/yukun/dataset/document_logs/Control_summary.xes"

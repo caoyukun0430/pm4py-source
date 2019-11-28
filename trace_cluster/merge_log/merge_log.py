@@ -223,7 +223,7 @@ def get_fit_prec_hpc(log, ori_log):
     return fitness, precision
 
 
-def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu):
     '''
     using levenshtein method without recomputing to get fitness, precision and F1-score of all cluster steps
     :param log:
@@ -276,6 +276,13 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -291,13 +298,13 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
     F1_li = []
     for i in range(1, plot_clu + 1):
         if i == 1:
-            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                inductive_final_marking, variant="alignments")['averageFitness']
-            #
-            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                     inductive_final_marking)
-            fitness, precision = get_fit_prec_hpc(log, log)
+            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                           inductive_final_marking, variant="alignments")['averageFitness']
+
+            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                inductive_final_marking)
+            # fitness, precision = get_fit_prec_hpc(log, log)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -359,13 +366,13 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
 
                 for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
-                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[clu_list.index(diff[j])])
-                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                inductive_final_marking, variant="alignments")['averageFitness']
-                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+                    inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                        clu_list_log[clu_list.index(diff[j])])
+                    fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                   inductive_final_marking, variant="alignments")['averageFitness']
+                    precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                        inductive_final_marking)
+                    # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -412,7 +419,7 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runti
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu):
     '''
     using feature vector method with recomputing to get fitness, precision and F1-score of all cluster steps
     :param log:
@@ -465,6 +472,13 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -480,13 +494,13 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
     F1_li = []
     for i in range(1, plot_clu + 1):
         if i == 1:
-            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                inductive_final_marking, variant="alignments")['averageFitness']
-            #
-            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                     inductive_final_marking)
-            fitness, precision = get_fit_prec_hpc(log, log)
+            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                           inductive_final_marking, variant="alignments")['averageFitness']
+
+            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                inductive_final_marking)
+            # fitness, precision = get_fit_prec_hpc(log, log)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -548,13 +562,13 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
 
                 for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
-                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[clu_list.index(diff[j])])
-                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                inductive_final_marking, variant="alignments")['averageFitness']
-                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+                    inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                        clu_list_log[clu_list.index(diff[j])])
+                    fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                   inductive_final_marking, variant="alignments")['averageFitness']
+                    precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                        inductive_final_marking)
+                    # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -601,7 +615,7 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plo
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu):
     '''
     using levenshtein method without recomputing to get fitness, precision and F1-score of all cluster steps
     :param log:
@@ -649,6 +663,13 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -664,13 +685,13 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
     F1_li = []
     for i in range(1, plot_clu + 1):
         if i == 1:
-            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                inductive_final_marking, variant="alignments")['averageFitness']
-            #
-            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                     inductive_final_marking)
-            fitness, precision = get_fit_prec_hpc(log, log)
+            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                           inductive_final_marking, variant="alignments")['averageFitness']
+
+            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                inductive_final_marking)
+            # fitness, precision = get_fit_prec_hpc(log, log)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -733,13 +754,13 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
 
                 for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
-                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[clu_list.index(diff[j])])
-                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                inductive_final_marking, variant="alignments")['averageFitness']
-                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+                    inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                        clu_list_log[clu_list.index(diff[j])])
+                    fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                   inductive_final_marking, variant="alignments")['averageFitness']
+                    precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                        inductive_final_marking)
+                    # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -786,7 +807,7 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_cl
 
     return plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,plot_length,runtime
 
-def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
+def main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu):
     '''
     using feature vector method without recomputing to get fitness, precision and F1-score of all cluster steps
     :param log:
@@ -834,6 +855,13 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
     # print(Z)
     print("runtime" + TYPE, runtime[TYPE])
 
+    fig = plt.figure(figsize=(12, 10))
+    dn = dendrogram(Z, labels=np.array(list_of_vals))
+    # plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel(ATTR_NAME)
+    plt.ylabel('Distance')
+    plt.savefig(PIC_PATH + 'cluster_wupdate' + '_' + TYPE + '.svg')
+
     plot_fit = dict()
     plot_prec = dict()
     plot_F1 = dict()
@@ -849,13 +877,13 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
     F1_li = []
     for i in range(1, plot_clu + 1):
         if i == 1:
-            # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
-            # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                inductive_final_marking, variant="alignments")['averageFitness']
-            #
-            # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-            #                                     inductive_final_marking)
-            fitness, precision = get_fit_prec_hpc(log, log)
+            inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(log)
+            fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                           inductive_final_marking, variant="alignments")['averageFitness']
+
+            precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                inductive_final_marking)
+            # fitness, precision = get_fit_prec_hpc(log, log)
             F1 = 2 * fitness * precision / (fitness + precision)
             print("fit", fitness)
             print("prec", precision)
@@ -917,13 +945,13 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, percent, alpha,runtime,plot_clu):
 
                 for j in range(0, len(diff)):
                     length = len(clu_list_log[clu_list.index(diff[j])])
-                    # inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
-                    #     clu_list_log[clu_list.index(diff[j])])
-                    # fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                inductive_final_marking, variant="alignments")['averageFitness']
-                    # precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
-                    #                                     inductive_final_marking)
-                    fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
+                    inductive_petri, inductive_initial_marking, inductive_final_marking = inductive_miner.apply(
+                        clu_list_log[clu_list.index(diff[j])])
+                    fitness = replay_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                   inductive_final_marking, variant="alignments")['averageFitness']
+                    precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
+                                                        inductive_final_marking)
+                    # fitness, precision = get_fit_prec_hpc(clu_list_log[clu_list.index(diff[j])],log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
                     length_li.append(length)
@@ -992,8 +1020,8 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
         plot_boxfit[str(i)] = pd.Series(plot_boxfit[str(i)])
         plot_boxprec[str(i)] = pd.Series(plot_boxprec[str(i)])
     fig = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     data = pd.DataFrame(plot_boxfit)
     # print(data)
     plt.plot(x_axis, list(plot_fit.values()), color="b", linestyle="-", marker="s", linewidth=1)
@@ -1009,8 +1037,8 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     plt.savefig(PIC_PATH + 'fit_sca' + '_' + TYPE + '.svg')
 
     fig2 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     data = pd.DataFrame(plot_boxprec)
     # print(data)
     plt.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1)
@@ -1031,8 +1059,8 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     # plot_box["2"] = plot_box["1"]
     data = pd.DataFrame(plot_box)
     # print(data)
-    rc('text', usetex=True)
-    rc('font', family='serif')
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
     plt.xticks(x_axis)
@@ -1047,8 +1075,8 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     #
     # show cluster size dot
     fig6 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
     for i in range(0, plot_clu):
         xlist = np.ones(len(plot_length[i])) * (i + 1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
