@@ -57,15 +57,20 @@ def filter_by_variants_percentage(log, percentage=0.8, parameters=None):
 
     variants = get_variants(log, parameters=parameters)
     var_with_count = sorted([(x, len(y)) for x, y in variants.items()])
+    # print(variants.items())
+    # print(var_with_count)
 
     total_sum = sum(x[1] for x in var_with_count)
+    # print(total_sum)
     partial_sum = 0
 
     variants_to_filter = []
 
     for i in range(len(var_with_count)):
         partial_sum = partial_sum + var_with_count[i][1]
+        # print(partial_sum)
         variants_to_filter.append(var_with_count[i][0])
+        # print(variants_to_filter)
 
         if partial_sum >= total_sum * percentage and (i == len(var_with_count)-1 or (i < len(var_with_count)-1 and var_with_count[i+1][1] < var_with_count[i][1])):
             break

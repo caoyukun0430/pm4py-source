@@ -18,3 +18,4 @@ prefixspan==0.5.2; python_version > '3.5'
 fasttext==0.9.1; python_version > '3.5'
 pybind11==2.4.3; python_version > '3.5'
 intervaltree==3.0.2
+Levenshtein==0.12.0
