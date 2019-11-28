@@ -288,10 +288,10 @@ def example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu):
 if __name__ == "__main__":
     # LOG_PATH = "../example/real_log/Receipt.xes"
     LOG_PATH = '../../tests/input_data/receipt.xes'
-    ATTR_NAME = 'responsible'
+    ATTR_NAME = 'group'
     PIC_PATH = '../example/real_log/'
-    METHOD = 'avg'
-    plot_clu = 38
+    METHOD = 'dfg'
+    plot_clu = 5
     example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
 
 
