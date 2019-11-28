@@ -178,41 +178,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'FT-Recomputing' + '.svg')
 
-    fig10 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", marker="s", linewidth=1)
-    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", marker="s", linewidth=1)
-    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", marker="s", linewidth=1)
-    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", marker="s", linewidth=1)
-    plt.xticks(x_axis)
-    # plt.gca().invert_xaxis()
-    plt.ylim(0, 1.04)
-    plt.legend([l1, l2, l3, l4], labels=['Leven-DMM', 'Feature Vector-DMM', 'Leven-AVG', 'Feature Vector-AVG'],
-               loc='best')
-    plt.title('Recomputing')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'Recomputing' + '.svg')
 
-    fig11 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", linewidth=2)
-    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", linewidth=2)
-    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", linewidth=2)
-    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", linewidth=2)
-    plt.xticks(x_axis)
-    # plt.gca().invert_xaxis()
-    plt.ylim(0, 1.04)
-    plt.legend([l1, l2, l3, l4], labels=['Leven-DMM', 'Feature Vector-DMM', 'Leven-AVG', 'Feature Vector-AVG'],
-               loc='best')
-    plt.title('Recomputing')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'Recomputing-line' + '.svg')
 
     METHOD = 'dfg'
     # plot_clu = 23
@@ -226,6 +192,44 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
                          x_axis, PIC_PATH, TYPE)
+
+    fig10 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", marker="s", linewidth=1)
+    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", marker="s", linewidth=1)
+    l5 = plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    # plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5], labels=['Leven-DMM', 'Behav. TR.-DMM', 'Leven-UPGMA', 'Behav. TR.-UPGMA'],
+               loc='best')
+    # plt.title('Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Recomputing' + '.svg')
+
+    fig11 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", linewidth=2)
+    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", linewidth=2)
+    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", linewidth=2)
+    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", linewidth=2)
+    l5 = plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    # plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5], labels=['Leven-DMM', 'Behav. TR.-DMM', 'Leven-UPGMA', 'Behav. TR.-UPGMA'],
+               loc='best')
+    # plt.title('Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Recomputing-line' + '.svg')
 
     fig10 = plt.figure()
     rc('text', usetex=True)
@@ -282,11 +286,12 @@ def example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu):
 
 
 if __name__ == "__main__":
-    LOG_PATH = "../example/real_log/Receipt.xes"
+    # LOG_PATH = "../example/real_log/Receipt.xes"
+    LOG_PATH = '../../tests/input_data/receipt.xes'
     ATTR_NAME = 'responsible'
     PIC_PATH = '../example/real_log/'
-    METHOD = 'dfg'
-    plot_clu = 23
+    METHOD = 'avg'
+    plot_clu = 38
     example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
 
 
