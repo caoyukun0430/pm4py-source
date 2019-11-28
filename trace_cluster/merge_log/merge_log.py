@@ -11,7 +11,7 @@ import json
 import sys
 import time
 from collections import Counter
-from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
+# from pm4pydistr.remote_wrapper import factory as remote_wrapper_factory
 from scipy.cluster.hierarchy import dendrogram, linkage, cophenet, to_tree, fcluster
 from scipy.spatial.distance import squareform
 from trace_cluster import filter_subsets
@@ -1038,13 +1038,13 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
         plot_boxfit[str(i)] = pd.Series(plot_boxfit[str(i)])
         plot_boxprec[str(i)] = pd.Series(plot_boxprec[str(i)])
     fig = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
+    rc('text', usetex=True)
+    rc('font', family='serif')
     data = pd.DataFrame(plot_boxfit)
     # print(data)
     plt.plot(x_axis, list(plot_fit.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_fit.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
+    plt.xticks(x_axis,fontsize=6)
     data.boxplot(sym='o', whis=1)
     # plt.gca().invert_xaxis()
     # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
@@ -1055,13 +1055,13 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     plt.savefig(PIC_PATH + 'fit_sca' + '_' + TYPE + '.svg')
 
     fig2 = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
+    rc('text', usetex=True)
+    rc('font', family='serif')
     data = pd.DataFrame(plot_boxprec)
     # print(data)
     plt.plot(x_axis, list(plot_prec.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_prec.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
+    plt.xticks(x_axis,fontsize=6)
     data.boxplot(sym='o', whis=1)
     # plt.gca().invert_xaxis()
     # plt.ylim(np.min(list(plot_F1.values()))-0.01,1)
@@ -1077,11 +1077,11 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     # plot_box["2"] = plot_box["1"]
     data = pd.DataFrame(plot_box)
     # print(data)
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
+    rc('text', usetex=True)
+    rc('font', family='serif')
     plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
     plt.hlines(list(plot_F1.values())[0], 1, plot_clu, colors="b", linestyles="dashed")
-    plt.xticks(x_axis)
+    plt.xticks(x_axis,fontsize=6)
     data.boxplot(sym='o', whis=1)
 
     plt.ylim(0, 1.04)
@@ -1093,15 +1093,15 @@ def five_plots(plot_fit, plot_prec, plot_F1,plot_boxfit,plot_boxprec,plot_box,pl
     #
     # show cluster size dot
     fig6 = plt.figure()
-    # rc('text', usetex=True)
-    # rc('font', family='serif')
+    rc('text', usetex=True)
+    rc('font', family='serif')
     for i in range(0, plot_clu):
         xlist = np.ones(len(plot_length[i])) * (i + 1)
         a = sorted(dict(Counter(plot_length[i])).items(), key=lambda x: x[0])
         weights = [20 * a[j][1] for j in range(len(a)) for k in range(a[j][1])]
         plot_length[i] = sorted(plot_length[i], reverse=False)
         plt.scatter(xlist, plot_length[i], marker="o", s=weights)
-    plt.xticks(range(1, plot_clu+1))
+    plt.xticks(range(1, plot_clu+1),fontsize=6)
     plt.ylim(np.min(np.min(plot_length))/2, np.max(np.max(plot_length))+500)
     plt.yscale('log')
     plt.xlabel("Num. of Cluster")
