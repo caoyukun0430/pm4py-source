@@ -293,7 +293,7 @@ if __name__ == "__main__":
     ATTR_NAME = 'responsible'
     PIC_PATH = '/home/yukun/resultlog/receipt_all/' + ATTR_NAME + '/'
     # LOG_PATH = "../../tests/input_data/receipt.xes"
-    # ATTR_NAME = 'group'
+    # ATTR_NAME = 'responsible'
     # PIC_PATH = '../example/real_log/'
     plot_clu = 37
     # METHOD = 'dfg'
