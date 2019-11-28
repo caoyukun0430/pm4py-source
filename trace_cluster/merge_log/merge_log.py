@@ -352,8 +352,6 @@ def main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, a
                                                    inductive_final_marking, variant="alignments")['averageFitness']
                     precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                                                         inductive_final_marking)
-                    if (abs(precision)<1e-6):
-                        precision=1
                     # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
@@ -550,8 +548,6 @@ def main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,r
                                                    inductive_final_marking, variant="alignments")['averageFitness']
                     precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                                                         inductive_final_marking)
-                    if (abs(precision)<1e-6):
-                        precision=1
                     # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
@@ -743,8 +739,6 @@ def main_calc_leven(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runti
                                                    inductive_final_marking, variant="alignments")['averageFitness']
                     precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                                                         inductive_final_marking)
-                    if (abs(precision)<1e-6):
-                        precision=1
                     # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
@@ -937,8 +931,6 @@ def main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plo
                                                    inductive_final_marking, variant="alignments")['averageFitness']
                     precision = precision_factory.apply(log, inductive_petri, inductive_initial_marking,
                                                         inductive_final_marking)
-                    if (abs(precision)<1e-6):
-                        precision=1
                     # fitness, precision = get_fit_prec_hpc(clu_list_log[j], log)
                     F1 = 2 * fitness * precision / (fitness + precision)
                     # individual info for each sublog
