@@ -8,8 +8,7 @@ from pm4py.util import constants
 from pm4py.algo.discovery.dfg.versions import native
 import pandas as pd
 from trace_cluster import filter_subsets
-from trace_cluster.variant import act_dist_calc
-import cluster
+from trace_cluster.variant import act_dist_calc, cluster
 import time
 
 '''

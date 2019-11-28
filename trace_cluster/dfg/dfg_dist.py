@@ -1,18 +1,10 @@
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy.cluster.hierarchy import dendrogram, linkage, cophenet
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist
 from pm4py.algo.discovery.dfg import factory as dfg_factory
 from pm4py.algo.filtering.log.attributes import attributes_filter
-from pm4py.objects.log.importer.xes import factory as xes_importer
-from pm4py.util import constants
 import pandas as pd
-from trace_cluster import filter_subsets
-from trace_cluster.pt_gene import pt_gen
 from trace_cluster.variant import act_dist_calc
-import cluster
-from trace_cluster.merge_log import merge_log
-
+from trace_cluster.variant import act_dist_calc, cluster
 
 def dfg_dist_calc_act(log1, log2):
     act1 = attributes_filter.get_attribute_values(log1, "concept:name")
