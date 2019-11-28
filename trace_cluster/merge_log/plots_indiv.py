@@ -259,13 +259,38 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     # plt.show()
     plt.savefig(PIC_PATH + 'DFG-Leven-FT-AVG' + '.svg')
 
+def example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu):
+    percent = 1
+    alpha = 0.5
+    runtime = dict()
+
+    log = xes_importer.apply(LOG_PATH)
+
+    METHOD = METHOD
+    # plot_clu = 23
+
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME + 'update'
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
+    F1valup = list(plot_F1.values())
+    x_axis = range(1, plot_clu + 1)
+    merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
+                         x_axis, PIC_PATH, TYPE)
+
 
 if __name__ == "__main__":
     LOG_PATH = "../example/real_log/Receipt.xes"
     ATTR_NAME = 'responsible'
     PIC_PATH = '../example/real_log/'
+    METHOD = 'dfg'
     plot_clu = 23
-    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
+    example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
+
+
+    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
     #
     # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
     # ATTR_NAME = 'CreditScore'
