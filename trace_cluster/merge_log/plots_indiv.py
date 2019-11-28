@@ -178,41 +178,7 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     plt.grid(axis='y')
     plt.savefig(PIC_PATH + 'FT-Recomputing' + '.svg')
 
-    fig10 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", marker="s", linewidth=1)
-    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", marker="s", linewidth=1)
-    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", marker="s", linewidth=1)
-    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", marker="s", linewidth=1)
-    plt.xticks(x_axis)
-    # plt.gca().invert_xaxis()
-    plt.ylim(0, 1.04)
-    plt.legend([l1, l2, l3, l4], labels=['Leven-DMM', 'Feature Vector-DMM', 'Leven-AVG', 'Feature Vector-AVG'],
-               loc='best')
-    plt.title('Recomputing')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'Recomputing' + '.svg')
 
-    fig11 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", linewidth=2)
-    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", linewidth=2)
-    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", linewidth=2)
-    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", linewidth=2)
-    plt.xticks(x_axis)
-    # plt.gca().invert_xaxis()
-    plt.ylim(0, 1.04)
-    plt.legend([l1, l2, l3, l4], labels=['Leven-DMM', 'Feature Vector-DMM', 'Leven-AVG', 'Feature Vector-AVG'],
-               loc='best')
-    plt.title('Recomputing')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'Recomputing-line' + '.svg')
 
     METHOD = 'dfg'
     # plot_clu = 23
@@ -226,6 +192,44 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     x_axis = range(1, plot_clu + 1)
     merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
                          x_axis, PIC_PATH, TYPE)
+
+    fig10 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", marker="s", linewidth=1)
+    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", marker="s", linewidth=1)
+    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", marker="s", linewidth=1)
+    l5 = plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    # plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5], labels=['Leven-DMM', 'Behav. TR.-DMM', 'Leven-UPGMA', 'Behav. TR.-UPGMA'],
+               loc='best')
+    # plt.title('Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Recomputing' + '.svg')
+
+    fig11 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1DMM[1], linestyle="-", linewidth=2)
+    l2 = plt.plot(x_axis, F1DMM_FT[1], linestyle="-", linewidth=2)
+    l3 = plt.plot(x_axis, F1avg[1], linestyle="-", linewidth=2)
+    l4 = plt.plot(x_axis, F1avg_FT[1], linestyle="-", linewidth=2)
+    l5 = plt.plot(x_axis, list(plot_F1.values()), color="b", linestyle="-", marker="s", linewidth=1)
+    plt.xticks(x_axis)
+    # plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2, l3, l4, l5], labels=['Leven-DMM', 'Behav. TR.-DMM', 'Leven-UPGMA', 'Behav. TR.-UPGMA'],
+               loc='best')
+    # plt.title('Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Recomputing-line' + '.svg')
 
     fig10 = plt.figure()
     rc('text', usetex=True)
@@ -259,12 +263,38 @@ def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
     # plt.show()
     plt.savefig(PIC_PATH + 'DFG-Leven-FT-AVG' + '.svg')
 
+def example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu):
+    percent = 1
+    alpha = 0.5
+    runtime = dict()
+
+    log = xes_importer.apply(LOG_PATH)
+
+    METHOD = METHOD
+    # plot_clu = 23
+
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME + 'update'
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_leven_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha,runtime,plot_clu)
+    F1valup = list(plot_F1.values())
+    x_axis = range(1, plot_clu + 1)
+    merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
+                         x_axis, PIC_PATH, TYPE)
+
 
 if __name__ == "__main__":
-    LOG_PATH = "../example/real_log/Receipt.xes"
+    LOG_PATH = "/home/yukun/pm4py-source/tests/input_data/receipt.xes"
     ATTR_NAME = 'responsible'
-    PIC_PATH = '../example/real_log/'
-    plot_clu = 23
+    PIC_PATH = '/home/yukun/resultlog/receipt_all/' + ATTR_NAME + '/'
+    # LOG_PATH = "../example/real_log/Receipt.xes"
+
+    # PIC_PATH = '../example/real_log/'
+    plot_clu = 37
+    METHOD = 'dfg'
+    # example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
     standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH,plot_clu)
     #
     # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
