@@ -22,7 +22,7 @@ Before is general information of PM4py and here we introduce also the usage of t
 
 Before start playing with our package, make sure you follow the instruction above to correctly install PM4py.  
 
-One simple example to run trace clustering is the `python -m trace_cluster.merge_log.example_run`  
+One simple example to run trace clustering is the `python -m trace_cluster.merge_log.plots_indiv`  
 This command will returns you a set of plots containing the cluster dedrogram and plots for fitness, precision and F1-score at each cluster step.
 
 ### Input  
