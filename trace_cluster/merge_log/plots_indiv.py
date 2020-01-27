@@ -463,7 +463,7 @@ if __name__ == "__main__":
     TYPE = METHOD + ATTR_NAME
 
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
+     runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
 
     F1val = list(plot_F1.values())
     F1dfg = [F1val, F1valup]
