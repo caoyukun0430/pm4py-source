@@ -439,16 +439,96 @@ def example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu):
 
 
 if __name__ == "__main__":
-    LOG_PATH = "/home/yukun/pm4py-source/tests/input_data/receipt.xes"
+
+    LOG_PATH = '/home/yukun/dataset/Receipt.xes'
     ATTR_NAME = 'responsible'
-    PIC_PATH = '/home/yukun/resultlog/receipt_all/' + ATTR_NAME + '/'
-    # LOG_PATH = "../../tests/input_data/receipt.xes"
-    # ATTR_NAME = 'responsible'
-    # PIC_PATH = '../example/real_log/'
+    PIC_PATH = '/home/yukun/resultlog/'
+    METHOD = 'dfg'
     plot_clu = 37
-    # METHOD = 'dfg'
     # example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
-    standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu)
+    percent = 1
+    alpha = 0.5
+    runtime = dict()
+
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    log = xes_importer.apply(LOG_PATH)
+    TYPE = METHOD + ATTR_NAME + 'update'
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
+    F1valup = list(plot_F1.values())
+
+    TYPE = METHOD + ATTR_NAME
+
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
+
+    F1val = list(plot_F1.values())
+    F1dfg = [F1val, F1valup]
+    print('F1compare', F1dfg)
+    x_axis = range(1, plot_clu + 1)
+
+    fig9 = plt.figure()
+    rc('text', usetex=True)
+    rc('font', family='serif')
+    l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", marker="s", linewidth=1)
+    l2 = plt.plot(x_axis, F1dfg[1], color="r", linestyle="-", marker="o", linewidth=1)
+    plt.xticks(x_axis, fontsize=7)
+    # plt.gca().invert_xaxis()
+    plt.ylim(0, 1.04)
+    plt.legend([l1, l2], labels=['Behav. CL.', 'Behav. CL-recomputation'], loc='best')
+    # plt.title('Leven-Recomputing')
+    plt.xlabel("Num. of Cluster")
+    plt.ylabel("F1-Score")
+    plt.grid(axis='y')
+    plt.savefig(PIC_PATH + 'Behav. CL-recomputationornot' + '.svg')
+
+
+    # LevenDMMre=list( {'1': 0.28122493532811643, '2': 0.49869886575319833, '3': 0.49869886575319833, '4': 0.5451150596615892, '5': 0.6053830367105274, '6': 0.6465950311280898, '7': 0.6883233683084616, '8': 0.7095549158592249, '9': 0.6897561962343509, '10': 0.6830310941690592, '11': 0.658857811744176, '12': 0.658867049315235, '13': 0.6466778515844869, '14': 0.6304479842119978, '15': 0.6191146821467403, '16': 0.6364759261744721, '17': 0.6208219006095727, '18': 0.626538704387943, '19': 0.6176947726167346, '20': 0.6014956160927946, '21': 0.5935934270987497, '22': 0.5829816911274222, '23': 0.5723109254038301, '24': 0.5772926201136038, '25': 0.5685933166065238, '26': 0.566068832740942, '27': 0.5660197819864436, '28': 0.566068832740942, '29': 0.566068832740942, '30': 0.5478400164993481, '31': 0.5404549043211199, '32': 0.5366223122591083, '33': 0.5366223122591083, '34': 0.5324002672203704, '35': 0.5324794670564359, '36': 0.5266102077018592, '37': 0.5266102077018592}.values())
+    # LevenDMMno = list({'1': 0.26916418408582554, '2': 0.49869886575319833, '3': 0.5737073667088783, '4': 0.5389721590465493, '5': 0.580836921453319, '6': 0.6251065920288125, '7': 0.6576135079126824, '8': 0.6927484933474337, '9': 0.7111292994993375, '10': 0.6817288682989381, '11': 0.6468064899990202, '12': 0.6187898947986361, '13': 0.6096835551076263, '14': 0.6301986287849711, '15': 0.6321166310390985, '16': 0.6258197440513649, '17': 0.6102183362403376, '18': 0.6050255087226127, '19': 0.5979299626603916, '20': 0.5851357498157108, '21': 0.5744443698637763, '22': 0.563792425241625, '23': 0.5675286436584379, '24': 0.5582790165196277, '25': 0.5478538278522304, '26': 0.5427399561491275, '27': 0.536421478113581, '28': 0.5326593069178867, '29': 0.5321235426033298, '30': 0.5305531375126018, '31': 0.5307542659857405, '32': 0.5283368984672749, '33': 0.5332924954360968, '34': 0.5324002672203704, '35': 0.5324794670564359, '36': 0.5266102077018593, '37': 0.5266102077018593}.values())
+    # FTDMMre= list({'1': 0.26916418408582554, '2': 0.5024746519741774, '3': 0.5026353466832513, '4': 0.5560197090570085,
+    #  '5': 0.5381422382587449, '6': 0.537647242129398, '7': 0.5766878978595946, '8': 0.6104087787404302,
+    #  '9': 0.6373250259043715, '10': 0.6243877642201857, '11': 0.6405598316456407, '12': 0.6133073927999871,
+    #  '13': 0.5983960324591912, '14': 0.5821075652529045, '15': 0.5636580581069953, '16': 0.557207457802379,
+    #  '17': 0.5500511160032895, '18': 0.5537317900368078, '19': 0.5700815734922065, '20': 0.5664006164883316,
+    #  '21': 0.5649904976165018, '22': 0.5585983985371668, '23': 0.5733069284525271, '24': 0.5673317287484575,
+    #  '25': 0.5709972061023947, '26': 0.5696193236170204, '27': 0.5612144100259046, '28': 0.5530667682869246,
+    #  '29': 0.5523184810782499, '30': 0.5523184810782499, '31': 0.5445802845859945, '32': 0.5445802845859945,
+    #  '33': 0.5421456093499656, '34': 0.5344848404795344, '35': 0.5321680880485432, '36': 0.5266102077018592,
+    #  '37': 0.5266102077018592}.values())
+    # FTDMMno =list({'1': 0.26916418408582554, '2': 0.5024746519741774, '3': 0.5026353466832513, '4': 0.5560197090570085, '5': 0.5518502195421394, '6': 0.537647242129398, '7': 0.5766878978595946, '8': 0.6104087787404302, '9': 0.5990247376651062, '10': 0.6243877642201857, '11': 0.6405598316456407, '12': 0.613307392799987, '13': 0.5983960324591912, '14': 0.5821075652529045, '15': 0.5739969577849199, '16': 0.5766411009612762, '17': 0.5683416036822515, '18': 0.553731790036808, '19': 0.5471874506506291, '20': 0.5446768394816057, '21': 0.5443011861815246, '22': 0.5457497175722271, '23': 0.5596031070555816, '24': 0.5571366225455786, '25': 0.5518257303586007, '26': 0.543781919831612, '27': 0.5465297023305362, '28': 0.5389065144378195, '29': 0.5512509307189447, '30': 0.5465816970693044, '31': 0.5435816084434187, '32': 0.542482458416047, '33': 0.5421456093499655, '34': 0.5395354004101091, '35': 0.5321680880485432, '36': 0.5266102077018593, '37': 0.5266102077018593}.values())
+    #
+    # x_axis = range(1,38)
+    # font1 = {'family': 'Times New Roman',
+    #          'weight': 'normal'}
+    # fig9,ax = plt.subplots()
+    # l1 = plt.plot(x_axis, FTDMMre, color="b", linestyle="-", marker="s", linewidth=1)
+    # l2 = plt.plot(x_axis, FTDMMno, color="r", linestyle="-", marker="o", linewidth=1)
+    # plt.xticks(x_axis,fontsize=7)
+    # # plt.gca().invert_xaxis()
+    # plt.ylim(0, 1.04)
+    # plt.legend([l1, l2], labels=['Behav. TR.-DMM-recomputation', 'Behav. TR.-DMM'], loc='best',prop=font1)
+    # labels = ax.get_xticklabels() + ax.get_yticklabels()
+    # [label.set_fontname('Times New Roman') for label in labels]
+    # # plt.title('Leven-Recomputing')
+    # plt.xlabel("Num. of Cluster",font1)
+    # plt.ylabel("F1-Score",font1)
+    # plt.grid(axis='y')
+    # plt.savefig('Behav. TR.-DMM-recomputeornot' + '.svg')
+    # plt.show()
+
+    # LOG_PATH = "/home/yukun/pm4py-source/tests/input_data/receipt.xes"
+    # ATTR_NAME = 'responsible'
+    # PIC_PATH = '/home/yukun/resultlog/receipt_all/' + ATTR_NAME + '/'
+    # # LOG_PATH = "../../tests/input_data/receipt.xes"
+    # # ATTR_NAME = 'responsible'
+    # # PIC_PATH = '../example/real_log/'
+    # plot_clu = 37
+    # # METHOD = 'dfg'
+    # # example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
+    # standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu)
     #
     # LOG_PATH = "/home/yukun/dataset/filteredbpic2017.xes"
     # ATTR_NAME = 'CreditScore'
