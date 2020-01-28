@@ -7,27 +7,27 @@ import matplotlib.pyplot as plt
 # standard plots generating procedure for individual logs
 
 def standard_plt(LOG_PATH, ATTR_NAME, PIC_PATH, plot_clu):
-    # PIC_PATH = '/home/yukun/resultlog/'
-    # percent = 1
-    # alpha = 0.5
-    # runtime = dict()
-    #
-    # log = xes_importer.apply(LOG_PATH)
-    #
-    # METHOD = 'dfg'
-    # # plot_clu = 23
-    #
-    # print(LOG_PATH)
-    # print(ATTR_NAME)
-    # print(METHOD)
-    # TYPE = METHOD + ATTR_NAME + 'dfg'
-    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-    #  runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
-    # x_axis = range(1, plot_clu + 1)
-    # merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
-    #                      x_axis, PIC_PATH, TYPE)
-    # F1dfg = list(plot_F1.values())
-    #
+    PIC_PATH = '/home/yukun/resultlog/'
+    percent = 1
+    alpha = 0.5
+    runtime = dict()
+
+    log = xes_importer.apply(LOG_PATH)
+
+    METHOD = 'dfg'
+    # plot_clu = 23
+
+    print(LOG_PATH)
+    print(ATTR_NAME)
+    print(METHOD)
+    TYPE = METHOD + ATTR_NAME + 'dfg'
+    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+     runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
+    x_axis = range(1, plot_clu + 1)
+    merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
+                         x_axis, PIC_PATH, TYPE)
+    F1dfg = list(plot_F1.values())
+
     # METHOD = 'avg'
     # # plot_clu = 23
     #
@@ -438,52 +438,87 @@ def example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu):
                          x_axis, PIC_PATH, TYPE)
 
 
-if __name__ == "__main__":
-
-    LOG_PATH = '/home/yukun/dataset/Receipt.xes'
-    ATTR_NAME = 'responsible'
+def dfg_all_logs(LOG_PATH, ATTR_NAME, plot_clu):
     PIC_PATH = '/home/yukun/resultlog/'
-    METHOD = 'dfg'
-    plot_clu = 37
-    # example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
     percent = 1
     alpha = 0.5
     runtime = dict()
 
+    log = xes_importer.apply(LOG_PATH)
+
+    METHOD = 'dfg'
+    # plot_clu = 23
+
     print(LOG_PATH)
     print(ATTR_NAME)
     print(METHOD)
-    log = xes_importer.apply(LOG_PATH)
-    TYPE = METHOD + ATTR_NAME + 'update'
-
+    TYPE = METHOD + ATTR_NAME + 'dfg'
     (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
      runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
-    F1valup = list(plot_F1.values())
-
-    TYPE = METHOD + ATTR_NAME
-
-    (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
-     runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
-
+    # x_axis = range(1, plot_clu + 1)
+    # merge_log.five_plots(plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length, plot_clu,
+    #                      x_axis, PIC_PATH, TYPE)
+    fitval = list(plot_fit.values())
+    precval= list(plot_prec.values())
     F1val = list(plot_F1.values())
-    F1dfg = [F1val, F1valup]
-    print('F1compare', F1dfg)
-    x_axis = range(1, plot_clu + 1)
 
-    fig9 = plt.figure()
-    rc('text', usetex=True)
-    rc('font', family='serif')
-    l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", marker="s", linewidth=1)
-    l2 = plt.plot(x_axis, F1dfg[1], color="r", linestyle="-", marker="o", linewidth=1)
-    plt.xticks(x_axis, fontsize=7)
-    # plt.gca().invert_xaxis()
-    plt.ylim(0, 1.04)
-    plt.legend([l1, l2], labels=['Behav. CL.', 'Behav. CL-recomputation'], loc='best')
-    # plt.title('Leven-Recomputing')
-    plt.xlabel("Num. of Cluster")
-    plt.ylabel("F1-Score")
-    plt.grid(axis='y')
-    plt.savefig(PIC_PATH + 'Behav. CL-recomputationornot' + '.svg')
+    return fitval,precval,F1val
+
+if __name__ == "__main__":
+
+    LOG_PATH = '/home/yukun/dataset/BPIC2017_offer.xes'
+    ATTR_NAME = 'CreditScore'
+    plot_clu = 37
+    (fit2017,prec2017,F12017)= dfg_all_logs(LOG_PATH, ATTR_NAME, plot_clu)
+
+    print('fit2017',fit2017)
+    print('prec2017',prec2017)
+    print('F12017',F12017)
+
+    # LOG_PATH = '/home/yukun/dataset/Receipt.xes'
+    # ATTR_NAME = 'responsible'
+    # PIC_PATH = '/home/yukun/resultlog/'
+    # METHOD = 'dfg'
+    # plot_clu = 37
+    # # example_run(LOG_PATH, ATTR_NAME, METHOD, PIC_PATH, plot_clu)
+    # percent = 1
+    # alpha = 0.5
+    # runtime = dict()
+    #
+    # print(LOG_PATH)
+    # print(ATTR_NAME)
+    # print(METHOD)
+    # log = xes_importer.apply(LOG_PATH)
+    # TYPE = METHOD + ATTR_NAME + 'update'
+    #
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+    #  runtime) = merge_log.main_calc_recompute(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
+    # F1valup = list(plot_F1.values())
+    #
+    # TYPE = METHOD + ATTR_NAME
+    #
+    # (plot_fit, plot_prec, plot_F1, plot_boxfit, plot_boxprec, plot_box, plot_length,
+    #  runtime) = merge_log.main_calc(log, ATTR_NAME, METHOD, TYPE, PIC_PATH, percent, alpha, runtime, plot_clu)
+    #
+    # F1val = list(plot_F1.values())
+    # F1dfg = [F1val, F1valup]
+    # print('F1compare', F1dfg)
+    # x_axis = range(1, plot_clu + 1)
+    #
+    # fig9 = plt.figure()
+    # rc('text', usetex=True)
+    # rc('font', family='serif')
+    # l1 = plt.plot(x_axis, F1dfg[0], color="b", linestyle="-", marker="s", linewidth=1)
+    # l2 = plt.plot(x_axis, F1dfg[1], color="r", linestyle="-", marker="o", linewidth=1)
+    # plt.xticks(x_axis, fontsize=7)
+    # # plt.gca().invert_xaxis()
+    # plt.ylim(0, 1.04)
+    # plt.legend([l1, l2], labels=['Behav. CL.', 'Behav. CL-recomputation'], loc='best')
+    # # plt.title('Leven-Recomputing')
+    # plt.xlabel("Num. of Cluster")
+    # plt.ylabel("F1-Score")
+    # plt.grid(axis='y')
+    # plt.savefig(PIC_PATH + 'Behav. CL-recomputationornot' + '.svg')
 
 
     # LevenDMMre=list( {'1': 0.28122493532811643, '2': 0.49869886575319833, '3': 0.49869886575319833, '4': 0.5451150596615892, '5': 0.6053830367105274, '6': 0.6465950311280898, '7': 0.6883233683084616, '8': 0.7095549158592249, '9': 0.6897561962343509, '10': 0.6830310941690592, '11': 0.658857811744176, '12': 0.658867049315235, '13': 0.6466778515844869, '14': 0.6304479842119978, '15': 0.6191146821467403, '16': 0.6364759261744721, '17': 0.6208219006095727, '18': 0.626538704387943, '19': 0.6176947726167346, '20': 0.6014956160927946, '21': 0.5935934270987497, '22': 0.5829816911274222, '23': 0.5723109254038301, '24': 0.5772926201136038, '25': 0.5685933166065238, '26': 0.566068832740942, '27': 0.5660197819864436, '28': 0.566068832740942, '29': 0.566068832740942, '30': 0.5478400164993481, '31': 0.5404549043211199, '32': 0.5366223122591083, '33': 0.5366223122591083, '34': 0.5324002672203704, '35': 0.5324794670564359, '36': 0.5266102077018592, '37': 0.5266102077018592}.values())
